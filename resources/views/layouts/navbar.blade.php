@@ -92,7 +92,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
+                      <a class="dropdown-item" onclick="logout()">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>
@@ -104,3 +104,21 @@
             </div>
           </nav>
         <!-- / Menu -->
+         <script>
+          function logout()
+          {
+              swal({
+                  title: "Logout Confirmation",
+                  text: "Are you sure you want to logout",
+                  icon: "error",
+                  buttons: true,
+                  dangerMode: true,
+              }).then(logout => {
+                  if(logout)
+                  {
+                    localStorage.removeItem('token');
+                    window.location.href = '/';
+                  }
+              });
+          }
+         </script>

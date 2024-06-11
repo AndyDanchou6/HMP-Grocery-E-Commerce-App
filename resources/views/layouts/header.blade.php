@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <title>HMP Co. | Grocery-Ecommerce-App</title>
 
     <meta name="description" content="" />
 
@@ -42,6 +42,14 @@
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
 
+    <script>
+      const token = localStorage.getItem('token');
+
+      if(!token)
+      {
+        window.location.href = '/login';
+      }
+    </script>
     <!-- Page CSS -->
 
     <!-- Helpers -->
