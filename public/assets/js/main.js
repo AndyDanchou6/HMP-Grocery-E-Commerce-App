@@ -116,3 +116,37 @@ let menu, animate;
   // Auto update menu collapsed/expanded based on the themeConfig
   window.Helpers.setCollapsed(true, false);
 })();
+
+document.addEventListener("DOMContentLoaded", function() {
+    const menuItems = document.querySelectorAll(".menu-item");
+
+    // Function to handle menu item click
+    function handleMenuItemClick(clickedItem) {
+        // Remove 'active' class from all menu items
+        menuItems.forEach(function(menuItem) {
+            menuItem.classList.remove("active");
+        });
+
+        // Add 'active' class to clicked menu item
+        clickedItem.classList.add("active");
+
+        // Store the ID of the clicked menu item in localStorage
+        localStorage.setItem("activeMenuItemId", clickedItem.id);
+    }
+
+    // Add event listener to each menu item
+    menuItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+            handleMenuItemClick(this);
+        });
+    });
+
+    // Check if there's a previously clicked menu item and highlight it
+    const activeMenuItemId = localStorage.getItem("activeMenuItemId");
+    if (activeMenuItemId) {
+        const activeMenuItem = document.getElementById(activeMenuItemId);
+        if (activeMenuItem) {
+            handleMenuItemClick(activeMenuItem);
+        }
+    }
+});
