@@ -2,10 +2,9 @@
 
 @section('content')
 
+
 <!-- Basic Bootstrap Table -->
 <div class="container-xxl flex-grow-1 container-p-y">
-  <div class="row">
-
     <div class="card">
       <h5 class="card-header">Table Basic</h5>
       <div class="table-responsive text-nowrap">
