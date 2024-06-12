@@ -37,7 +37,7 @@
       </span>
 
 
-      <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span>
+      <span class="app-brand-text demo menu-text fw-bolder ms-2">Ecommerce</span>
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -50,20 +50,27 @@
   <ul class="menu-inner py-1">
     <!-- Dashboard -->
     <li id="dashboard" class="menu-item">
-      <a href="/home" class="menu-link">
+      <a href="{{ route('home') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
         <div data-i18n="Analytics">Dashboard</div>
       </a>
     </li>
     <!-- Components -->
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-  
+
     <!------ Table ------>
 
     <li id="tables" class="menu-item">
-      <a href="/inventory" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-table"></i>
-        <div data-i18n="Tables">Tables</div>
+      <a href="{{ route('inventories.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-package"></i>
+        <div data-i18n="Tables">Inventory</div>
+      </a>
+    </li>
+
+    <li id="tables" class="menu-item">
+      <a href="{{ route('categories.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-list-ul "></i>
+        <div data-i18n="Tables">Category</div>
       </a>
     </li>
 </aside>

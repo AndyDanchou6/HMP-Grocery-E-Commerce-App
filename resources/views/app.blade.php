@@ -31,26 +31,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
 
     <script>
-        const token = localStorage.getItem('token');
 
-        if (!token) {
-            window.location.href = '/login';
-        }
-
-        function logout() {
-            swal({
-                title: "Logout Confirmation",
-                text: "Are you sure you want to logout",
-                icon: "error",
-                buttons: true,
-                dangerMode: true,
-            }).then(logout => {
-                if (logout) {
-                    localStorage.removeItem('token');
-                    window.location.href = '/';
-                }
-            });
-        }
     </script>
 
     <!-- Page CSS -->
