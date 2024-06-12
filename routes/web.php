@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +22,10 @@ Route::get('/', function () {
 
 Route::get('/home', [AuthController::class, 'index'])->name('home');
 
-Route::get('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'register']);
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'login')->name('auth.login');
+    Route::get('/home', 'index')->name('home');
+});
 
-Route::resource('/inventory', InventoryController::class);
-
-
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventories.index');
+Route::get('/category', [CategoryController::class, 'index'])->name('categories.index');
