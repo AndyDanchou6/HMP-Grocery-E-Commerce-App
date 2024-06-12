@@ -19,7 +19,7 @@ class InventoryController extends Controller
 
     public function getAllData()
     {
-        $items = Inventory::orderBy('created_at', 'asc')->get();
+        $items = Inventory::with('category:id,category_name')->orderBy('created_at', 'asc')->get();
 
         return response()->json($items);
     }
@@ -93,11 +93,32 @@ class InventoryController extends Controller
     public function update(Request $request, string $id)
     {
         // 
+        $validator = Validator::make($request->all(), [
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
         $items = Inventory::findOrFail($id);
 
         $items->product_name = $request->input('product_name');
         $items->price = $request->input('price');
         $items->quantity = $request->input('quantity');
+        $items->category_id = $request->input('category_id');
+
+        if ($request->hasFile('product_img')) {
+            $avatarPath = $request->file('product_img')->store('products', 'public');
+            $items->product_img = $avatarPath;
+        }
 
         $items->save();
 

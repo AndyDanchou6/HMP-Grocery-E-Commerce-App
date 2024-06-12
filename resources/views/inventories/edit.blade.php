@@ -1,3 +1,4 @@
+<!-- Edit Product Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -7,6 +8,20 @@
             </div>
             <div class="modal-body">
                 <form id="editFormElement">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="category_id" class="form-label">Category</label>
+                            <select class="form-select" name="category_id" id="edit_category_id">
+                                <!-- Options will be dynamically added here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="product_img" class="form-label">Avatar</label>
+                            <input type="file" id="edit_product_img" name="product_img" class="form-control" />
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col mb-3">
                             <label for="editProductName" class="form-label">Product Name</label>
@@ -34,53 +49,5 @@
 </div>
 
 
-<script>
-    function openEditModal(userId) {
-        var editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        editModal.show();
 
-        fetch(`/api/getInventoryData/${userId}`, {
-                method: 'GET',
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token')
-                }
-            })
-            .then((res) => {
-                return res.json();
-            })
-            .then(data => {
-                document.getElementById('editProductName').value = data.product_name || '';
-                document.getElementById('editPrice').value = data.price || '';
-                document.getElementById('editQuantity').value = data.quantity || '';
-            })
-            .catch(error => {
-                console.error('Failed to fetch user information:', error.message);
-            });
-
-        document.getElementById('editFormElement').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-
-            fetch(`/api/updateInventoryData/${userId}`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('token')
-                    }
-                })
-                .then(res => {
-                    return res.json();
-                })
-                .then(data => {
-                    console.log(data);
-                    if (data.status) {
-                        location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Failed to update user information:', error.message);
-                    swal("Oops!", "Failed to update user information", "error");
-                });
-        });
-    }
-</script>
+<script src="{{ asset('assets/js/crud/inventories/edit.js') }}"> </script>
