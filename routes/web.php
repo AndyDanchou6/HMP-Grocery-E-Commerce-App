@@ -16,7 +16,7 @@ use App\Http\Controllers\InventoryController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingPage');
 });
 
 Route::get('/home', [AuthController::class, 'index'])->name('home');
