@@ -17,7 +17,7 @@ use App\Http\Controllers\CategoryController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingPage');
 });
 
 Route::get('/home', [AuthController::class, 'index'])->name('home');
