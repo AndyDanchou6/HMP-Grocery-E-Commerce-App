@@ -1,5 +1,6 @@
-<div class="modal fade" id="editUserModal{{ Auth::user()->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Edit Profile Modal -->
+<div class="modal fade bd-example-modal-lg" id="editUserModal{{ Auth::user()->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalTitle">Edit Profile</h5>
@@ -9,17 +10,35 @@
                 <form action="{{ route('profile.update', Auth::user()->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="mb-3">
-                        <label for="edit_role" class="form-label">Role</label>
-                        <input type="text" id="edit_role" name="role" class="form-control" value="{{ Auth::user()->role }}" disabled />
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="edit_role" class="form-label">Role</label>
+                            <input type="text" id="edit_role" name="role" class="form-control" value="{{ Auth::user()->role }}" disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="editName" class="form-label">Username</label>
+                            <input type="text" id="editName" name="name" class="form-control" value="{{ Auth::user()->name }}" placeholder="Enter Username">
+                        </div>
+                        <div class="col mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" id="editEmail" name="email" class="form-control" value="{{ Auth::user()->email }}" placeholder="Enter Email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="editPhone" class="form-label">Phone</label>
+                            <input type="text" id="editPhone" name="phone" class="form-control" value="{{ Auth::user()->phone }}" placeholder="Enter Phone Number">
+                        </div>
+                        <div class="col mb-3">
+                            <label for="editFbLink" class="form-label">Facebook Link</label>
+                            <input type="text" id="editFbLink" name="fb_link" class="form-control" value="{{ Auth::user()->fb_link }}" placeholder="Enter Facebook Link">
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="editName" class="form-label">Username</label>
-                        <input type="text" id="editName" name="name" class="form-control" value="{{ Auth::user()->name }}" placeholder="Enter Username">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editEmail" class="form-label">Email</label>
-                        <input type="email" id="editEmail" name="email" class="form-control" value="{{ Auth::user()->email }}" placeholder="Enter Email">
+                        <label for="editAddress" class="form-label">Address</label>
+                        <textarea id="editAddress" name="address" class="form-control" rows="3" placeholder="Enter Address">{{ Auth::user()->address }}</textarea>
                     </div>
             </div>
             <div class="modal-footer">

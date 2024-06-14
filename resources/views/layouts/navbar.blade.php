@@ -76,3 +76,4 @@
 @include('profile.edit')
 @include('profile.editUser')
 @include('layouts.modal._logoutModal')
+@include('layouts.sweetalert')

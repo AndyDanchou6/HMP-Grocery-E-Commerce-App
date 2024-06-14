@@ -58,7 +58,7 @@
 
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
 
-
+    @if(Auth::user()->role == 'Admin')
     <li id="tables" class="menu-item">
       <a href="{{ route('users.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-user"></i>
