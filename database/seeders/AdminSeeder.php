@@ -14,11 +14,16 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $avatarPath = 'avatar/cutie_pokie.jpg';
+
         User::factory()->create([
             'role' => 'Admin',
-            'avatar' => asset('products/milky.jpg'),
+            'avatar' => $avatarPath,
             'name' => 'E-Mart',
             'email' => 'e.mart@admin.me',
+            'phone' => 639638753244,
+            'fb_link' => 'https://www.facebook.com/jerryparrocha1234/',
+            'address' => 'Rizal Street, Sogod, Southern, Leyte',
             'password' => Hash::make('12345678'),
             'created_at' => now(),
             'updated_at' => now(),

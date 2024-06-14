@@ -57,6 +57,9 @@ class ProfileController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $id,
                 'name' => 'required',
+                'phone' => 'required',
+                'fb_link' => 'required',
+                'address' => 'required',
                 'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
@@ -66,6 +69,9 @@ class ProfileController extends Controller
 
             $user = User::findOrFail($id);
             $user->name = $request->input('name');
+            $user->phone = $request->input('phone');
+            $user->fb_link = $request->input('fb_link');
+            $user->address = $request->input('address');
             $user->email = $request->input('email');
 
             if ($request->hasFile('avatar')) {
@@ -75,7 +81,7 @@ class ProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back();
+            return redirect()->back()->with('update', 'Profile Updated Successfully');
         } else {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $id,
@@ -89,10 +95,13 @@ class ProfileController extends Controller
             $user = User::findOrFail($id);
             $user->name = $request->input('name');
             $user->email = $request->input('email');
+            $user->fb_link = $request->input('fb_link');
+            $user->address = $request->input('address');
+            $user->phone = $request->input('phone');
 
             $user->save();
 
-            return redirect()->back();
+            return redirect()->back()->with('update', 'Profile Updated Successfully');
         }
     }
 

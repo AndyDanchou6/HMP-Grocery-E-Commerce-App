@@ -1,5 +1,5 @@
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel1">Create New User</h5>
@@ -11,12 +11,7 @@
                     <div class="row mb-3">
                         <label for="role" class="col-sm-2 col-form-label">Role</label>
                         <div class="col-sm-10">
-                            <!-- <select class="form-select" id="role" name="role">
-                                <option selected disabled>Select Role</option>
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                            </select> -->
-                            <input type="text" class="form-control" id="role" name="role">
+                            <input type="text" class="form-control" id="role" name="role" value="Customer" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -43,12 +38,12 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
                         </div>
                     </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="createFormElement" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Create</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
