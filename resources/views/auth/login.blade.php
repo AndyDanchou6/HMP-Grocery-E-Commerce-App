@@ -57,7 +57,7 @@
                                 Don't have an account? Register here</a>
                     </div>
                 </div>
-            </div>s
+            </div>
         </div>
     </div>
 

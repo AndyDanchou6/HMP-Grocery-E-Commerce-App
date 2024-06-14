@@ -24,6 +24,11 @@ class AuthController extends Controller
 
     public function error()
     {
-        return view('layouts.error');
+        return view('layouts.auth.error');
+    }
+
+    public function error404()
+    {
+        return view('layouts.auth.notFound');
     }
 }
