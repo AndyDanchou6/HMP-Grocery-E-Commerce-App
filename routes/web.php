@@ -20,11 +20,6 @@ Route::get('/', function () {
     return view('landingPage');
 });
 
-Route::get('/users/dashboard', function () {
-    return view('users.userDashboard');
-});
-
-Route::get('/home', [AuthController::class, 'index'])->name('home');
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'login')->name('auth.login');
