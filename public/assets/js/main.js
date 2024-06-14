@@ -177,12 +177,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-const token = localStorage.getItem("token");
-
-if (!token) {
-    window.location.href = "/login";
-}
-
 function logout() {
     swal({
         title: "Logout Confirmation",
@@ -192,9 +186,7 @@ function logout() {
         dangerMode: true,
     }).then((logout) => {
         if (logout) {
-            localStorage.removeItem("token");
             window.location.href = "/";
         }
     });
 }
-sessionStorage.setItem("prevUrl", window.location.href);

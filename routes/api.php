@@ -21,20 +21,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', [AdminController::class, 'login']);
+// Route::controller(AdminController::class)->group(function () {
+//     Route::post('/login', 'login');
+//     Route::post('/register', 'register');
+//     Route::get('userAllData', 'getAllData');
+//     Route::get('/getUserData/{id}', 'getData');
+//     Route::post('/updateUserData/{id}', 'update');
+//     Route::delete('/user/{id}', 'destroy');
+//     Route::get('/profile', 'profile')->middleware('auth:sanctum');
+// });
 
-Route::controller(InventoryController::class)->group(function () {
-    Route::post('inventory', 'store');
-    Route::get('inventoryAllData', 'getAllData');
-    Route::get('/getInventoryData/{id}', 'getData');
-    Route::delete('/inventory/{id}', 'destroy');
-    Route::post('/updateInventoryData/{id}', 'update');
-});
+// Route::controller(InventoryController::class)->group(function () {
+//     Route::post('inventory', 'store');
+//     Route::get('inventoryAllData', 'getAllData');
+//     Route::get('/getInventoryData/{id}', 'getData');
+//     Route::delete('/inventory/{id}', 'destroy');
+//     Route::post('/updateInventoryData/{id}', 'update');
+// });
 
-Route::controller(CategoryController::class)->group(function () {
-    Route::post('category', 'store');
-    Route::get('categoryAllData', 'getAllData');
-    Route::get('/getCategoryData/{id}', 'getData');
-    Route::delete('/category/{id}', 'destroy');
-    Route::post('/updateCategoryData/{id}', 'update');
-});
+// Route::controller(CategoryController::class)->group(function () {
+//     Route::post('category', 'store');
+//     Route::get('categoryAllData', 'getAllData');
+//     Route::get('/getCategoryData/{id}', 'getData');
+//     Route::delete('/category/{id}', 'destroy');
+//     Route::post('/updateCategoryData/{id}', 'update');
+// });

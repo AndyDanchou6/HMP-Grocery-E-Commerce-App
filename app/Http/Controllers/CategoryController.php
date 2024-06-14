@@ -9,23 +9,8 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        //
-        return view('categories.index');
-    }
-
-    public function getAllData()
-    {
-        $category = Category::orderBy('created_at', 'asc')->get();
-
-        return response()->json($category);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $categories = Category::all(); // or retrieve data as needed
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -41,26 +26,7 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Added Successfully'
-        ]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $Category)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $Category)
-    {
-        //
+        return redirect()->route('categories.index')->with('success', 'Added successfully');
     }
 
     /**
@@ -76,10 +42,7 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Updated Successfully'
-        ]);
+        return redirect()->route('categories.index')->with('update', 'Updated successfully');
     }
 
     /**
@@ -92,16 +55,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Deleted Successfully'
-        ]);
-    }
-
-    public function getData(string $id)
-    {
-        $user = Category::findOrFail($id);
-
-        return response()->json($user);
+        return redirect()->route('categories.index')->with('error', 'Deleted successfully');
     }
 }
