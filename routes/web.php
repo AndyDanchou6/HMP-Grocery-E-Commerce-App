@@ -6,9 +6,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SelectedItemsController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,14 @@ Route::get('/', function () {
     return view('landingPage');
 })->name('welcome');
 
+Route::get('/test-select', function () {
+    $select = \App\Models\SelectedItems::create([
+        'referenceNo' => 909799,
+        'user_id' => 2,
+        'item_id' => 1
+    ]);
+});
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -34,3 +44,4 @@ Route::resource('categories', CategoryController::class);
 Route::resource('inventories', InventoryController::class);
 Route::resource('users', AdminController::class)->middleware('admin');
 Route::resource('profile', ProfileController::class);
+Route::resource('selectedItems', SelectedItemsController::class);
