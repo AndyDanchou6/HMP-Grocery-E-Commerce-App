@@ -6,6 +6,7 @@ use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
@@ -14,9 +15,13 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::pluck('category_name', 'id');
-        $inventories = Inventory::all();
-        return view('inventories.index', compact('inventories', 'categories'));
+        if (empty(Auth::user()->role)) {
+            return redirect()->route('error404');
+        } else {
+            $categories = Category::pluck('category_name', 'id');
+            $inventories = Inventory::all();
+            return view('inventories.index', compact('inventories', 'categories'));
+        }
     }
 
     /**
