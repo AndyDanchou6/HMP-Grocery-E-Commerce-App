@@ -13,14 +13,29 @@ class InventoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (empty(Auth::user()->role)) {
+        if (Auth::check() && Auth::user()->role == 'Admin') {
+            $inventoryQuery = Inventory::query();
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $inventoryQuery->where('product_name', 'like', '%' . $search . '%')
+                    ->orWhere('price', 'like', '%' . $search . '%')
+                    ->orWhere('quantity', 'like', '%' . $search . '%');
+
+                $inventoryQuery->orWhereHas('category', function ($query) use ($search) {
+                    $query->where('category_name', 'like', '%' . $search . '%');
+                });
+            }
+
+            $categories = Category::pluck('category_name', 'id');
+            $inventories = $inventoryQuery->paginate(10);
+            return view('inventories.index', compact('inventories', 'categories'));
+        } elseif (Auth::check()) {
             return redirect()->route('error404');
         } else {
-            $categories = Category::pluck('category_name', 'id');
-            $inventories = Inventory::all();
-            return view('inventories.index', compact('inventories', 'categories'));
+            return redirect()->route('error404');
         }
     }
 
@@ -63,7 +78,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('success', 'Product created successfully.');
+        return redirect()->route('inventories.index')->with('success', 'Created successfully.');
     }
 
     /**
@@ -112,7 +127,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('inventories.index')->with('success', 'Updated successfully.');
     }
 
     /**
@@ -123,6 +138,6 @@ class InventoryController extends Controller
         $item = Inventory::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('inventories.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('inventories.index')->with('success', 'Deleted successfully.');
     }
 }

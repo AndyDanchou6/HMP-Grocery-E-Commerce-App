@@ -8,13 +8,23 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (empty(Auth::user()->role)) {
+        if (Auth::check() && Auth::user()->role == 'Admin') {
+            $categoryQuery = Category::query();
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $categoryQuery->where('category_name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            }
+
+            $categories = $categoryQuery->paginate(10);
+            return view('categories.index', compact('categories'));
+        } elseif (Auth::check()) {
             return redirect()->route('error404');
         } else {
-            $categories = Category::all(); // or retrieve data as needed
-            return view('categories.index', compact('categories'));
+            return redirect()->route('error404');
         }
     }
 
