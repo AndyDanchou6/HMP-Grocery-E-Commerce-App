@@ -79,5 +79,10 @@
         <div data-i18n="Tables">Category</div>
       </a>
     </li>
-    @endif
+    <li id="tables" class="menu-item">
+      <a href="{{ route('selectedItems.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-list-ul "></i>
+        <div data-i18n="Tables">Selected Items</div>
+      </a>
+    </li>
 </aside>

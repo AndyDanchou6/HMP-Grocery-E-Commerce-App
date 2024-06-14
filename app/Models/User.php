@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Inventory;
 
 class User extends Authenticatable
 {
@@ -44,4 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function items()
+    {
+        return $this->belongsToMany(Inventory::class, 'selected_items', 'user_id', 'item_id');
+    }
 }
