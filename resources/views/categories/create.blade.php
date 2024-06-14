@@ -6,7 +6,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="POST" id="createFormElement">
+        <form action="{{ route('categories.store') }}" method="POST" id="createFormElement">
+          @csrf
           <div class="row">
             <div class="col mb-3">
               <label for="category_name" class="form-label">Category Name</label>
@@ -30,4 +31,3 @@
     </div>
   </div>
 </div>
-<script src="{{ asset('assets/js/crud/categories/create.js') }}"> </script>

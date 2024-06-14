@@ -1,5 +1,4 @@
-<!-- Edit Product Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editModal{{ $inventory->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,35 +6,41 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editFormElement">
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label for="category_id" class="form-label">Category</label>
+                <form action="{{ route('inventories.update', $inventory->id) }}" method="POST" enctype="multipart/form-data" id="editFormElement">
+                    @csrf
+                    @method('PUT')
+                    <div class="row mb-3">
+                        <label for="edit_category_id" class="col-sm-3 col-form-label">Category</label>
+                        <div class="col-sm-9">
                             <select class="form-select" name="category_id" id="edit_category_id">
-                                <!-- Options will be dynamically added here -->
+                                @foreach($categories as $id => $category_name)
+                                <option value="{{ $id }}" {{ $inventory->category_id == $id ? 'selected' : '' }}>{{ $category_name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label for="product_img" class="form-label">Avatar</label>
+                    <div class="row mb-3">
+                        <label for="edit_product_img" class="col-sm-3 col-form-label">Avatar</label>
+                        <div class="col-sm-9">
                             <input type="file" id="edit_product_img" name="product_img" class="form-control" />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label for="editProductName" class="form-label">Product Name</label>
-                            <input type="text" name="product_name" id="editProductName" class="form-control" placeholder="Enter Product Name">
+                    <div class="row mb-3">
+                        <label for="editProductName" class="col-sm-3 col-form-label">Product Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="product_name" id="editProductName" class="form-control" placeholder="Enter Product Name" value="{{ $inventory->product_name }}">
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="editPrice" class="form-label">Price</label>
-                            <input type="number" name="price" id="editPrice" class="form-control" placeholder="Enter Price">
+                    <div class="row mb-3">
+                        <label for="editPrice" class="col-sm-3 col-form-label">Price</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="price" id="editPrice" class="form-control" placeholder="Enter Price" value="{{ $inventory->price }}">
                         </div>
-                        <div class="col mb-0">
-                            <label for="editQuantity" class="form-label">Quantity</label>
-                            <input type="number" name="quantity" id="editQuantity" class="form-control" placeholder="Enter Quantity">
+                    </div>
+                    <div class="row mb-3">
+                        <label for="editQuantity" class="col-sm-3 col-form-label">Quantity</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="quantity" id="editQuantity" class="form-control" placeholder="Enter Quantity" value="{{ $inventory->quantity }}">
                         </div>
                     </div>
             </div>
@@ -47,7 +52,3 @@
         </div>
     </div>
 </div>
-
-
-
-<script src="{{ asset('assets/js/crud/inventories/edit.js') }}"> </script>
