@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'login')->name('auth.login');
     Route::get('/home', 'index')->name('home');
 });
+
+Auth::routes();
 
 Route::get('/inventory', [InventoryController::class, 'index'])->name('inventories.index');
 Route::get('/category', [CategoryController::class, 'index'])->name('categories.index');
