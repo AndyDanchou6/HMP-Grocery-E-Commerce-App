@@ -1,9 +1,11 @@
 * {
-    overflow: hidden;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     border: none;
+    text-decoration: none;
+    list-style: none;
+    scroll-behavior: smooth;
 }
 
 :root {
@@ -13,6 +15,28 @@
     --secondary-color: #00cc99;
     --dark-color: #000000;
     --white-color: #ffffff;
+}
+
+.logo-font {
+    font-family: "Racing Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.formal-font {
+    font-family: "Noto Serif", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+.casual-font {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
 }
 
 .color-white {
@@ -25,6 +49,10 @@
 
 .color-secondary {
     color: var(--secondary-color);
+}
+
+.color-main {
+    color: var(--main-color);
 }
 
 .bg-main {
@@ -47,127 +75,246 @@
     background-color: var(--white-color);
 }
 
-/* Page Layout */
-.page-container {
+.row {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+    flex-direction: row;
 }
 
-/* Header */
-
-header {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 150px;
-}
-
-header .brand-name {
-    width: 200px;
-    text-align: center;
-    font-size: 32px;
-}
-
-header .search-bar {
-    flex-grow: 1;
-    border-radius: 10px;
-    height: 35px;
-}
-
-header .search-bar form {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-header .search-bar form .search-icon {
-    width: 50px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-header .search-bar form input {
-    flex-grow: 1;
-    height: 35px;
-}
-
-header .search-bar form input:focus {
-    outline: none;
-}
-
-header .search-bar form button {
-    width: 80px;
-    height: 35px;
-    border-radius: 10px;
-}
-
-header .shopping-cart {
-    width: 100px;
-    text-align: center;
-}
-
-header .shopping-cart i {
-    font-size: 24px;
-}
-
-/* Main */
-
-main {
-    flex-grow: 1;
-    width: 100%;
-    overflow-y: auto;
-}
-
-.content-wrapper {
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    margin: 20px auto 50px;
-    align-items: center;
+.space-evenly {
     justify-content: space-evenly;
 }
 
-section {
-    width: 98%;
-    height: 280px;
-    background-color: var(--white-color);
-    box-shadow: 0 0 10px #979797;
-    border-radius: 10px;
-    margin-bottom: 20px;
+.column {
+    display: flex;
+    flex-direction: column;
 }
 
-.banner {
-    height: 380px;
+#header {
+    position: fixed;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: var(--main-color);
+    color: var(--white-color);
+    z-index: 1000;
+    transition: top 0.3s;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: transparent;
-    box-shadow: none;
+    justify-content: flex-end;
 }
 
-.banner div {
+#header .brand-header {
+    position: absolute;
+    top: 50%;
+    left: 80px;
+    transform: translate(-50%, -50%);
+}
+
+#header .brand-header p {
+    font-size: 26px;
+}
+
+#header nav ul {
+    display: flex;
+    list-style: none;
+}
+
+#header nav ul li {
+    margin-right: 50px;
+    font-size: 18px;
+}
+
+#header nav ul li a {
+    color: var(--white-color);
+}
+
+#header nav ul li a:hover {
+    color: var(--secondary-color);
+}
+
+section {
+    position: relative;
+    height: 100vh;
+}
+
+section .logo-wrap {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.logo-wrap .brand-logo {
+    font-size: 72px;
+    text-shadow: var(--dark-color);
+}
+
+.logo-wrap .tagline {
+    font-style: italic;
+    font-weight: 400;
+    width: 260px;
+}
+
+section .footer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#login-page {
+    background-image: url("../../temporary_img/cart-green&blue.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+#login-page div {
+    position: absolute;
+    top: 43%;
+    left: 70px;
+}
+
+#login-page p {
+    font-size: 36px;
+}
+
+#login-page div form {
+    width: 420px;
+    height: 40px;
+    display: flex;
+    background-color: var(--white-color);
+    border-radius: 20px;
+    margin-top: 30px;
+    align-items: center;
+}
+
+#login-page div form input {
     height: 100%;
-    background-color: var(--gray-color);
+    margin-left: 30px;
+    flex-grow: 1;
+    border-radius: 20px;
+}
+
+#login-page div form input:focus {
+    outline: none;
+}
+
+#login-page div form button {
+    height: 85%;
+    width: 80px;
+    margin-right: 5px;
+    border-radius: 20px;
+    background-color: var(--main-color);
+    font-weight: 400;
+}
+
+section .section-header {
+    height: 80px;
+    width: 250px;
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+}
+
+section .section-header p {
+    font-size: 32px;
+    font-weight: 300;
+}
+
+section .content-wrapper {
+    width: 100%;
+    height: 500px;
+    position: absolute;
+    top: 160px;
+    left: 0;
+    justify-content: space-evenly;
+}
+
+section .content-wrapper .contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 40%;
+    margin: 0 50px;
+    overflow-y: auto;
+}
+
+#about .contents .header {
+    margin: 20px 0;
+}
+
+#about .contents .header p {
+    font-size: 24px;
+}
+
+#about .intro p {
+    text-align: justify;
+}
+
+#contact .content-wrapper .contact-info {
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+#contact .content-wrapper .contact-info div i {
+    display: block;
+    margin: 10px 20px;
+    font-size: 18px;
+    color: var(--main-color);
+}
+
+#contact .content-wrapper .contact-info .map {
+    flex-grow: 1;
+    width: 100%;
+    background-image: url("../../temporary_img/adddress-map.png");
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
+    margin-top: 20px;
+    box-shadow: 0 0 5px rgb(139, 139, 139);
+}
+
+#contact .content-wrapper .contact-info p {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#contact .content-wrapper .inquiries input {
+    height: 40px;
+    margin: 20px 10px 0;
+    border-radius: 10px;
+    text-indent: 10px;
+}
+
+#contact .content-wrapper .inquiries #message {
+    height: 280px;
+    margin: 20px 10px 0;
+    border-radius: 10px;
+    text-indent: 10px;
+}
+
+#contact .content-wrapper .inquiries #message::placeholder {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+#contact .content-wrapper .inquiries button {
+    margin: 20px 10px;
+    height: 40px;
     border-radius: 10px;
 }
 
-.banner div img {
-    width: 100%;
-    height: 100%;
-}
-
-.banner .big-banner {
-    width: 74.75%;
-}
-
-.banner .small-banner {
-    width: 24.75%;
-}
-
-.categories {
-    height: 180px;
-}
+/* @media screen and (max-width: 970px) {
+    section .content-wrapper {
+        height: 200%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+} */
