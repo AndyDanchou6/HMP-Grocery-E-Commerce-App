@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-
+@include('layouts.sweetalert')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
@@ -23,16 +23,42 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
-                    <!-- Table rows will be populated here -->
+                    @if($inventories->count() > 0)
+                    @foreach ($inventories as $inventory)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $inventory->category->category_name }}</td>
+                        <td>
+                            <img src="{{ asset('storage/' . $inventory->product_img) }}" style="width: 35px; height: 35px;" alt="Product Image" class="rounded-circle">
+                        </td>
+                        <td>{{ $inventory->product_name }}</td>
+                        <td>{{ $inventory->price }}</td>
+                        <td>{{ $inventory->quantity }}</td>
+                        @if(Auth::user()->role == 'Admin')
+                        <td>
+                            <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$inventory->id}}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            @include('inventories.edit')
+                            <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$inventory->id}}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            @include('inventories.delete')
+                        </td>
+                        @endif
+                    </tr>
+                    @endforeach
+                    @else
+                    <tr>
+                        <td colspan="7" class="text-center">No Products found.</td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<script src="{{ asset('assets/js/crud/inventories/index.js') }}"> </script>
-
 @include('inventories.create')
-@include('inventories.edit')
 
 @endsection

@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
+use App\Models\Category;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +25,11 @@ Route::get('/', function () {
     return view('landingPage');
 });
 
-
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'login')->name('auth.login');
-    Route::get('/home', 'index')->name('home');
-});
-
 Auth::routes();
 
-Route::get('/inventory', [InventoryController::class, 'index'])->name('inventories.index');
-Route::get('/category', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/error', [AuthController::class, 'error'])->name('error');
+Route::resource('categories', CategoryController::class);
+Route::resource('inventories', InventoryController::class);
+Route::resource('users', AdminController::class)->middleware('admin');
+Route::resource('profile', ProfileController::class);

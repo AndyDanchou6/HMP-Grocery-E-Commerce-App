@@ -15,8 +15,10 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'j.parrocha@gmail.com',
+            'role' => 'Admin',
+            'avatar' => asset('products/milky.jpg'),
+            'name' => 'E-Mart',
+            'email' => 'e.mart@admin.me',
             'password' => Hash::make('12345678'),
             'created_at' => now(),
             'updated_at' => now(),

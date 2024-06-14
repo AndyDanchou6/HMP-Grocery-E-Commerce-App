@@ -1,14 +1,14 @@
-<div class="modal fade" id="messages" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="messages{{$category->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="categoryTitle"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="categoryTitle">{{ $category->category_name }}</h5>
+                <button type=" button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="col mb-0">
                     <label for="message" class="form-label">Description</label>
-                    <textarea id="message" name="description" class="form-control" placeholder="Enter Description"></textarea>
+                    <textarea id="message" name="description" class="form-control" placeholder="Enter Description">{{ $category->description }}</textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -18,4 +18,4 @@
     </div>
 </div>
 </div>
-<script src="{{ asset('assets/js/crud/categories/message.js') }}"> </script>
+</script>

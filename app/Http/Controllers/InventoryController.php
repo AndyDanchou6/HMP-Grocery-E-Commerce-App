@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Category;
 
 class InventoryController extends Controller
 {
@@ -13,15 +14,9 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        //
-        return view('inventories.index');
-    }
-
-    public function getAllData()
-    {
-        $items = Inventory::with('category:id,category_name')->orderBy('created_at', 'asc')->get();
-
-        return response()->json($items);
+        $categories = Category::pluck('category_name', 'id');
+        $inventories = Inventory::all();
+        return view('inventories.index', compact('inventories', 'categories'));
     }
 
     /**
@@ -42,35 +37,30 @@ class InventoryController extends Controller
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
+            'product_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Adjust file type and size as per your needs
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 400);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $items = new Inventory();
+        $item = new Inventory();
 
-        $items->product_name = $request->input('product_name');
-        $items->price = $request->input('price');
-        $items->quantity = $request->input('quantity');
-        $items->category_id = $request->input('category_id');
+        $item->product_name = $request->input('product_name');
+        $item->price = $request->input('price');
+        $item->quantity = $request->input('quantity');
+        $item->category_id = $request->input('category_id');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
-            $items->product_img = $avatarPath;
+            $item->product_img = $avatarPath;
         }
 
-        $items->save();
+        $item->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Added Successfully',
-        ]);
+        return redirect()->route('inventories.index')->with('success', 'Product created successfully.');
     }
+
     /**
      * Display the specified resource.
      */
@@ -92,7 +82,6 @@ class InventoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // 
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
@@ -101,31 +90,24 @@ class InventoryController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 400);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $items = Inventory::findOrFail($id);
+        $item = Inventory::findOrFail($id);
 
-        $items->product_name = $request->input('product_name');
-        $items->price = $request->input('price');
-        $items->quantity = $request->input('quantity');
-        $items->category_id = $request->input('category_id');
+        $item->product_name = $request->input('product_name');
+        $item->price = $request->input('price');
+        $item->quantity = $request->input('quantity');
+        $item->category_id = $request->input('category_id');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
-            $items->product_img = $avatarPath;
+            $item->product_img = $avatarPath;
         }
 
-        $items->save();
+        $item->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Updated Successfully'
-        ]);
+        return redirect()->route('inventories.index')->with('success', 'Product updated successfully.');
     }
 
     /**
@@ -133,21 +115,9 @@ class InventoryController extends Controller
      */
     public function destroy(string $id)
     {
-        // 
-        $items = Inventory::findOrFail($id);
+        $item = Inventory::findOrFail($id);
+        $item->delete();
 
-        $items->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Deleted Successfully'
-        ]);
-    }
-
-    public function getData(string $id)
-    {
-        $user = Inventory::findOrFail($id);
-
-        return response()->json($user);
+        return redirect()->route('inventories.index')->with('success', 'Product deleted successfully.');
     }
 }
