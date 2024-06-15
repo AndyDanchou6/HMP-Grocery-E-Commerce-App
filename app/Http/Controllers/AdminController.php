@@ -96,7 +96,7 @@ class AdminController extends Controller
                     ->orWhere('address', 'like', '%' . $search . '%');
             }
 
-            $users = $usersQuery->paginate(10); // Adjust the number per page as needed
+            $users = $usersQuery->paginate(10);
 
             return view('users.index', compact('users'));
         } elseif (Auth::check()) {

@@ -57,7 +57,7 @@ class InventoryController extends Controller
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
-            'product_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Adjust file type and size as per your needs
+            'product_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($validator->fails()) {

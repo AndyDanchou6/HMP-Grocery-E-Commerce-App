@@ -24,6 +24,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Category Name</th>
                         <th>Description</th>
                         @if(Auth::user()->role == 'Admin')
@@ -36,17 +37,22 @@
                     @foreach ($categories as $category)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
+                        <td>
+                            @if($category->category_img)
+                            <img src="{{ asset('storage/' . $category->category_img) }}" id="user_avatar_modal" alt="User Avatar" style="width: 45px; height: 45px" class="w-px-40 h-auto rounded-circle" />
+                            @else
+                            <img src="{{ asset('assets/img/user.png') }}" id="user_avatar_modal" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
+                            @endif
+                        </td>
                         <td>{{ $category->category_name }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$category->id}}">
-                                <i class=" bi bi-pencil"></i>
                             </a>
                             @include('categories.modal.description')
                         </td>
                         @if(Auth::user()->role == 'Admin')
                         <td>
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$category->id}}">
-                                <i class=" bi bi-pencil"></i>
                             </a>
                             @include('categories.modal.edit')
                             <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$category->id}}">

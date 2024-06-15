@@ -6,8 +6,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{{ route('categories.store') }}" method="POST" id="createFormElement">
+        <form action="{{ route('categories.store') }}" method="POST" id="createFormElement" enctype="multipart/form-data">
           @csrf
+          <div class="mb-3">
+            <label for="category_img" class="form-label">Image</label>
+            <input type="file" id="category_img" name="category_img" class="form-control" placeholder="Enter Category Image">
+          </div>
           <div class="mb-3">
             <label for="category_name" class="form-label">Category Name</label>
             <input type="text" id="category_name" name="category_name" class="form-control" placeholder="Enter Category Name">

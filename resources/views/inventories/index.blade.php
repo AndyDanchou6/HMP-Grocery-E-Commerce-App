@@ -57,7 +57,6 @@
                         @if(Auth::user()->role == 'Admin')
                         <td>
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$inventory->id}}">
-                                <i class="bi bi-pencil"></i>
                             </a>
                             @include('inventories.modal.edit')
                             <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$inventory->id}}">

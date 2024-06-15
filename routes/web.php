@@ -7,6 +7,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectedItemsController;
+use App\Http\Controllers\shopController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,10 +39,20 @@ Route::get('/test-select', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/error', [AuthController::class, 'error'])->name('error');
+
 Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
+
 Route::resource('categories', CategoryController::class);
+
 Route::resource('inventories', InventoryController::class);
+
 Route::resource('users', AdminController::class)->middleware('admin');
+
 Route::resource('profile', ProfileController::class);
+
 Route::resource('selectedItems', SelectedItemsController::class);
+
+Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
+Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');

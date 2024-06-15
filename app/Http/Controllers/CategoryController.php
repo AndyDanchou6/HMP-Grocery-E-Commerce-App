@@ -39,6 +39,11 @@ class CategoryController extends Controller
         $category->category_name = $request->input('category_name');
         $category->description = $request->input('description');
 
+        if ($request->hasFile('category_img')) {
+            $avatarPath = $request->file('category_img')->store('products', 'public');
+            $category->category_img = $avatarPath;
+        }
+
         $category->save();
 
         return redirect()->route('categories.index')->with('success', 'Added successfully');
@@ -54,6 +59,11 @@ class CategoryController extends Controller
 
         $category->category_name = $request->input('category_name');
         $category->description = $request->input('description');
+
+        if ($request->hasFile('category_img')) {
+            $avatarPath = $request->file('category_img')->store('products', 'public');
+            $category->category_img = $avatarPath;
+        }
 
         $category->save();
 

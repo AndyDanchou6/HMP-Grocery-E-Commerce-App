@@ -11,6 +11,12 @@
                     @method('PUT')
                     <div class="row">
                         <div class="col mb-3">
+                            <label for="editCategory" class="form-label">Image</label>
+                            <input type="file" name="category_img" id="editCategory" class="form-control" value="{{ $category->category_name }}" placeholder="Enter Category">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
                             <label for="editCategory" class="form-label">Category Name</label>
                             <input type="text" name="category_name" id="editCategory" class="form-control" value="{{ $category->category_name }}" placeholder="Enter Category">
                         </div>
