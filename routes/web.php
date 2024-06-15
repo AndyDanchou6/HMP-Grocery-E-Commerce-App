@@ -29,9 +29,10 @@ Route::get('/', function () {
 
 Route::get('/test-select', function () {
     $select = \App\Models\SelectedItems::create([
-        'referenceNo' => 909799,
-        'user_id' => 2,
-        'item_id' => 1
+        'referenceNo' => 111111,
+        'user_id' => 1,
+        'item_id' => 3,
+        'status' => 'purchased'
     ]);
 });
 
