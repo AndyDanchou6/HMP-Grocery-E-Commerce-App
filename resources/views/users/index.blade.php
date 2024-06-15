@@ -53,13 +53,11 @@
                         <td>{{ $user->email }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user->id}}">
-                                <i class=" bi bi-pencil"></i>
                             </a>
                             @include('users.modal.moreInfo')
                         </td>
                         <td>
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$user->id}}">
-                                <i class=" bi bi-pencil"></i>
                             </a>
                             @include('users.modal.edit')
                             <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$user->id}}">

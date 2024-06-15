@@ -43,6 +43,7 @@
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
       <i class="bx bx-chevron-left bx-sm align-middle"></i>
     </a>
+
   </div>
 
   <div class="menu-inner-shadow"></div>
@@ -83,6 +84,13 @@
       <a href="{{ route('selectedItems.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-list-ul "></i>
         <div data-i18n="Tables">Selected Items</div>
+      </a>
+    </li>
+    @endif
+    <li id="tables" class="menu-item">
+      <a href="{{ route('shop.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-shop"></i>
+        <div data-i18n="Tables">Shop</div>
       </a>
     </li>
 </aside>
