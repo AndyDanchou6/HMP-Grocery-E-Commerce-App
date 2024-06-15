@@ -85,5 +85,11 @@
         <div data-i18n="Tables">Purchases</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('shop.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-shop"></i>
+        <div data-i18n="Tables">Shop</div>
+      </a>
+    </li>
     @endif
 </aside>
