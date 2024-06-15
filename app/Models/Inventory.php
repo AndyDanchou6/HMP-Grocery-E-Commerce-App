@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
+use App\Models\SelectedItems;
 
 class Inventory extends Model
 {
@@ -23,8 +23,10 @@ class Inventory extends Model
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
-    public function users()
+    public function selectingUsers()
     {
-        return $this->belongsToMany(User::class, 'selected_items', 'user_id', 'item_id');
+        return $this->belongsToMany(User::class, 'selected_items', 'item_id', 'user_id')
+            ->withPivot('referenceNo')
+            ->withTimestamps();
     }
 }

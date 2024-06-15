@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('referenceNo');
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('user_id');
+            $table->string('status')->default('onCart');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('inventories')->onDelete('cascade');

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Inventory;
+use App\Models\SelectedItems;
 
 class User extends Authenticatable
 {
@@ -46,8 +46,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function items()
+    public function selectedItems()
     {
-        return $this->belongsToMany(Inventory::class, 'selected_items', 'user_id', 'item_id');
+        return $this->belongsToMany(Inventory::class, 'selected_items', 'user_id', 'item_id')
+            ->withPivot('referenceNo')
+            ->withTimestamps();
     }
 }
