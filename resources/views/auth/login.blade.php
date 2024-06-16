@@ -60,7 +60,15 @@
             </div>
         </div>
     </div>
+<script>
+    if (sessionStorage.getItem('loginEmail')) {
+        var loginEmail = sessionStorage.getItem('loginEmail')
+        var emailInput = document.querySelector('#email');
 
+        emailInput.value = sessionStorage.getItem('loginEmail');
+        emailInput.setAttribute('placeholder', sessionStorage.getItem('loginEmail'));
+    }
+</script>
 </body>
 
 </html>
