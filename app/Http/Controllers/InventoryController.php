@@ -30,7 +30,8 @@ class InventoryController extends Controller
             }
 
             $categories = Category::pluck('category_name', 'id');
-            $inventories = $inventoryQuery->paginate(10);
+            $inventories = $inventoryQuery->paginate(4);
+
             return view('inventories.index', compact('inventories', 'categories'));
         } elseif (Auth::check()) {
             return redirect()->route('error404');
@@ -56,6 +57,8 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
+            'information' => 'required',
+            'description' => 'required',
             'category_id' => 'required|exists:categories,id',
             'product_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -70,6 +73,8 @@ class InventoryController extends Controller
         $item->price = $request->input('price');
         $item->quantity = $request->input('quantity');
         $item->category_id = $request->input('category_id');
+        $item->information = $request->input('information');
+        $item->description = $request->input('description');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
@@ -106,6 +111,8 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
+            'information' => 'required|string|max:1000',
+            'description' => 'required|string|max:1000',
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -117,8 +124,8 @@ class InventoryController extends Controller
 
         $item->product_name = $request->input('product_name');
         $item->price = $request->input('price');
-        $item->quantity = $request->input('quantity');
-        $item->category_id = $request->input('category_id');
+        $item->information = $request->input('information');
+        $item->description = $request->input('description');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
@@ -127,7 +134,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('success', 'Updated successfully.');
+        return redirect()->route('inventories.index')->with('update', 'Updated successfully.');
     }
 
     /**
@@ -138,6 +145,6 @@ class InventoryController extends Controller
         $item = Inventory::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('inventories.index')->with('success', 'Deleted successfully.');
+        return redirect()->route('inventories.index')->with('error', 'Deleted successfully.');
     }
 }

@@ -1,5 +1,5 @@
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel1">Create New Product</h5>
@@ -41,6 +41,18 @@
             <label for="quantity" class="col-sm-3 col-form-label">Quantity</label>
             <div class="col-sm-9">
               <input type="number" class="form-control" id="quantity" name="quantity">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="information" class="col-sm-3 col-form-label">Information</label>
+            <div class="col-sm-9">
+              <textarea maxlength="1000" id="information" name="information" class="form-control" placeholder="Enter Information"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="description" class="col-sm-3 col-form-label">Description</label>
+            <div class="col-sm-9">
+              <textarea maxlength="1000" id="description" name="description" class="form-control" placeholder="Enter Information"></textarea>
             </div>
           </div>
       </div>

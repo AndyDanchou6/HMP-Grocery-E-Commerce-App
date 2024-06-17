@@ -1,0 +1,23 @@
+.rating {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rating input[type="radio"] {
+    display: none;
+}
+
+.rating label {
+    color: #ddd;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.rating label:before {
+    content: "\2605";
+}
+
+.rating input[type="radio"]:checked ~ label {
+    color: gold; /* Color of selected stars */
+}

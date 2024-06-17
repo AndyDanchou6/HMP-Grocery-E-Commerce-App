@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\shopController;
 use App\Models\Category;
@@ -55,5 +56,8 @@ Route::resource('profile', ProfileController::class);
 
 Route::resource('selectedItems', SelectedItemsController::class);
 
+Route::resource('reviews', ReviewController::class);
+
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
+Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');

@@ -44,9 +44,9 @@
                         </td>
                         <td>
                             @if($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" id="user_avatar_modal" alt="User Avatar" style="width: 45px; height: 45px" class="w-px-40 h-auto rounded-circle" />
+                            <img src="{{ asset('storage/' . $user->avatar) }}" style="width: 45px; height: 45px" alt="User Avatar" class="rounded-circle">
                             @else
-                            <img src="{{ asset('assets/img/user.png') }}" id="user_avatar_modal" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
+                            <img src="{{ asset('assets/img/user.png') }}" style="width: 45px; height: 45px" alt="Default Avatar" class="rounded-circle">
                             @endif
                         </td>
                         <td>{{ $user->name }}</td>
@@ -74,6 +74,9 @@
                     @endif
                 </tbody>
             </table>
+
+            <!-- Pagination and Results Display -->
+            @include('users.pagination')
         </div>
     </div>
 </div>

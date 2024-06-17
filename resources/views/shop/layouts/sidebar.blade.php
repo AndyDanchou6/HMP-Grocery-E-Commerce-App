@@ -9,7 +9,11 @@
                     </div>
                     <ul>
                         @foreach($category as $item)
-                        <li><a href="#">{{ $item->category_name }}</a></li>
+                        <li>
+                            <a href="{{ route('shop.products', ['category' => $item->id]) }}" data-category-id="{{ $item->id }}">
+                                {{ $item->category_name }}
+                            </a>
+                        </li>
                         @endforeach
                     </ul>
                 </div>

@@ -19,7 +19,7 @@ class CategoryController extends Controller
                     ->orWhere('description', 'like', '%' . $search . '%');
             }
 
-            $categories = $categoryQuery->paginate(10);
+            $categories = $categoryQuery->paginate(4);
             return view('categories.index', compact('categories'));
         } elseif (Auth::check()) {
             return redirect()->route('error404');

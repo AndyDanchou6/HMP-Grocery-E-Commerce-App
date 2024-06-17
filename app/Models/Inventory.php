@@ -14,6 +14,8 @@ class Inventory extends Model
         'category_id',
         'product_name',
         'product_img',
+        'information',
+        'description',
         'price',
         'quantity'
     ];
@@ -28,5 +30,10 @@ class Inventory extends Model
         return $this->belongsToMany(User::class, 'selected_items', 'item_id', 'user_id')
             ->withPivot('referenceNo')
             ->withTimestamps();
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

@@ -3540,3 +3540,19 @@ ol {
     background-color: #696cff;
     color: white;
 }
+
+.featured__item {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    opacity: 1;
+    transform: scale(1);
+    position: relative;
+}
+
+.featured__filter {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.mix-categories[style*="opacity: 0"] {
+    pointer-events: none;
+}

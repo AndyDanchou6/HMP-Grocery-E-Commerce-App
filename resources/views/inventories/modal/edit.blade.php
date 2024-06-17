@@ -1,5 +1,5 @@
 <div class="modal fade" id="editModal{{ $inventory->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalTitle">Edit Product</h5>
@@ -41,6 +41,18 @@
                         <label for="editQuantity" class="col-sm-3 col-form-label">Quantity</label>
                         <div class="col-sm-9">
                             <input type="number" name="quantity" id="editQuantity" class="form-control" placeholder="Enter Quantity" value="{{ $inventory->quantity }}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="information" class="col-sm-3 col-form-label">Information</label>
+                        <div class="col-sm-9">
+                            <textarea name="information" id="editDescription" class="form-control" placeholder="Enter Description">{{ $inventory->information }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <textarea name="description" id="editDescription" class="form-control" placeholder="Enter Description">{{ $inventory->description }}</textarea>
                         </div>
                     </div>
             </div>

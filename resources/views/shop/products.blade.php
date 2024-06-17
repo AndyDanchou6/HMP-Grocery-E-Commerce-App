@@ -8,7 +8,7 @@
                 <div class="breadcrumb__text">
                     <h2>e-Mart Grocery</h2>
                     <div class="breadcrumb__option">
-                        <a href="{{ url('/') }}">Home</a>
+                        <a href="{{ route('shop.index') }}">Home</a>
                         <span>Shop</span>
                     </div>
                 </div>
@@ -24,6 +24,11 @@
                     <div class="sidebar__item">
                         <h4>Department</h4>
                         <ul class="sidebar__list">
+                            <li>
+                                <a href="{{ route('shop.products') }}" class="category-link {{ request('category') ? '' : 'active' }}" data-category-id="">
+                                    All
+                                </a>
+                            </li>
                             @foreach($category as $item)
                             <li>
                                 <a href="{{ route('shop.products', ['category' => $item->id]) }}" class="category-link {{ request('category') == $item->id ? 'active' : '' }}" data-category-id="{{ $item->id }}">
@@ -49,7 +54,15 @@
                         </div>
                         <div class="col-lg-4 col-md-4">
                             <div class="filter__found">
+                                @if($inventory->count() > 0)
+                                @if(request('category'))
                                 <h6>Showing <span>{{ $inventory->count() }} of {{ $inventory->total() }}</span> results</h6>
+                                @else
+                                <h6>All {{ $inventory->total() }} products found</h6>
+                                @endif
+                                @else
+                                <h6>No products found</h6>
+                                @endif
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-3">
@@ -68,7 +81,7 @@
                                 <img src="{{ asset('storage/' . $item->product_img) }}" alt="item">
                                 <ul class="product__item__pic__hover">
                                     <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-retweet" style="color: #696cff;"></i></a></li>
+                                    <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
                                     <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li>
                                 </ul>
                             </div>
