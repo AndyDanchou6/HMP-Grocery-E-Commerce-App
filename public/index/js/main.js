@@ -296,3 +296,55 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const categoryButtons = document.querySelectorAll(".category-filter-btn");
+    const productItems = document.querySelectorAll(".mix-categories");
+
+    categoryButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const filter = this.getAttribute("data-filter");
+            const filterId = this.getAttribute("data-filter-id");
+            filterProducts(filter, filterId);
+            updateActiveButton(this);
+        });
+    });
+
+    function filterProducts(filter, filterId) {
+        productItems.forEach((item) => {
+            const itemCategory =
+                item.getAttribute("data-category-id") == filterId ||
+                filter === "*";
+            const itemFilter =
+                item.getAttribute("data-filter") === filter || filter === "*";
+            const isVisible = itemCategory && itemFilter;
+
+            if (isVisible) {
+                item.style.opacity = "1";
+                item.style.transform = "scale(1)";
+                item.style.display = "block";
+            } else {
+                item.style.opacity = "0";
+                item.style.transform = "scale(0.9)";
+                item.style.display = "none"; // Adjust display to maintain layout flow
+            }
+        });
+
+        // Reorder items based on visibility
+        const visibleItems = Array.from(productItems).filter(
+            (item) => item.style.opacity === "1"
+        );
+        visibleItems.forEach((item, index) => {
+            item.style.order = index + 1;
+        });
+    }
+
+    function updateActiveButton(activeButton) {
+        categoryButtons.forEach((button) => button.classList.remove("active"));
+        activeButton.classList.add("active");
+    }
+});
+
+function maintenance() {
+    alert("UNDER MAINTENANCE, sorry :{");
+}

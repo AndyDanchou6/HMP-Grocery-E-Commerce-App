@@ -93,4 +93,10 @@
         <div data-i18n="Tables">Shop</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('reviews.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-chat-left"></i>
+        <div data-i18n=" Tables">Reviews</div>
+      </a>
+    </li>
 </aside>

@@ -2,6 +2,7 @@
 
 @section('content')
 @include('layouts.sweetalert')
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
@@ -30,6 +31,7 @@
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Status</th>
+                        <th>More Info</th>
                         @if(Auth::user()->role == 'Admin')
                         <th>Actions</th>
                         @endif
@@ -54,6 +56,11 @@
                             <span class="badge bg-label-danger me-1">Out of stock</span>
                             @endif
                         </td>
+                        <td>
+                            <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$inventory->id}}">
+                            </a>
+                            @include('inventories.modal.information')
+                        </td>
                         @if(Auth::user()->role == 'Admin')
                         <td>
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$inventory->id}}">
@@ -69,11 +76,12 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No Products found.</td>
+                        <td colspan="9" class="text-center">No Products found.</td>
                     </tr>
                     @endif
                 </tbody>
             </table>
+            @include('inventories.pagination')
         </div>
     </div>
 </div>

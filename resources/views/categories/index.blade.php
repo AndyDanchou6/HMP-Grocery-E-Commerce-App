@@ -39,9 +39,9 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>
                             @if($category->category_img)
-                            <img src="{{ asset('storage/' . $category->category_img) }}" id="user_avatar_modal" alt="User Avatar" style="width: 45px; height: 45px" class="w-px-40 h-auto rounded-circle" />
+                            <img src="{{ asset('storage/' . $category->category_img) }}" style="width: 45px; height: 45px" alt="Category Image" class="rounded-circle">
                             @else
-                            <img src="{{ asset('assets/img/user.png') }}" id="user_avatar_modal" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
+                            <img src="{{ asset('assets/img/user.png') }}" style="width: 45px; height: 45px" alt="Default Image" class="rounded-circle">
                             @endif
                         </td>
                         <td>{{ $category->category_name }}</td>
@@ -65,11 +65,14 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="4" class="text-center">No categories found.</td>
+                        <td colspan="6" class="text-center">No categories found.</td>
                     </tr>
                     @endif
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            @include('categories.pagination')
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Inventory;
+use App\Models\User;
 
 class ShopController extends Controller
 {
@@ -13,9 +14,14 @@ class ShopController extends Controller
      */
     public function index()
     {
-        $inventory = Inventory::all();
-        $category = Category::all();
-        return view('shop.index', compact('category', 'inventory'));
+        if (empty(auth()->user()->role)) {
+            return redirect()->route('error404');
+        } else {
+            $admin = User::where('role', 'Admin')->get();
+            $inventory = Inventory::all();
+            $category = Category::all();
+            return view('shop.index', compact('category', 'inventory', 'admin'));
+        }
     }
 
     /**
@@ -30,7 +36,7 @@ class ShopController extends Controller
             $query->where('category_id', $request->input('category'));
         }
 
-        $inventory = $query->paginate(4);
+        $inventory = $query->paginate(6);
 
         return view('shop.products', compact('category', 'inventory'));
     }
@@ -38,9 +44,12 @@ class ShopController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function details(string $id)
     {
-        //
+        $category = Category::all();
+        $product = Inventory::findOrFail($id);
+
+        return view('shop.details', compact('product', 'category'));
     }
 
     /**
