@@ -18,56 +18,13 @@ class SelectedItemsController extends Controller
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
-                // Add a condition on the pivot table (selected_items)
-                $query->where('selected_items.status', 'purchased');
+                $query->where('selected_items.status', 'for_package');
             })->with(['selectedItems' => function ($query) {
-                // Include the pivot data (reference_number) with the condition applied
-                $query->where('selected_items.status', 'purchased')
-                    ->select('inventories.*', 'selected_items.referenceNo');
+                $query->where('selected_items.status', 'for_package')
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
             }])->get();
 
-            $purchaser = [];
-
-            foreach ($users as $user) {
-                $userDetails = [
-                    'id' => $user->id,
-                    'username' => $user->name,
-                    'address' => $user->address,
-                    'phone' => $user->phone,
-                    'fb_link' => $user->fb_link,
-                    'referenceNo' => '',
-                    'grossTotal' => 0,
-                    'items' => []
-                ];
-
-                $tempStore = [];
-
-                foreach ($user->selectedItems as $item) {
-                    if (!isset($tempStore[$item->id])) {
-                        $tempStore[$item->id] = [
-                            'item' => $item,
-                            'count' => 1,
-                            'total' => $item->price
-                        ];
-                    } else {
-                        $tempStore[$item->id]['count']++;
-                        $tempStore[$item->id]['total'] += $item->price;
-                    }
-                    if (empty($userDetails['referenceNo'])) {
-                        $userDetails['referenceNo'] = $item->referenceNo;
-                    }
-
-                    $userDetails['grossTotal'] += $item->price;
-                }
-
-                // Assign items to user details
-                $userDetails['items'] = array_values($tempStore); // Reset keys to numeric indices
-
-                // Add user details to purchaser array
-                $purchaser[] = $userDetails;
-            }
-
-            return view('selectedItems.index', compact('purchaser'));
+            return view('selectedItems.index', compact('users'));
         }
     }
 
@@ -106,9 +63,21 @@ class SelectedItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $item_id, string $referenceNo)
     {
-        $selected = SelectedItems::findOrFail($id);
+        $selected = SelectedItems::where('referenceNo', $referenceNo)
+            ->where('item_id', $item_id)->get();
+
+        if ($selected->isEmpty()) {
+            // Handle case where no records were found
+            echo "No selected items found for referenceNo $referenceNo and item_id $item_id.";
+        } else {
+            // Process each selected item
+            foreach ($selected as $item) {
+                // Access properties of each item
+                echo "Item ID: {$item->id}, Reference No: {$item->referenceNo}, Item ID: {$item->item_id}, Status: {$item->status}<br>";
+            }
+        }
 
         $selected->status = $request->input('status');
 
