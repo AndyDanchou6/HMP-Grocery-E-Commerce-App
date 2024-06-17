@@ -30,9 +30,10 @@ Route::get('/', function () {
 
 Route::get('/test-select', function () {
     $select = \App\Models\SelectedItems::create([
-        'referenceNo' => 111111,
-        'user_id' => 1,
-        'item_id' => 3,
+        'referenceNo' => 999867,
+        'user_id' => 2,
+        'item_id' => 1,
+        'quantity' => 3,
         'status' => 'purchased'
     ]);
 });

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SelectedItemsController;
 
 /*
 |--------------------------------------------------------------------------
