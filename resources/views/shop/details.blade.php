@@ -41,12 +41,9 @@
                 <div class="product__details__text">
                     <h3>{{ $product->product_name }}</h3>
                     <div class="product__details__rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-half-o"></i>
-                        <span>(18 reviews)</span>
+                        @for ($i = 1; $i <= 5; $i++) <i class="fa fa-star{{ $product->reviews->avg('rating') >= $i ? '' : '-o' }}" style="color: #696cff"></i>
+                            @endfor
+                            <span>({{ $product->reviews->count() }} reviews)</span>
                     </div>
                     <div class="product__details__price">₱{{ $product->price }}.00</div>
                     <p>{{ $product->description }} </p>
@@ -57,19 +54,18 @@
                             </div>
                         </div>
                     </div>
-                    <a href="" class="primary-btn" onclick="maintenance()">ADD TO CART</a>
-                    <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
+                    <a href="{{ route('shop.checkout') }}" class="primary-btn" style="background-color: #696cff;"><span class="fa fa-shoppin"></span> BUY NOW</a>
+                    <a href="#" class="heart-icon"><span class="fa fa-shopping-cart"></span></a>
                     <ul>
                         <li>
                             @if($product->quantity > 0)
                             <div class="availability-badge">
                                 <b>Availability</b> <span class="badge bg-success text-light">In - Stock</span>
-                            </div>
-                            @else
-                            <div class="availability-badge">
-                                <b>Availability</b> <span class="badge bg-danger text-light">Unavailable</span>
-                            </div>
-                            @endif
+                                @else
+                                <div class="availability-badge">
+                                    <b>Availability</b> <span class="badge bg-danger text-light">Unavailable</span>
+                                </div>
+                                @endif
                         </li>
                         <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
                         <li><b>Share on</b>
@@ -87,19 +83,19 @@
                 <div class="product__details__tab">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab" aria-selected="true">Information</a>
+                            <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab" aria-selected="false">Reviews <span>({{ $product->reviews->count() }})</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab" aria-selected="false">Description</a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab" aria-selected="false">Reviews <span>(1)</span></a>
-                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab" aria-selected="true">Information</a>
+                        </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                        <div class="tab-pane" id="tabs-3" role="tabpanel">
                             <div class="product__details__tab__desc">
-                                <h6>Products Infomation</h6>
+                                <h6>Products Information</h6>
                                 <p>
                                     {{ $product->information }}
                                 </p>
@@ -111,6 +107,29 @@
                                 <p>
                                     {{ $product->description }}
                                 </p>
+                            </div>
+                        </div>
+                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                            <div class="product__details__tab__desc">
+                                <h6>Reviews</h6>
+                                @foreach($reviews as $review)
+                                <div class="review">
+                                    <div class="review__author">
+                                        {{ optional($review->users)->name ?? 'Anonymous' }} <small>{{ $review->created_at->format('F j, Y, g:i a') }}</small>
+                                    </div>
+                                    <div class="review__rating">
+                                        @for ($i = 1; $i <= 5; $i++) <i class="fa fa-star{{ $review->rating >= $i ? '' : '-o' }}" style="color: #696cff"></i>
+                                            @endfor
+                                    </div>
+                                    <div class="review__text">{{ $review->comment }}</div>
+                                </div>
+                                <hr>
+                                @endforeach
+
+                                <!-- Pagination links -->
+                                <div class="pagination-links">
+                                    {{ $reviews->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,20 +145,20 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title related__product__title">
-                    <h2>More Product</h2>
+                    <h2>More Products</h2>
                 </div>
             </div>
         </div>
         <div class="row">
-            @foreach(App\Models\Inventory::inRandomOrder()->where('id', '!=', $product->id)->take(8)->get() as $item)
+            @foreach(App\Models\Inventory::inRandomOrder()->where('id', '!=', $product->id)->take(4)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="product__item">
                     <div class="product__item__pic set-bg">
-                        <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_img }}">
+                        <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_img }}" style="width: 270px; height: 270px;">
                         <ul class="product__item__pic__hover">
-                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle"></i></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                            <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
+                            <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
+                            <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff"></i></a></li>
                         </ul>
                     </div>
                     <div class="product__item__text">
@@ -152,6 +171,5 @@
         </div>
     </div>
 </section>
-
 <!-- Related Product Section End -->
 @endsection

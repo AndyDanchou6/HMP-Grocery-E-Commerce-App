@@ -18,7 +18,9 @@ class ShopController extends Controller
             return redirect()->route('error404');
         } else {
             $admin = User::where('role', 'Admin')->get();
-            $inventory = Inventory::all();
+            $inventory = Inventory::with('reviews')
+                ->orderBy('created_at', 'desc')
+                ->take(6)->get();
             $category = Category::all();
             return view('shop.index', compact('category', 'inventory', 'admin'));
         }
@@ -29,16 +31,23 @@ class ShopController extends Controller
      */
     public function shop(Request $request)
     {
+        $query = $request->input('query');
+        $categoryFilter = $request->input('category');
         $category = Category::all();
-        $query = Inventory::query();
 
-        if ($request->has('category')) {
-            $query->where('category_id', $request->input('category'));
-        }
+        $inventory = Inventory::with('reviews', 'category')
+            ->when($query, function ($queryBuilder) use ($query) {
+                $queryBuilder->where('product_name', 'LIKE', "%$query%")
+                    ->orWhere('description', 'LIKE', "%$query%")
+                    ->orWhere('information', 'LIKE', "%$query%");
+            })
+            ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
+                $queryBuilder->where('category_id', $categoryFilter);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(6);
 
-        $inventory = $query->paginate(6);
-
-        return view('shop.products', compact('category', 'inventory'));
+        return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
     }
 
     /**
@@ -49,24 +58,45 @@ class ShopController extends Controller
         $category = Category::all();
         $product = Inventory::findOrFail($id);
 
-        return view('shop.details', compact('product', 'category'));
+        $reviews = $product->reviews()->with('users')->paginate(5);
+
+        return view('shop.details', compact('product', 'category', 'reviews'));
     }
 
+    public function checkout()
+    {
+        $category = Category::all();
+
+        return view('shop.checkout', compact('category'));
+    }
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('query');
+    //     $categoryFilter = $request->input('category');
+    //     $category = Category::all();
+
+    //     $inventory = Inventory::with('reviews', 'category')
+    //         ->when($query, function ($queryBuilder) use ($query) {
+    //             $queryBuilder->where('product_name', 'LIKE', "%$query%")
+    //                 ->orWhere('description', 'LIKE', "%$query%")
+    //                 ->orWhere('information', 'LIKE', "%$query%");
+    //         })
+    //         ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
+    //             $queryBuilder->where('category_id', $categoryFilter);
+    //         })
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(9);
+
+    //     return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
+    // }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

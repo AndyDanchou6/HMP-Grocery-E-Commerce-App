@@ -125,6 +125,7 @@ class InventoryController extends Controller
         $item->product_name = $request->input('product_name');
         $item->price = $request->input('price');
         $item->information = $request->input('information');
+        $item->category_id = $request->input('category_id');
         $item->description = $request->input('description');
 
         if ($request->hasFile('product_img')) {
@@ -134,7 +135,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('update', 'Updated successfully.');
+        return redirect()->route('inventories.index')->with('success', 'Updated successfully.');
     }
 
     /**
@@ -145,6 +146,6 @@ class InventoryController extends Controller
         $item = Inventory::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('inventories.index')->with('error', 'Deleted successfully.');
+        return redirect()->route('inventories.index')->with('success', 'Deleted successfully.');
     }
 }
