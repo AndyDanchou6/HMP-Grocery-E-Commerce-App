@@ -35,7 +35,7 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index')->with('update', ' Updated Successfully');
+        return redirect()->route('users.index')->with('success', ' Updated Successfully');
     }
 
     public function store(Request $request)
@@ -71,16 +71,19 @@ class AdminController extends Controller
 
     public function destroy($id)
     {
-        if (Auth::user()->role == 'Admin') {
+        $currentUser = Auth::user();
+
+        $user = User::findOrFail($id);
+
+        if ($currentUser->id === $user->id && $currentUser->role === 'Admin') {
             return redirect()->route('users.index')->with('error', "You can't delete your own account!");
-        } else {
-            $user = User::findOrFail($id);
-
-            $user->delete();
-
-            return redirect()->route('users.index')->with('error', 'Deleted Successfully');
         }
+
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'Deleted Successfully');
     }
+
 
     public function index(Request $request)
     {

@@ -25,8 +25,15 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $review->inventory->product_name }}</td>
-                        <td>{{ $review->rating }}</td>
-                        <td>{{ $review->comment }}</td>
+                        <td>
+                            @for ($i = 1; $i <= 5; $i++) <i class="bx bx-star{{ $review->rating >= $i ? '' : '-o' }}" style="color: #696cff"></i>
+                                @endfor
+                        </td>
+                        <td>
+                            <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$review->id}}">
+                            </a>
+                            @include('reviews.modal.description')
+                        </td>
                         <td>
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$review->id}}">
                             </a>

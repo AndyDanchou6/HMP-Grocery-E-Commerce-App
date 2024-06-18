@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="edit_product_img" class="col-sm-3 col-form-label">Avatar</label>
+                        <label for="edit_product_img" class="col-sm-3 col-form-label">Image</label>
                         <div class="col-sm-9">
                             <input type="file" id="edit_product_img" name="product_img" class="form-control" />
                         </div>

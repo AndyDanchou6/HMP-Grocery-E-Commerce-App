@@ -91,7 +91,7 @@ class ReviewController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required|exists:products,id',
+            'product_id' => 'required|exists:inventories,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string|max:255',
         ]);
@@ -109,7 +109,7 @@ class ReviewController extends Controller
 
         $user->save();
 
-        return redirect()->route('reviews.index')->with('update', 'Updated successfully.');
+        return redirect()->route('reviews.index')->with('success', 'Updated successfully.');
     }
 
     /**
@@ -121,6 +121,6 @@ class ReviewController extends Controller
 
         $user->delete();
 
-        return redirect()->route('reviews.index')->with('error', 'Deleted successfully');
+        return redirect()->route('reviews.index')->with('success', 'Deleted successfully');
     }
 }
