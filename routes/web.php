@@ -56,7 +56,7 @@ Route::resource('users', AdminController::class)->middleware('admin');
 
 Route::resource('profile', ProfileController::class);
 
-Route::resource('selectedItems', SelectedItemsController::class);
+// Route::resource('selectedItems', SelectedItemsController::class);
 
 Route::resource('reviews', ReviewController::class);
 
@@ -65,4 +65,11 @@ Route::resource('carts', CartController::class);
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
+Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
+
+Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
+Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
+Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');
+
 Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
