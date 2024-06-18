@@ -18,5 +18,7 @@ class SelectedItems extends Model
         'user_id',
         'item_id',
         'status',
+        'quantity',
+        'order_retrieval',
     ];
 }

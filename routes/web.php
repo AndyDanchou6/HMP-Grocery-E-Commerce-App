@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\shopController;
 use App\Models\Category;
+use App\Models\SelectedItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,12 +32,22 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/test-select', function () {
-    $select = \App\Models\SelectedItems::create([
-        'referenceNo' => 999867,
-        'user_id' => 2,
+    $pickup1 = \App\Models\SelectedItems::create([
+        'referenceNo' => 110000,
+        'user_id' => 1,
         'item_id' => 1,
-        'quantity' => 3,
-        'status' => 'purchased'
+        'status' => 'forPackage',
+        'quantity' => 4,
+        'order_retrieval' => 'pickup'
+    ]);
+
+    $pickup2 = \App\Models\SelectedItems::create([
+        'referenceNo' => 110000,
+        'user_id' => 1,
+        'item_id' => 2,
+        'status' => 'forPackage',
+        'quantity' => 6,
+        'order_retrieval' => 'pickup'
     ]);
 });
 
@@ -71,4 +82,3 @@ Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forP
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');
-

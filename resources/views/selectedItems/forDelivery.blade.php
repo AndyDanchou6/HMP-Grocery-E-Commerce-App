@@ -14,7 +14,7 @@
                     <tr>
                         <th>#</th>
                         <th>User Name</th>
-                        <th>Reference Number </th>
+                        <th>Facebook</th>
                         <th>Address</th>
                         <th>Actions</th>
                     </tr>
@@ -23,9 +23,10 @@
                     @if($users->count() > 0)
                     @foreach ($users as $user)
                     <tr>
+                        <td style="display: none;" class="id-field">{{ $user->id }}</td>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
-                        <td>{{ $user->referenceNo }}</td>
+                        <td>{{ $user->fb_link }}</td>
                         <td>{{ $user->address }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user->id}}" data-user-id="{{ $user->id }}"></a>
@@ -63,7 +64,7 @@
             var quantity = document.querySelector('.item-quantity[data-item-id="' + itemUserId + '"]').value;
             var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemUserId + '"]');
 
-            var tempSubTotal = [];
+            var tempSubTotal;
             tempSubTotal = price * quantity;
             userSubTotalField.value = tempSubTotal;
 
@@ -80,28 +81,10 @@
         totals.forEach(function(total) {
 
             var totalId = total.getAttribute('data-total-id');
-            
+
             total.querySelector('.purchase-total[data-total-id="' + totalId + '"]');
 
             total.value = totalContainer[totalId];
-        });
-
-        var checkboxes = document.querySelectorAll('.checked');
-
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var isChecked = this.checked;
-                var itemId = this.getAttribute('data-item-id');
-                var itemRow = document.querySelector('.item-row[data-item-id="' + itemId + '"]');
-
-                if (isChecked) {
-                    console.log(itemId);
-                    // Perform any other actions needed when item is packed
-                } else {
-                    console.log(itemId);
-                    // Perform any other actions needed when item is not packed
-                }
-            });
         });
     });
 </script>
