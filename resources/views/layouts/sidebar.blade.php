@@ -111,4 +111,10 @@
         <div data-i18n=" Tables">Reviews</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('carts.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cart"></i>
+        <div data-i18n=" Tables">Carts</div>
+      </a>
+    </li>
 </aside>

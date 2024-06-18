@@ -13,7 +13,13 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+        $cartTotal = $carts->sum(function ($item) {
+            return $item->inventory->price * $item->quantity;
+        });
+
+        return view('carts.index', compact('carts', 'cartTotal'));
     }
 
     /**
@@ -29,31 +35,28 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'inventory_id' => 'required|exists:inventories,id',
-            'quantity' => 'required|integer|min=1',
-        ]);
-
         $user = Auth::user();
-        $inventory_id = $request->inventory_id;
-        $quantity = $request->quantity;
+        $items = $request->input('items');
 
-        $cartItem = Cart::where('user_id', $user->id)
-            ->where('inventory_id', $inventory_id)
-            ->first();
+        foreach ($items as $product_id => $quantity) {
 
-        if ($cartItem) {
-            $cartItem->quantity += $quantity;
-            $cartItem->save();
-        } else {
-            Cart::create([
-                'user_id' => $user->id,
-                'inventory_id' => $inventory_id,
-                'quantity' => $quantity,
-            ]);
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('product_id', $product_id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $quantity;
+                $cartItem->save();
+            } else {
+                Cart::create([
+                    'user_id' => $user->id,
+                    'product_id' => $product_id,
+                    'quantity' => $quantity,
+                ]);
+            }
         }
 
-        return redirect()->back()->with('success', 'Product added to cart successfully.');
+        return redirect()->back()->with('success', 'Products added to cart successfully.');
     }
 
     /**
@@ -83,8 +86,12 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cart $cart)
+    public function destroy(string $cart)
     {
-        //
+        $user = Cart::findOrFail($cart);
+
+        $user->delete();
+
+        return redirect()->route('carts.index')->with('success', 'Deleted successfully');
     }
 }
