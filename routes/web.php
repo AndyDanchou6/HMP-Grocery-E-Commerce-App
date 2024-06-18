@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
@@ -70,6 +71,8 @@ Route::resource('profile', ProfileController::class);
 
 Route::resource('reviews', ReviewController::class);
 
+Route::resource('carts', CartController::class);
+
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
@@ -79,7 +82,3 @@ Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forP
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');
-
-
-
-
