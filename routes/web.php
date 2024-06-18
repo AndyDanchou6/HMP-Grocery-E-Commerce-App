@@ -10,6 +10,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\shopController;
 use App\Models\Category;
+use App\Models\SelectedItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,12 +31,22 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/test-select', function () {
-    $select = \App\Models\SelectedItems::create([
-        'referenceNo' => 999867,
-        'user_id' => 2,
+    $pickup1 = \App\Models\SelectedItems::create([
+        'referenceNo' => 110000,
+        'user_id' => 1,
         'item_id' => 1,
-        'quantity' => 3,
-        'status' => 'purchased'
+        'status' => 'forPackage',
+        'quantity' => 4,
+        'order_retrieval' => 'pickup'
+    ]);
+
+    $pickup2 = \App\Models\SelectedItems::create([
+        'referenceNo' => 110000,
+        'user_id' => 1,
+        'item_id' => 2,
+        'status' => 'forPackage',
+        'quantity' => 6,
+        'order_retrieval' => 'pickup'
     ]);
 });
 
@@ -55,10 +66,15 @@ Route::resource('users', AdminController::class)->middleware('admin');
 
 Route::resource('profile', ProfileController::class);
 
-Route::resource('selectedItems', SelectedItemsController::class);
+// Route::resource('selectedItems', SelectedItemsController::class);
 
 Route::resource('reviews', ReviewController::class);
 
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
+
+Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
+Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
+Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');

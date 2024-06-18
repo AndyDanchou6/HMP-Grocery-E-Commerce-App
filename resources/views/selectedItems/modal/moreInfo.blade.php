@@ -29,7 +29,9 @@
                     <h5>Purchased Item</h5>
                 </div>
                 @foreach($user->selectedItems as $item)
-                <div class="row mb-3 item-row" data-item-id="{{ $item->id }}" data-user-id="{{ $user->id }}">
+
+
+                <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
                     <label for="phone" class="col-sm-2 col-form-label">Item Name</label>
 
                     <div class="col-sm-4">
@@ -52,11 +54,6 @@
                     </div>
 
                     <div class="col-sm-12">
-                        <label for="checked" class="col-sm-2 col-form-label">Packed</label>
-                        <span><input type="checkbox" class="checked" data-item-id="{{ $item->id.'_'.$user->id }}"></span>
-                    </div>
-
-                    <div class="col-sm-12">
                         <hr>
                     </div>
                 </div>
@@ -64,12 +61,22 @@
                 <div class="modal-footer">
                     <label for="grossTotal" class="col-sm-1 col-form-label">Total</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control purchase-total" data-total-id="{{ $user->id }}" readonly>
+                        <input type="text" name="total" class="form-control purchase-total" data-total-id="{{ $user->id }}" readonly>
                     </div>
                     <label for="reference" class="col-sm-3 col-form-label">Reference No.</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" value="{{ $item->referenceNo }}" readonly>
+                        <input type="text" name="reference" class="form-control" value="{{ $item->referenceNo }}" readonly>
                     </div>
+
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
+                    </div>
+
+                    <form action="{{ route('selected-items.update', ['referenceNo' => $item->referenceNo]) }}" method="POST">
+                        @csrf
+                        @method('POST')
+                        <button type="submit" class="btn btn-outline-primary">Finished</button>
+                    </form>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

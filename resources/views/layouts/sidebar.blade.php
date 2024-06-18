@@ -81,9 +81,21 @@
       </a>
     </li>
     <li id="tables" class="menu-item">
-      <a href="{{ route('selectedItems.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-cart "></i>
+      <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-box-seam "></i>
         <div data-i18n="Tables">For Packaging</div>
+      </a>
+    </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-truck "></i>
+        <div data-i18n="Tables">For Delivery</div>
+      </a>
+    </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-bag "></i>
+        <div data-i18n="Tables">For Pickup</div>
       </a>
     </li>
     @endif

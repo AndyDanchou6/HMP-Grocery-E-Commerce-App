@@ -12,19 +12,55 @@ class SelectedItemsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function forPackaging()
     {
         if (empty(Auth::user()->role)) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'for_package');
+                $query->where('selected_items.status', 'forPackage');
             })->with(['selectedItems' => function ($query) {
-                $query->where('selected_items.status', 'for_package')
+                $query->where('selected_items.status', 'forPackage')
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+            }])->get();
+
+            return view('selectedItems.forPackaging', compact('users'));
+        }
+    }
+
+    public function forDelivery()
+    {
+        if (empty(Auth::user()->role)) {
+            return redirect()->route('error404');
+        } else {
+            $users = User::whereHas('selectedItems', function ($query) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'delivery');
+            })->with(['selectedItems' => function ($query) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'delivery')
                     ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
             }])->get();
 
-            return view('selectedItems.index', compact('users'));
+            return view('selectedItems.forDelivery', compact('users'));
+        }
+    }
+
+    public function forPickup()
+    {
+        if (empty(Auth::user()->role)) {
+            return redirect()->route('error404');
+        } else {
+            $users = User::whereHas('selectedItems', function ($query) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'pickup');
+            })->with(['selectedItems' => function ($query) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'pickup')
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
+            }])->get();
+
+            return view('selectedItems.forPickup', compact('users'));
         }
     }
 
@@ -63,27 +99,36 @@ class SelectedItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $item_id, string $referenceNo)
-    {
-        $selected = SelectedItems::where('referenceNo', $referenceNo)
-            ->where('item_id', $item_id)->get();
+    // public function update(Request $request, $id)
+    // {
+    //     //
+    // }
 
-        if ($selected->isEmpty()) {
-            // Handle case where no records were found
-            echo "No selected items found for referenceNo $referenceNo and item_id $item_id.";
-        } else {
-            // Process each selected item
-            foreach ($selected as $item) {
-                // Access properties of each item
-                echo "Item ID: {$item->id}, Reference No: {$item->referenceNo}, Item ID: {$item->item_id}, Status: {$item->status}<br>";
+    public function update(Request $request, string $referenceNo)
+    {
+        $selectedItems  = SelectedItems::where('referenceNo', $referenceNo)
+            ->get();
+
+        foreach ($selectedItems as $item) {
+
+            if ($item->status == 'forPackage') {
+                $item->status = 'readyForRetrieval';
+                $item->save();
+            }
+
+            elseif ($item->status == 'readyForRetrieval') {
+                if ($item->order_retrieval == 'delivery') {
+                    $item->status = 'delivered';
+                    $item->save();
+                }
+                elseif ($item->order_retrieval == 'pickup') {
+                    $item->status = 'pickedUp';
+                    $item->save();
+                }
             }
         }
 
-        $selected->status = $request->input('status');
-
-        $selected->save();
-
-        return redirect()->route('selectedItems.index')->with('success', 'Updated successfully.');
+        return redirect()->back();
     }
 
     /**
