@@ -22,6 +22,6 @@ class Cart extends Model
 
     public function inventory()
     {
-        return $this->belongsTo(Inventory::class, 'product_name', 'price', 'id');
+        return $this->belongsTo(Inventory::class, 'product_id', 'id');
     }
 }
