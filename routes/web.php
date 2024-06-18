@@ -78,3 +78,5 @@ Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forP
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');
+
+Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
