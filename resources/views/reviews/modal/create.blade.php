@@ -22,8 +22,14 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="rating" class="form-label">Rating</label>
-            <input type="number" name="rating" placeholder="Enter rating" class="form-control">
+            <label for="rating" class="form-label">Rating</label><br>
+            <fieldset class="rating" style="margin-left: 10px">
+              <input type="radio" id="star5" name="rating" value="5"><label for="star5" style="margin-right: 5px">5</label>
+              <input type="radio" id="star4" name="rating" value="4"><label for="star4" style="margin-right: 5px">4</label>
+              <input type="radio" id="star3" name="rating" value="3"><label for="star3" style="margin-right: 5px">3</label>
+              <input type="radio" id="star2" name="rating" value="2"><label for="star2" style="margin-right: 5px">2</label>
+              <input type="radio" id="star1" name="rating" value="1"><label for="star1" style="margin-right: 5px">1</label>
+            </fieldset>
           </div>
           <div class="mb-3">
             <label for="comment" class="form-label">Comment</label>

@@ -54,11 +54,14 @@
                         </div>
                         <div class="col-lg-4 col-md-4">
                             <div class="filter__found">
+                                @if(request('query'))
+                                <h6 style="margin-bottom: 10px;">Search Results for "{{ request('query') }}"</h6>
+                                @endif
                                 @if($inventory->count() > 0)
                                 @if(request('category'))
                                 <h6>Showing <span>{{ $inventory->count() }} of {{ $inventory->total() }}</span> results</h6>
                                 @else
-                                <h6>All {{ $inventory->total() }} products found</h6>
+                                <h6>{{ $inventory->total() }} products found</h6>
                                 @endif
                                 @else
                                 <h6>No products found</h6>
@@ -78,7 +81,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-6 product-item" data-category-id="{{ $item->category_id }}">
                         <div class="product__item">
                             <div class="product__item__pic set-bg">
-                                <img src="{{ asset('storage/' . $item->product_img) }}" alt="item">
+                                <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
                                 <ul class="product__item__pic__hover">
                                     <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
                                     <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>

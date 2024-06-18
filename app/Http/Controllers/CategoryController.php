@@ -67,7 +67,7 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return redirect()->route('categories.index')->with('update', 'Updated successfully');
+        return redirect()->route('categories.index')->with('success', 'Updated successfully');
     }
 
     /**
@@ -80,6 +80,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect()->route('categories.index')->with('error', 'Deleted successfully');
+        return redirect()->route('categories.index')->with('success', 'Deleted successfully');
     }
 }
