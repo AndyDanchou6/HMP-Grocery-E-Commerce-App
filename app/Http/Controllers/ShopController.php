@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Cart;
+use App\Models\SelectedItems;
 
 class ShopController extends Controller
 {
@@ -17,12 +20,14 @@ class ShopController extends Controller
         if (empty(auth()->user()->role)) {
             return redirect()->route('error404');
         } else {
+            $user = Auth::user(); // Assuming user is authenticated
+            $carts = Cart::where('user_id', $user->id)->get();
             $admin = User::where('role', 'Admin')->get();
             $inventory = Inventory::with('reviews')
                 ->orderBy('created_at', 'desc')
                 ->take(6)->get();
             $category = Category::all();
-            return view('shop.index', compact('category', 'inventory', 'admin'));
+            return view('shop.index', compact('category', 'inventory', 'admin', 'carts'));
         }
     }
 
@@ -66,9 +71,25 @@ class ShopController extends Controller
     public function checkout()
     {
         $category = Category::all();
+        $user = Auth::user();
 
-        return view('shop.checkout', compact('category'));
+        $selectedItems = SelectedItems::with('inventory')
+            ->where('user_id', $user->id)
+            ->get();
+
+        $subtotal = $selectedItems->sum(function ($item) {
+            return $item->inventory->price * $item->quantity;
+        });
+
+        $total = $subtotal;
+
+        // Debugging: Output the $selectedItems to understand what data is being fetched
+        // dd($selectedItems);
+
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
     }
+
+
     /**
      * Display the specified resource.
      */
@@ -97,13 +118,23 @@ class ShopController extends Controller
      * Show the form for editing the specified resource.
      */
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function carts()
     {
-        //
+        $user = Auth::user();
+        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+
+        $subtotal = $carts->sum(function ($item) {
+            return $item->inventory->price * $item->quantity;
+        });
+
+        $total = $subtotal;
+
+        $category = Category::all();
+
+        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total'));
     }
 
     /**

@@ -12,7 +12,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     Close
                 </button>
-                <form id="deleteModal{{$item->id}}" action="{{ route('carts.destroy', $item->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="deleteModal{{$item->id}}" action="{{ route('carts.destroyAll', $item->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>

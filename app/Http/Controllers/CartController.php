@@ -108,9 +108,17 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cart $cart)
+    public function update(Request $request)
     {
-        //
+        $quantities = $request->input('quantities', []);
+        foreach ($quantities as $cartId => $quantity) {
+            $cart = Cart::find($cartId);
+            if ($cart) {
+                $cart->quantity = $quantity;
+                $cart->save();
+            }
+        }
+        return redirect()->back()->with('success', 'Updated successfully.');
     }
 
     /**
@@ -122,6 +130,15 @@ class CartController extends Controller
 
         $user->delete();
 
-        return redirect()->route('carts.index')->with('success', 'Deleted successfully');
+        return response()->json(['success' => true]);
+    }
+
+    public function destroyAll(string $cart)
+    {
+        $user = Cart::findOrFail($cart);
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Deleted successfully.');
     }
 }

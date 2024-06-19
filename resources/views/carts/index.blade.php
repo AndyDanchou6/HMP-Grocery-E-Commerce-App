@@ -71,7 +71,7 @@
             </div>
 
             <!-- Order Retrieval Type -->
-            <div class="text-end mt-3">
+            <div class="text-end mt-3" style="margin-right: 10px;">
                 <label for="orderRetrievalType">Order Retrieval Type:</label>
                 <select id="orderRetrievalType" class="form-select d-inline-block w-auto">
                     <option value="delivery">Delivery</option>
@@ -80,7 +80,7 @@
             </div>
 
             <!-- Proceed to Checkout Button -->
-            <div class="text-end mt-3">
+            <div class="text-end mt-3" style="margin-right: 10px; margin-bottom: 10px;">
                 <button id="checkoutButton" class="btn btn-primary">Proceed to Checkout</button>
             </div>
         </div>

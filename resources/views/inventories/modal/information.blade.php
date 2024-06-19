@@ -9,13 +9,13 @@
                 <div class="row mb-3">
                     <label for="message" class="col-sm-3 col-form-label">Information</label>
                     <div class="col-sm-9">
-                        <textarea maxlength="1000" id="message" name="information" class="form-control" placeholder="Enter Description">{{ $inventory->information }}</textarea>
+                        <textarea maxlength="1000" id="message" name="information" class="form-control" placeholder="Enter Description" readonly>{{ $inventory->information }}</textarea>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="message" class="col-sm-3 col-form-label">Description</label>
                     <div class="col-sm-9">
-                        <textarea maxlength="1000" id="message" name="description" class="form-control" placeholder="Enter Description">{{ $inventory->description }}</textarea>
+                        <textarea maxlength="1000" id="message" name="description" class="form-control" placeholder="Enter Description" readonly>{{ $inventory->description }}</textarea>
                     </div>
                 </div>
             </div>
