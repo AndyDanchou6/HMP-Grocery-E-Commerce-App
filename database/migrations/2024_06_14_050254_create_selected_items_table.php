@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('selected_items', function (Blueprint $table) {
             $table->id();
-            $table->integer('referenceNo');
+            $table->bigInteger('referenceNo');
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('status')->default('onCart');
-            $table->string('order_retrieval')->nullable()->default('pickup');
+            $table->string('status')->nullable()->default('forPackage');
+            $table->string('order_retrieval')->nullable();
             $table->integer('quantity')->default(1);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

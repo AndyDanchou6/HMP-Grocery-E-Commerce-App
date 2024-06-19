@@ -14,7 +14,9 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+      
         $avatarPath = 'logo/1.png';
+
 
         User::factory()->create([
             'role' => 'Admin',
