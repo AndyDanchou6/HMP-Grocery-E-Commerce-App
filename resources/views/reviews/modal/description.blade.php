@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <div class="col mb-0">
                     <label for="message" class="form-label">Comment</label>
-                    <textarea id="message" name="description" class="form-control" placeholder="Enter Description">{{ $review->comment }}</textarea>
+                    <textarea id="message" name="comment" class="form-control" placeholder="Enter Description" readonly>{{ $review->comment }}</textarea>
                 </div>
             </div>
             <div class="modal-footer">

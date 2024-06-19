@@ -6,6 +6,7 @@
     <meta name="description" content="Ogani Template">
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>e-Mart</title>
 
@@ -36,7 +37,7 @@
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
-            <a href="#"><img src="{{ asset('index/img/logo.png') }}" alt=""></a>
+            <a href="#"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
         </div>
         <div class="humberger__menu__cart">
             <ul>
@@ -63,7 +64,7 @@
     </div>
     <nav class="humberger__menu__nav mobile-menu">
         <ul>
-            <li><a href="./index.html">Home</a></li>
+            <li><a href="{{ route('shop.index') }}">Home</a></li>
             <li><a href="{{ route('shop.products') }}">Shop</a></li>
             <li><a href="#">Pages</a>
                 <ul class="header__menu__dropdown">
@@ -114,7 +115,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="footer__about">
                         <div class="footer__about__logo">
-                            <a href="./index.html"><img src="{{ asset('index/img/logo.png') }}" alt=""></a>
+                            <a href="{{ route('shop.index') }}"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
                         </div>
                         <ul>
                             <li>Address: 60-49 Road 11378 New York</li>

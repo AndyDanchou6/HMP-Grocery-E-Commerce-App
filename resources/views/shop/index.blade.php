@@ -28,9 +28,9 @@
             <div class="categories__slider owl-carousel">
                 @foreach($category as $item)
                 <div class="col-lg-3">
-                    <div class="categories__item {{ 'background-color-' . $loop->iteration }}">
+                    <div class="categories__item {{ 'background-color-' . $loop->iteration }} text-center d-flex flex-column align-items-center">
                         <img src="{{ asset('storage/' . $item->category_img) }}" alt="{{ $item->category_name }}" style="width: 270px; height: 270px;">
-                        <h5><a href="{{ route('shop.products', ['category' => $item->id]) }}" data-category-id="{{ $item->id }}">{{ $item->category_name }}</a></h5>
+                        <h5 class="mt-3"><a href="{{ route('shop.products', ['category' => $item->id]) }}" data-category-id="{{ $item->id }}">{{ $item->category_name }}</a></h5>
                     </div>
                 </div>
                 @endforeach
@@ -62,7 +62,7 @@
             @foreach(App\Models\Inventory::inRandomOrder()->take(8)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
                 <div class="featured__item">
-                    <div class="featured__item__pic set-bg">
+                    <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center">
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
@@ -70,7 +70,7 @@
                             <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li>
                         </ul>
                     </div>
-                    <div class="featured__item__text">
+                    <div class="featured__item__text text-center mt-3">
                         <h6><a href="#">{{ $item->product_name }}</a></h6>
                         <h5>₱{{ $item->price }}.00</h5>
                         <h6 style="margin-top: 9px;">{{ $item->category->category_name }}</h6>

@@ -21,4 +21,9 @@ class SelectedItems extends Model
         'quantity',
         'order_retrieval',
     ];
+
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class, 'item_id');
+    }
 }

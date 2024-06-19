@@ -73,9 +73,12 @@ Route::resource('reviews', ReviewController::class);
 
 Route::resource('carts', CartController::class);
 Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
+Route::post('/carts/update', [CartController::class, 'update'])->name('carts.update');
+Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
 
 
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
+Route::get('/shop/carts', [shopController::class, 'carts'])->name('shop.carts');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
 Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');

@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <div class="col mb-0">
                     <label for="message" class="form-label">Description</label>
-                    <textarea id="message" name="description" class="form-control" placeholder="Enter Description">{{ $category->description }}</textarea>
+                    <textarea id="message" name="description" class="form-control" placeholder="Enter Description" readonly>{{ $category->description }}</textarea>
                 </div>
             </div>
             <div class="modal-footer">
