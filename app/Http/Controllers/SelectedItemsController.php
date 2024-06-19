@@ -83,9 +83,30 @@ class SelectedItemsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SelectedItems $selectedItems)
+    public function show()
     {
-        //
+        // $history = SelectedItems::where('status', 'delivered')
+        // ->orWhere('status', 'pickedUp')
+        // ->select('selected_items.*')
+        // ->get();
+
+        // $transactions = User::whereHas('selectedItems', function ($query) {
+        //     $query->where('selected_items.status', 'delivered')
+        //         ->orWhere('selected_items.status', 'pickedUp');
+        // })->with('selectedItems', function ($query) {
+        //     $query->where('selected_items.status', 'delivered')
+        //         ->orWhere('selected_items.status', 'pickedUp')
+        //         ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+        // })->get();
+
+        $transactions = User::whereHas('selectedItems', function($query) {
+            $query->where('selected_items.referenceNo', 110000);
+        })->with('selectedItems', function($query) {
+            $query->where('selected_items.referenceNo', 110000)
+            ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
+        })->get();
+
+        dd($transactions);
     }
 
     /**
@@ -104,24 +125,20 @@ class SelectedItemsController extends Controller
     //     //
     // }
 
-    public function update(Request $request, string $referenceNo)
+    public function updateStatus(Request $request, string $referenceNo)
     {
-        $selectedItems  = SelectedItems::where('referenceNo', $referenceNo)
-            ->get();
+        $selectedItems  = SelectedItems::where('referenceNo', $referenceNo)->get();
 
         foreach ($selectedItems as $item) {
 
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
                 $item->save();
-            }
-
-            elseif ($item->status == 'readyForRetrieval') {
+            } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
                     $item->status = 'delivered';
                     $item->save();
-                }
-                elseif ($item->order_retrieval == 'pickup') {
+                } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
                     $item->save();
                 }

@@ -20,8 +20,18 @@
 
 </head>
 
-<body class="bg-gray">
+<body class="bg-white">
     <div class="page-container">
+        <aside id="sidebar">
+            <nav>
+                <ul>
+                    <li class="casual-font"><a class="color-main" href="#welcome-section">Home</a></li>
+                    <li class="casual-font"><a class="color-main" href="#about">About</a></li>
+                    <li class="casual-font"><a class="color-main" href="#contact">Contact</a></li>
+                    <li class="casual-font"><a class="color-main" href="#login-page">Sign in</a></li>
+                </ul>
+            </nav>
+        </aside>
         <header id="header">
             <nav>
                 <ul>
@@ -31,24 +41,25 @@
                     <li class="casual-font"><a href="#login-page">Sign in</a></li>
                 </ul>
             </nav>
+            <div class="toggle-sidebar">
+                <i class="fas fa-bars color-main"></i>
+            </div>
             <div class="brand-header">
-                <p class="logo-font color-secondary">e <span class="color-white">- Mart</span></p>
+
             </div>
         </header>
 
-        <section id="welcome-section" class="bg-main">
+        <section id="welcome-section">
             <div class="logo-wrap">
-                <p class="brand-logo logo-font color-secondary">e <span class="color-white">- Mart</span></p>
-                <p class="tagline casual-font color-white">Shop leisurely. Just one click away!</p>
             </div>
             <div class="footer">
-                <p class="color-white">&#169; e-Mart 2024. All rights reserved.</p>
+                <p class="color-dark">&#169; e-Mart 2024. All rights reserved.</p>
             </div>
         </section>
 
         <section id="login-page">
             <div>
-                <p class="color-white casual-font">Shop anytime. Anywhere.</p>
+                <p class="color-main casual-font text-shadow-white">Shop anytime. Anywhere.</p>
                 <form>
                     <input type="email" id="login-email" placeholder="Email Address...">
                     <button type="submit" class="casual-font color-white">Login</button>
