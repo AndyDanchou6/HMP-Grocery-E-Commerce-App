@@ -59,7 +59,7 @@
                 </div>
                 @endforeach
                 <div class="modal-footer">
-                    <label for="grossTotal" class="col-sm-1 col-form-label">Total</label>
+                    <label for=" grossTotal" class="col-sm-1 col-form-label">Total</label>
                     <div class="col-sm-3">
                         <input type="text" name="total" class="form-control purchase-total" data-total-id="{{ $user->id }}" readonly>
                     </div>
@@ -68,19 +68,18 @@
                         <input type="text" name="reference" class="form-control" value="{{ $item->referenceNo }}" readonly>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" style="margin-top: 30px;">
                         <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
                     </div>
 
                     <form action="{{ route('selected-items.update', ['referenceNo' => $item->referenceNo]) }}" method="POST">
                         @csrf
                         @method('POST')
-                        <button type="submit" class="btn btn-outline-primary">Finished</button>
+                        <button type="submit" class="btn btn-outline-primary" style="margin-top: 26px;">Finished</button>
                     </form>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="margin-top: 30px;">Close</button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

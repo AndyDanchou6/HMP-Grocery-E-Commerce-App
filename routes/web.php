@@ -33,7 +33,7 @@ Route::get('/', function () {
 
 Route::get('/test-select', function () {
     $pickup1 = \App\Models\SelectedItems::create([
-        'referenceNo' => 110000,
+        'referenceNo' => rand(10000000, 99999999),
         'user_id' => 1,
         'item_id' => 1,
         'status' => 'forPackage',
@@ -42,9 +42,9 @@ Route::get('/test-select', function () {
     ]);
 
     $pickup2 = \App\Models\SelectedItems::create([
-        'referenceNo' => 110000,
+        'referenceNo' => rand(10000000, 99999999),
         'user_id' => 1,
-        'item_id' => 2,
+        'item_id' => 3,
         'status' => 'forPackage',
         'quantity' => 6,
         'order_retrieval' => 'pickup'
@@ -72,6 +72,8 @@ Route::resource('profile', ProfileController::class);
 Route::resource('reviews', ReviewController::class);
 
 Route::resource('carts', CartController::class);
+Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
+
 
 Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');

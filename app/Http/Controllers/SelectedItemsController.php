@@ -114,14 +114,11 @@ class SelectedItemsController extends Controller
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
                 $item->save();
-            }
-
-            elseif ($item->status == 'readyForRetrieval') {
+            } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
                     $item->status = 'delivered';
                     $item->save();
-                }
-                elseif ($item->order_retrieval == 'pickup') {
+                } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
                     $item->save();
                 }
