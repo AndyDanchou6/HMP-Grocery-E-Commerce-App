@@ -83,4 +83,5 @@ Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name
 Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
-Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'update'])->name('selected-items.update');
+Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
+Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');

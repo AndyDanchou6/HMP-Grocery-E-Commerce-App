@@ -34,7 +34,7 @@
 .casual-font {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 300;
+    font-weight: 400;
     font-style: normal;
     font-variation-settings: "wdth" 100;
 }
@@ -95,7 +95,8 @@
     left: 0;
     width: 100%;
     height: 80px;
-    background-color: var(--main-color);
+    background-color: var(--white-color);
+    box-shadow: 0 0 10px #a3a3a3;
     color: var(--white-color);
     z-index: 1000;
     transition: top 0.3s;
@@ -107,12 +108,47 @@
 #header .brand-header {
     position: absolute;
     top: 50%;
-    left: 80px;
+    left: 120px;
+    width: 119px;
+    height: 50px;
     transform: translate(-50%, -50%);
+    background-image: url("../../logo/4.png");
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
 }
 
-#header .brand-header p {
+/* #header .brand-header p {
     font-size: 26px;
+} */
+
+
+#sidebar {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 0;
+    z-index: 2;
+    box-shadow: 0 0 10px #a3a3a3;
+    background-color: var(--white-color);
+    border-radius: 10px;
+}
+
+#sidebar nav ul li {
+    width: 200px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sidebar nav ul li:hover {
+    background-color: var(--secondary-color);
+    
+}
+
+#sidebar nav ul li a:hover {
+    color: var(--white-color);
 }
 
 #header nav ul {
@@ -126,10 +162,29 @@
 }
 
 #header nav ul li a {
-    color: var(--white-color);
+    color: var(--main-color);
 }
 
 #header nav ul li a:hover {
+    color: var(--secondary-color);
+}
+
+.toggle-sidebar {
+    width: 200px;
+    height: 100%;
+    position: relative;
+    display: none;
+}
+
+.toggle-sidebar i {
+    font-size: 28px;
+    position: absolute;
+    top: 25px;
+    right: 85px;
+}
+
+.toggle-sidebar i:hover {
+    font-size: 32px;
     color: var(--secondary-color);
 }
 
@@ -142,10 +197,16 @@ section .logo-wrap {
     position: absolute;
     top: 45%;
     left: 50%;
+    width: 400px;
+    height: 400px;
     transform: translate(-50%, -50%);
+    background-image: url("../../logo/3.png");
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
 }
 
-.logo-wrap .brand-logo {
+/* .logo-wrap .brand-logo {
     font-size: 72px;
     text-shadow: var(--dark-color);
 }
@@ -154,7 +215,7 @@ section .logo-wrap {
     font-style: italic;
     font-weight: 400;
     width: 260px;
-}
+} */
 
 section .footer {
     position: absolute;
@@ -164,7 +225,7 @@ section .footer {
 }
 
 #login-page {
-    background-image: url("../../temporary_img/cart-green&blue.png");
+    background-image: url("../../logo/bg.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -184,7 +245,7 @@ section .footer {
     width: 420px;
     height: 40px;
     display: flex;
-    background-color: var(--white-color);
+    background-color: #f2f2f2;
     border-radius: 20px;
     margin-top: 30px;
     align-items: center;
@@ -195,6 +256,7 @@ section .footer {
     margin-left: 30px;
     flex-grow: 1;
     border-radius: 20px;
+    background-color: #f2f2f2;
 }
 
 #login-page div form input:focus {
@@ -208,6 +270,10 @@ section .footer {
     border-radius: 20px;
     background-color: var(--main-color);
     font-weight: 400;
+}
+
+#login-page div form button:hover {
+    scale: 115%;
 }
 
 section .section-header {
@@ -228,7 +294,6 @@ section .section-header p {
 
 section .content-wrapper {
     width: 100%;
-    height: 500px;
     position: absolute;
     top: 160px;
     left: 0;
@@ -285,6 +350,11 @@ section .content-wrapper .contents {
     font-size: 18px;
 }
 
+#contact .content-wrapper .inquiries form {
+    border-radius: 10px;
+    background-color: #f2f2f2;
+}
+
 #contact .content-wrapper .inquiries input {
     height: 40px;
     margin: 20px 10px 0;
@@ -310,11 +380,33 @@ section .content-wrapper .contents {
     border-radius: 10px;
 }
 
-/* @media screen and (max-width: 970px) {
+@media screen and (max-width: 970px) {
+    #header nav {
+        display: none;
+    }
+
+    #header .toggle-sidebar {
+        display: block;
+    }
+
     section .content-wrapper {
-        height: 200%;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
     }
-} */
+
+    section .content-wrapper .contents {
+        width: 80%;
+    }
+
+    #contact .content-wrapper .inquiries form {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+
+@media screen and (max-width: 511px) {
+    #login-page div form {
+        width: 80%;
+    }
+}
