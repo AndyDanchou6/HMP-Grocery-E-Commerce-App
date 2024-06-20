@@ -75,7 +75,7 @@ class ShopController extends Controller
 
         $selectedItems = SelectedItems::with('inventory')
             ->where('user_id', $user->id)
-            ->get();
+            ->where('status', 'forCheckout')->get();
 
         $subtotal = $selectedItems->sum(function ($item) {
             return $item->inventory->price * $item->quantity;
@@ -87,6 +87,23 @@ class ShopController extends Controller
         // dd($selectedItems);
 
         return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
+    }
+
+    public function placeOrder()
+    {
+        $user = Auth::user();
+
+        $selectedItems = SelectedItems::with('inventory')
+            ->where('user_id', $user->id)
+            ->where('status', 'forCheckout')->get();
+
+        // $update = 'forPackage';
+        // $selectedItems->status = $update;
+        foreach ($selectedItems as $item) {
+            $item->update([
+                'status' => 'forPackage'
+            ]);
+        }
     }
 
 

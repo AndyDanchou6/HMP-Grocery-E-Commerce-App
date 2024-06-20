@@ -72,7 +72,7 @@
                     </div>
                     <div class="featured__item__text text-center mt-3">
                         <h6><a href="#">{{ $item->product_name }}</a></h6>
-                        <h5>₱{{ $item->price }}.00</h5>
+                        <h5>₱{{ number_format($item->price, 2) }}</h5>
                         <h6 style="margin-top: 9px;">{{ $item->category->category_name }}</h6>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class=" latest-product__item__text">
                                     <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ $item->price }}.00</span>
+                                    <span>₱{{ number_format($item->price, 2) }}</span>
                                 </div>
                             </a>
                             @endforeach
@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ $item->price }}.00</span>
+                                    <span>₱{{ number_format($item->price, 2) }}</span>
                                     <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
                                 </div>
                             </a>

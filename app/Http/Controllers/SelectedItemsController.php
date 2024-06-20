@@ -67,9 +67,29 @@ class SelectedItemsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function forCheckout()
     {
-        //
+        // if (empty(Auth::user()->role)) {
+        //     return redirect()->route('error404');
+        // } else {
+        //     $users = User::whereHas('selectedItems', function ($query) {
+        //         $query->where('selected_items.status', 'forPackage');
+        //     })->with(['selectedItems' => function ($query) {
+        //         $query->where('selected_items.status', 'forPackage')
+        //             ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+        //     }])->get();
+
+        //     return view('selectedItems.forPackaging', compact('users'));
+        // }
+
+        $users = User::whereHas('selectedItems', function ($query) {
+            $query->where('selected_items.status', 'forCheckout');
+        })->with(['selectedItems' => function ($query) {
+            $query->where('selected_items.status', 'forCheckout')
+                ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
+        }])->get();
+
+        dd($users);
     }
 
     /**
@@ -99,11 +119,11 @@ class SelectedItemsController extends Controller
         //         ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
         // })->get();
 
-        $transactions = User::whereHas('selectedItems', function($query) {
+        $transactions = User::whereHas('selectedItems', function ($query) {
             $query->where('selected_items.referenceNo', 110000);
-        })->with('selectedItems', function($query) {
+        })->with('selectedItems', function ($query) {
             $query->where('selected_items.referenceNo', 110000)
-            ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
+                ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
         })->get();
 
         dd($transactions);
