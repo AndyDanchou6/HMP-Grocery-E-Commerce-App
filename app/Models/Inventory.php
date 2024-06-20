@@ -32,6 +32,11 @@ class Inventory extends Model
             ->withTimestamps();
     }
 
+    // public function selectedItems()
+    // {
+    //     return $this->hasMany(SelectedItems::class);
+    // }
+
     public function reviews()
     {
         return $this->hasMany(Review::class, 'product_id', 'id');

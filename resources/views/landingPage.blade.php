@@ -28,7 +28,7 @@
                     <li class="casual-font"><a class="color-main" href="#welcome-section">Home</a></li>
                     <li class="casual-font"><a class="color-main" href="#about">About</a></li>
                     <li class="casual-font"><a class="color-main" href="#contact">Contact</a></li>
-                    <li class="casual-font"><a class="color-main" href="#login-page">Sign in</a></li>
+                    <li class="casual-font"><a class="color-main" href="/login">Sign in</a></li>
                 </ul>
             </nav>
         </aside>
@@ -38,7 +38,7 @@
                     <li class="casual-font"><a href="#welcome-section">Home</a></li>
                     <li class="casual-font"><a href="#about">About</a></li>
                     <li class="casual-font"><a href="#contact">Contact</a></li>
-                    <li class="casual-font"><a href="#login-page">Sign in</a></li>
+                    <li class="casual-font"><a href="/login">Sign in</a></li>
                 </ul>
             </nav>
             <div class="toggle-sidebar">
