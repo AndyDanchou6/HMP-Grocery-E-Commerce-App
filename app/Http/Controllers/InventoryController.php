@@ -127,6 +127,7 @@ class InventoryController extends Controller
         $item->information = $request->input('information');
         $item->category_id = $request->input('category_id');
         $item->description = $request->input('description');
+        $item->quantity = $request->input('quantity');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');

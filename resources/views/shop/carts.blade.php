@@ -122,6 +122,7 @@
                             </div>
                             <div class="col-auto">
                                 <select id="orderRetrievalType" class="form-select">
+                                    <option value="" selected disabled>Choose..</option>
                                     <option value="delivery">Delivery</option>
                                     <option value="pickup">Pick-up</option>
                                 </select>

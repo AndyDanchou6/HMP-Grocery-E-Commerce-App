@@ -83,13 +83,10 @@ class ShopController extends Controller
 
         $total = $subtotal;
 
-        // Debugging: Output the $selectedItems to understand what data is being fetched
-        // dd($selectedItems);
-
         return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
     }
 
-    public function placeOrder()
+    public function placeOrder(Request $request)
     {
         $user = Auth::user();
 
@@ -97,13 +94,25 @@ class ShopController extends Controller
             ->where('user_id', $user->id)
             ->where('status', 'forCheckout')->get();
 
-        // $update = 'forPackage';
-        // $selectedItems->status = $update;
         foreach ($selectedItems as $item) {
+            // Update the item status to 'forPackage'
             $item->update([
                 'status' => 'forPackage'
             ]);
+
+            // Check if the item's status is 'forPackage'
+            if ($item->status === 'forPackage') {
+                // Calculate the new inventory quantity
+                $newQuantity = $item->inventory->quantity - $item->quantity;
+
+                // Update the inventory quantity
+                $item->inventory->update([
+                    'quantity' => $newQuantity
+                ]);
+            }
         }
+
+        return redirect()->route('shop.index')->with('success', 'Thank you for shopping, come buy again!');
     }
 
 

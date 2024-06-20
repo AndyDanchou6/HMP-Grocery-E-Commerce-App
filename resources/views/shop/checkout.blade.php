@@ -6,7 +6,8 @@
     <div class="container">
         <div class="checkout__form">
             <h4>Billing Details</h4>
-            <form action="#">
+            <form action="{{ route('shop.placeOrder') }}" method="POST">
+                @csrf
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
                         <div class="checkout__input">
@@ -35,44 +36,31 @@
                             <p>Fb Link<span></span></p>
                             <textarea name="fb_link" id="fb_link" class="form-control" readonly>{{ $user->fb_link }}</textarea>
                         </div>
-                        <!-- <div class="checkout__input__checkbox">
-                            <label for="acc">
-                                Create an account?
-                                <input type="checkbox" id="acc">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div> -->
-                        <!-- <p>Create an account by entering the information below. If you are a returning customer
-                            please login at the top of the page</p> -->
-                        <!-- <div class="checkout__input">
-                            <p>Account Password<span></span></p>
-                            <input type="text" name="password">
-                        </div> -->
-                        <!-- <div class="checkout__input">
-                            <p>Order notes<span>*</span></p>
-                            <input type="text" placeholder="Notes about your order, e.g. special notes for delivery.">
-                        </div> -->
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="checkout__order">
                             <h4>Your Order</h4>
-                            <div class="checkout__order__products">Products <span>Total</span></div>
-                            <ul>
-                                @foreach($selectedItems as $item)
-                                <li>{{ $item->inventory->product_name }} <span>₱{{ number_format($item->inventory->price, 2) }}</span></li>
-                                @endforeach
-                            </ul>
-                            <div class="checkout__order__subtotal">Subtotal <span>$750.99</span></div>
-                            <div class="checkout__order__total">Total <span>$750.99</span></div>
-                            <!-- <div class="checkout__input__checkbox"> -->
-                            <!-- <label for="acc-or">
-                                    Create an account?
-                                    <input type="checkbox" id="acc-or">
-                                    <span class="checkmark"></span>
-                                </label> -->
-                            <!-- </div> -->
-                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt
-                                ut labore et dolore magna aliqua.</p>
+                            <table class="checkout__order__products">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($selectedItems as $item)
+                                    <tr>
+                                        <td>{{ $item->inventory->product_name }}</td>
+                                        <td>{{ $item->quantity }}</td>
+                                        <td>₱{{ number_format($item->inventory->price * $item->quantity, 2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <!-- <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>   -->
+                            <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                             <div class="checkout__input__checkbox">
                                 <label for="payment">
                                     Check Payment
@@ -95,5 +83,26 @@
         </div>
     </div>
 </section>
+<style>
+    .checkout__order__products {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
+    .checkout__order__products th,
+    .checkout__order__products td {
+        border: 1px solid #ddd;
+        padding: 7px;
+    }
+
+    .checkout__order__products th {
+        background-color: #f2f2f2;
+        text-align: left;
+    }
+
+    .checkout__order__products td {
+        font-weight: normal;
+    }
+</style>
 @endsection

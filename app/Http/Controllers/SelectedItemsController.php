@@ -89,16 +89,25 @@ class SelectedItemsController extends Controller
                 ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
         }])->get();
 
-        dd($users);
+        // dd($users);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function orders(Request $request)
     {
-        //
+        $user = Auth::user();
+
+        $selectedItems = SelectedItems::where('user_id', $user->id)
+            ->where('status', '!=', 'forCheckout')
+            ->with('inventory')
+            ->orderBy('created_at', 'desc')
+            ->paginate(6);
+
+        return view('selectedItems.orders', compact('selectedItems'));
     }
+
 
     /**
      * Display the specified resource.

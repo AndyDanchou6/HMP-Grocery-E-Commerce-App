@@ -67,15 +67,15 @@
         <div class="col-lg-3">
             <div class="header__cart">
                 <ul>
-                    <li><a href="#"><i class="fa fa-heart"></i> <span style="background-color: #696cff;">1</span></a></li>
-                    <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-bag"></i> <span style="background-color: #696cff;"></span></a></li>
+                    <!-- <li><a href="#"><i class="fa fa-heart"></i> <span style="background-color: #696cff;">1</span></a></li> -->
+                    <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
                 </ul>
-                <div class=" header__cart__price">item: <span>$150.00</span>
-                </div>
+                <!-- <div class=" header__cart__price">item: <span>$150.00</span> -->
             </div>
         </div>
     </div>
-    <div class="humberger__open">
-        <i class="fa fa-bars"></i>
-    </div>
+</div>
+<div class="humberger__open">
+    <i class="fa fa-bars"></i>
+</div>
 </div>

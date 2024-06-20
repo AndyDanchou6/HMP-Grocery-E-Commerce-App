@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SelectedItems;
@@ -28,9 +29,12 @@ class CartController extends Controller
     public function checkout(Request $request)
     {
         try {
+            // get the authenticated user
             $user = Auth::user();
+
             $itemIds = $request->input('items');
-            $orderRetrievalType = $request->input('orderRetrievalType'); // This should now match the migration
+
+            $orderRetrievalType = $request->input('orderRetrievalType');
 
             if (!is_array($itemIds) || empty($itemIds)) {
                 return response()->json(['success' => false, 'message' => 'No items selected.']);
@@ -50,12 +54,11 @@ class CartController extends Controller
                     'order_retrieval' => $orderRetrievalType,
                     'status' => 'forCheckout'
                 ]);
-                $item->delete(); // Remove from cart after moving to selected items
+                $item->delete();
             }
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            // Log the error for debugging
             Log::error('Checkout Error: ' . $e->getMessage());
 
             return response()->json(['success' => false, 'message' => 'An error occurred during checkout.']);
@@ -71,27 +74,42 @@ class CartController extends Controller
         $user = Auth::user();
         $items = $request->input('items');
 
-        foreach ($items as $product_id => $quantity) {
+        foreach ($items as $inventory_id => $quantity) {
+            $inventory = Inventory::find($inventory_id);
 
-            $cartItem = Cart::where('user_id', $user->id)
-                ->where('product_id', $product_id)
-                ->first();
+            if ($inventory) {
+                // Ensure available quantity
+                if ($quantity > $inventory->quantity) {
+                    $quantity = $inventory->quantity;
+                }
 
-            if ($cartItem) {
-                $cartItem->quantity += $quantity;
-                $cartItem->save();
-            } else {
-                Cart::create([
-                    'user_id' => $user->id,
-                    'product_id' => $product_id,
-                    'quantity' => $quantity,
-                ]);
+                $cartItem = Cart::where('user_id', $user->id)
+                    ->where('product_id', $inventory_id)
+                    ->first();
+
+                if ($cartItem) {
+                    // Update existing cart item
+                    $newQuantity = $cartItem->quantity + $quantity;
+
+                    // Limit the quantity to available inventory
+                    if ($newQuantity > $inventory->quantity) {
+                        $newQuantity = $inventory->quantity;
+                    }
+
+                    $cartItem->quantity = $newQuantity;
+                    $cartItem->save();
+                } else {
+                    Cart::create([
+                        'user_id' => $user->id,
+                        'product_id' => $inventory_id,
+                        'quantity' => $quantity,
+                    ]);
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'Products added to cart successfully.');
+        return redirect()->back();
     }
-
     /**
      * Display the specified resource.
      */
@@ -116,12 +134,19 @@ class CartController extends Controller
         $quantities = $request->input('quantities', []);
         foreach ($quantities as $cartId => $quantity) {
             $cart = Cart::find($cartId);
+
             if ($cart) {
-                $cart->quantity = $quantity;
-                $cart->save();
+                $inventory = $cart->inventory;
+                if ($inventory) {
+                    if ($quantity > $inventory->quantity) {
+                        $quantity = $inventory->quantity;
+                    }
+                    $cart->quantity = $quantity;
+                    $cart->save();
+                }
             }
         }
-        return redirect()->back()->with('success', 'Updated successfully.');
+        return redirect()->back();
     }
 
     /**
@@ -142,6 +167,6 @@ class CartController extends Controller
 
         $user->delete();
 
-        return redirect()->back()->with('success', 'Deleted successfully.');
+        return redirect()->back();
     }
 }
