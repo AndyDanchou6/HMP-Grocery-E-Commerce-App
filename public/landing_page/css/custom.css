@@ -335,7 +335,7 @@ section .content-wrapper .contents {
 }
 
 #contact .content-wrapper .contact-info .map {
-    height: 280px;
+    height: 275px;
     width: 100%;
     background-image: url("../../temporary_img/adddress-map.png");
     background-position: center;

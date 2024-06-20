@@ -24,7 +24,32 @@ class SelectedItemsController extends Controller
                     ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
             }])->get();
 
-            return view('selectedItems.forPackaging', compact('users'));
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $user->phone,
+                            'fb_link' => $user->fb_link,
+                            'address' => $user->address,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                        ];
+
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    } else {
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    }
+                }
+            }
+
+            return view('selectedItems.forPackaging', compact('userByReference'));
         }
     }
 
@@ -39,10 +64,35 @@ class SelectedItemsController extends Controller
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
             }])->get();
 
-            return view('selectedItems.forDelivery', compact('users'));
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $user->phone,
+                            'fb_link' => $user->fb_link,
+                            'address' => $user->address,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                        ];
+
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    } else {
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    }
+                }
+            }
+
+            return view('selectedItems.forDelivery', compact('userByReference'));
         }
     }
 
@@ -57,10 +107,35 @@ class SelectedItemsController extends Controller
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
             }])->get();
 
-            return view('selectedItems.forPickup', compact('users'));
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $user->phone,
+                            'fb_link' => $user->fb_link,
+                            'address' => $user->address,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                        ];
+
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    } else {
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    }
+                }
+            }
+
+            return view('selectedItems.forPickup', compact('userByReference'));
         }
     }
 

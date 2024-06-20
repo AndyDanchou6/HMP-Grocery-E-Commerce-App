@@ -53,6 +53,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    // public function selectedItems()
+    // {
+    //     return $this->hasMany(SelectedItems::class);
+    // }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
