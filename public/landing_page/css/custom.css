@@ -335,7 +335,7 @@ section .content-wrapper .contents {
 }
 
 #contact .content-wrapper .contact-info .map {
-    flex-grow: 1;
+    height: 280px;
     width: 100%;
     background-image: url("../../temporary_img/adddress-map.png");
     background-position: center;
@@ -343,6 +343,7 @@ section .content-wrapper .contents {
     background-size: cover;
     margin-top: 20px;
     box-shadow: 0 0 5px rgb(139, 139, 139);
+    border-radius: 10px;
 }
 
 #contact .content-wrapper .contact-info p {
@@ -396,6 +397,10 @@ section .content-wrapper .contents {
 
     section .content-wrapper .contents {
         width: 80%;
+    }
+
+    #contact .content-wrapper .inquiries {
+        margin-top: 30px;
     }
 
     #contact .content-wrapper .inquiries form {
