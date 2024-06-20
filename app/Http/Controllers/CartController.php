@@ -38,14 +38,17 @@ class CartController extends Controller
 
             $items = Cart::whereIn('id', $itemIds)->where('user_id', $user->id)->get();
 
+            $referenceNo = rand(100000, 999999);
+
             foreach ($items as $item) {
                 SelectedItems::create([
-                    'referenceNo' => rand(100000, 999999),
+                    'referenceNo' => $referenceNo,
                     'user_id' => $user->id,
                     'item_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'price' => $item->inventory->price,
-                    'order_retrieval' => $orderRetrievalType
+                    'order_retrieval' => $orderRetrievalType,
+                    'status' => 'forCheckout'
                 ]);
                 $item->delete(); // Remove from cart after moving to selected items
             }

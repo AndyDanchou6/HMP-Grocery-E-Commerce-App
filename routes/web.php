@@ -88,3 +88,6 @@ Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDe
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
 Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
+
+Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
+Route::get('/check1', [shopController::class, 'placeOrder']);
