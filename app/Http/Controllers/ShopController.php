@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\SelectedItems;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class ShopController extends Controller
 {
@@ -36,23 +38,27 @@ class ShopController extends Controller
      */
     public function shop(Request $request)
     {
-        $query = $request->input('query');
-        $categoryFilter = $request->input('category');
-        $category = Category::all();
+        if (!Auth::check()) {
+            return redirect()->route('error404');
+        } else {
+            $query = $request->input('query');
+            $categoryFilter = $request->input('category');
+            $category = Category::all();
 
-        $inventory = Inventory::with('reviews', 'category')
-            ->when($query, function ($queryBuilder) use ($query) {
-                $queryBuilder->where('product_name', 'LIKE', "%$query%")
-                    ->orWhere('description', 'LIKE', "%$query%")
-                    ->orWhere('information', 'LIKE', "%$query%");
-            })
-            ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
-                $queryBuilder->where('category_id', $categoryFilter);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(6);
+            $inventory = Inventory::with('reviews', 'category')
+                ->when($query, function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('product_name', 'LIKE', "%$query%")
+                        ->orWhere('description', 'LIKE', "%$query%")
+                        ->orWhere('information', 'LIKE', "%$query%");
+                })
+                ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
+                    $queryBuilder->where('category_id', $categoryFilter);
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(6);
 
-        return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
+            return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
+        }
     }
 
     /**
@@ -60,59 +66,105 @@ class ShopController extends Controller
      */
     public function details(string $id)
     {
-        $category = Category::all();
-        $product = Inventory::findOrFail($id);
+        if (!Auth::check()) {
+            return redirect()->route('error404');
+        } else {
+            $category = Category::all();
+            $product = Inventory::findOrFail($id);
 
-        $reviews = $product->reviews()->with('users')->paginate(5);
+            $reviews = $product->reviews()->with('users')->paginate(5);
 
-        return view('shop.details', compact('product', 'category', 'reviews'));
+            return view('shop.details', compact('product', 'category', 'reviews'));
+        }
     }
 
     public function checkout()
     {
-        $category = Category::all();
-        $user = Auth::user();
+        if (!Auth::check()) {
+            return redirect()->route('error404');
+        } else {
+            $category = Category::all();
+            $user = Auth::user();
 
-        $selectedItems = SelectedItems::with('inventory')
-            ->where('user_id', $user->id)
-            ->where('status', 'forCheckout')->get();
+            $selectedItems = SelectedItems::with('inventory')
+                ->where('user_id', $user->id)
+                ->where('status', 'forCheckout')->get();
 
-        $subtotal = $selectedItems->sum(function ($item) {
-            return $item->inventory->price * $item->quantity;
-        });
+            if ($selectedItems->isEmpty()) {
+                abort(404);
+            }
 
-        $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
+            $subtotal = $selectedItems->sum(function ($item) {
+                return $item->inventory->price * $item->quantity;
+            });
+
+            $total = $subtotal;
+
+            return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
+        }
     }
 
     public function placeOrder(Request $request)
     {
         $user = Auth::user();
 
-        $selectedItems = SelectedItems::with('inventory')
-            ->where('user_id', $user->id)
-            ->where('status', 'forCheckout')->get();
+        try {
+            // Retrieve selected items from SelectedItems model
+            $selectedItems = SelectedItems::with('inventory')
+                ->where('user_id', $user->id)
+                ->where('status', 'forCheckout')
+                ->get();
 
-        foreach ($selectedItems as $item) {
-            // Update the item status to 'forPackage'
-            $item->update([
-                'status' => 'forPackage'
-            ]);
+            // Update status of selected items and adjust inventory quantities
+            foreach ($selectedItems as $item) {
+                $item->update([
+                    'status' => 'forPackage'
+                ]);
 
-            // Check if the item's status is 'forPackage'
-            if ($item->status === 'forPackage') {
-                // Calculate the new inventory quantity
+                // Deduct quantity from inventory
                 $newQuantity = $item->inventory->quantity - $item->quantity;
-
-                // Update the inventory quantity
                 $item->inventory->update([
                     'quantity' => $newQuantity
                 ]);
             }
-        }
 
-        return redirect()->route('shop.index')->with('success', 'Thank you for shopping, come buy again!');
+            // Return success response
+            return redirect()->route('shop.products')->with('success', 'Thank you for shopping, come buy again!');
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Place Order Error: ' . $e->getMessage());
+
+            // Redirect back with error message
+            return redirect()->back()->with('error', 'An error occurred during order placement.');
+        }
+    }
+
+    public function cancelCheckout(Request $request)
+    {
+        $user = Auth::user();
+
+        try {
+            $selectedItems = SelectedItems::where('user_id', $user->id)
+                ->where('status', 'forCheckout')
+                ->get();
+
+            foreach ($selectedItems as $selectedItem) {
+                Cart::create([
+                    'user_id' => $user->id,
+                    'product_id' => $selectedItem->item_id,
+                    'quantity' => $selectedItem->quantity
+                ]);
+
+                $selectedItem->delete();
+            }
+
+            return redirect()->route('shop.carts');
+        } catch (\Exception $e) {
+            Log::error('Cancel Checkout Error: ' . $e->getMessage());
+
+            return redirect()->route('shop.carts');
+        }
     }
 
 
@@ -149,18 +201,22 @@ class ShopController extends Controller
      */
     public function carts()
     {
-        $user = Auth::user();
-        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+        if (empty(Auth::user()->role)) {
+            return redirect()->route('error404');
+        } else {
+            $user = Auth::user();
+            $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
 
-        $subtotal = $carts->sum(function ($item) {
-            return $item->inventory->price * $item->quantity;
-        });
+            $subtotal = $carts->sum(function ($item) {
+                return $item->inventory->price * $item->quantity;
+            });
 
-        $total = $subtotal;
+            $total = $subtotal;
 
-        $category = Category::all();
+            $category = Category::all();
 
-        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total'));
+            return view('shop.carts', compact('category', 'carts', 'subtotal', 'total'));
+        }
     }
 
     /**

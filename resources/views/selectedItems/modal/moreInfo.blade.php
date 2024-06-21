@@ -71,7 +71,9 @@
                     <div class="col-sm-3" style="margin-top: 30px;">
                         <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
                     </div>
-
+                    <div class="col-sm-3" style="margin-top: 30px; margin-right: 30px">
+                    <input type="text" class="form-control" style="width: 200px;" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y') }}" readonly>
+                    </div>
                     <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST">
                         @csrf
                         @method('POST')

@@ -29,13 +29,6 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="shoping__product">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="selectAll">
-                                            <label class="form-check-label" for="selectAll">
-                                            </label>
-                                        </div>
-                                    </th>
                                     <th class="shoping__product">Products</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
@@ -47,12 +40,6 @@
                                 @if($carts->count() > 0)
                                 @foreach($carts as $item)
                                 <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input cart-checkbox" type="checkbox" name="selected_items[]" value="{{ $item->id }}" data-price="{{ $item->inventory->price }}">
-                                        </div>
-                                    </td>
-                                    @if($item->order_retrieval == 'delivery')
                                     <td class="shoping__cart__item">
                                         <img src="{{ asset('storage/' . $item->inventory->product_img) }}" alt="" style="width: 100px; height: 100px">
                                         <h5>{{ $item->inventory->product_name }}</h5>
@@ -60,15 +47,6 @@
                                     <td class="shoping__cart__price">
                                         ₱{{ number_format($item->inventory->price, 2) }}
                                     </td>
-                                    @else
-                                    <td class="shoping__cart__item">
-                                        <img src="{{ asset('storage/' . $item->inventory->product_img) }}" alt="" style="width: 100px; height: 100px">
-                                        <h5>{{ $item->inventory->product_name }}</h5>
-                                    </td>
-                                    <td class="shoping__cart__price">
-                                        ₱{{ number_format($item->inventory->price, 2) }}
-                                    </td>
-                                    @endif
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty">
@@ -88,7 +66,7 @@
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="6" class="text-center">No carts found.</td>
+                                    <td colspan="5" class="text-center">No carts found.</td>
                                 </tr>
                                 @endif
                             </tbody>
@@ -126,6 +104,7 @@
                                     <option value="delivery">Delivery</option>
                                     <option value="pickup">Pick-up</option>
                                 </select>
+                                <small class="text-danger">* Please select order retrieval type before proceeding to checkout.</small>
                             </div>
                         </div>
                     </div>
@@ -142,16 +121,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         function updateTotal() {
             let subtotal = 0;
-            document.querySelectorAll('.cart-checkbox:checked').forEach(function(checkbox) {
-                let price = parseFloat(checkbox.getAttribute('data-price'));
-                let quantity = parseFloat(checkbox.closest('tr').querySelector('.item-quantity').value);
-                let itemTotal = price * quantity;
-                subtotal += itemTotal;
+            document.querySelectorAll('.item-subtotal').forEach(function(subtotalElement) {
+                subtotal += parseFloat(subtotalElement.textContent.replace('₱', '').replace(',', ''));
             });
 
             let total = subtotal;
 
-            document.getElementById('subtotal').textContent = '₱' + formatAmount(subtotal);;
+            document.getElementById('subtotal').textContent = '₱' + formatAmount(subtotal);
             document.getElementById('total').textContent = '₱' + formatAmount(total);
         }
 
@@ -159,15 +135,7 @@
             return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
 
-        document.getElementById('selectAll').addEventListener('change', function() {
-            let isChecked = this.checked;
-            document.querySelectorAll('.cart-checkbox').forEach(function(checkbox) {
-                checkbox.checked = isChecked;
-            });
-            updateTotal();
-        });
-
-        document.querySelectorAll('.cart-checkbox, .item-quantity').forEach(function(element) {
+        document.querySelectorAll('.item-quantity').forEach(function(element) {
             element.addEventListener('change', function() {
                 updateTotal();
             });
@@ -198,37 +166,31 @@
         });
 
         document.getElementById('checkoutButton').addEventListener('click', function() {
-            let selectedItems = [];
-            document.querySelectorAll('.cart-checkbox:checked').forEach(function(checkbox) {
-                selectedItems.push(checkbox.value);
-            });
-
             let orderRetrievalType = document.getElementById('orderRetrievalType').value;
 
-            if (selectedItems.length > 0) {
-                fetch('{{ route("carts.checkout") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        items: selectedItems,
-                        orderRetrievalType: orderRetrievalType
-                    })
-                }).then(response => response.json()).then(data => {
-                    if (data.success) {
-                        window.location.href = "{{ route('shop.checkout') }}";
-                    } else {
-                        alert('An error occurred during checkout.');
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred during checkout.');
+            if (!orderRetrievalType) {
+                swal({
+                    title: "Oops",
+                    text: "Please select order retrieval type before proceeding to checkout.",
+                    icon: "error",
+                    button: "Ok",
                 });
-            } else {
-                alert('Please select at least one item to proceed to checkout.');
             }
+
+            fetch('{{ route("carts.checkout") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    orderRetrievalType: orderRetrievalType
+                })
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    window.location.href = "{{ route('shop.checkout') }}";
+                }
+            })
         });
     });
 </script>

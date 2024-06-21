@@ -83,6 +83,8 @@ Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.produc
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
 Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
 Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])->name('shop.placeOrder');
+Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
+Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
 
 Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
 Route::get('/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');

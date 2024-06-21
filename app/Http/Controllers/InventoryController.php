@@ -83,7 +83,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('success', 'Created successfully.');
+        return redirect()->back()->with('success', 'Created successfully.');
     }
 
     /**
@@ -136,7 +136,7 @@ class InventoryController extends Controller
 
         $item->save();
 
-        return redirect()->route('inventories.index')->with('success', 'Updated successfully.');
+        return redirect()->back()->with('success', 'Updated successfully.');
     }
 
     /**
@@ -147,6 +147,6 @@ class InventoryController extends Controller
         $item = Inventory::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('inventories.index')->with('success', 'Deleted successfully.');
+        return redirect()->back()->with('success', 'Deleted successfully.');
     }
 }

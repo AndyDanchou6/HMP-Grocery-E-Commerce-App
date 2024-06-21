@@ -2,7 +2,6 @@
 
 @section('content')
 @include('layouts.sweetalert')
-
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
@@ -39,34 +38,38 @@
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
                     @if($inventories->count() > 0)
-                    @foreach ($inventories as $inventory)
+                    @foreach ($inventories as $item)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $inventory->category->category_name }}</td>
+                        <td>{{ $item->category->category_name }}</td>
                         <td>
-                            <img src="{{ asset('storage/' . $inventory->product_img) }}" style="width: 45px; height: 45px" alt="Product Image" class="rounded-circle">
+                            <img src="{{ asset('storage/' . $item->product_img) }}" style="width: 45px; height: 45px" alt="Product Image" class="rounded-circle">
                         </td>
-                        <td>{{ $inventory->product_name }}</td>
-                        <td>{{ $inventory->price }}</td>
-                        <td>{{ $inventory->quantity }}</td>
+                        <td>{{ $item->product_name }}</td>
+                        <td>{{ $item->price }}</td>
                         <td>
-                            @if($inventory->quantity !== 0)
+                            @if($item->quantity <= 10) <span class="badge bg-label-danger me-1">{{ $item->quantity }}</span>
+                                @elseif($item->quantity <= 20) <span class="badge bg-label-warning me-1">{{ $item->quantity }}</span>
+                                    @else <span class="badge bg-label-success me-1">{{ $item->quantity }}</span>
+                                    @endif
+                        <td>
+                            @if($item->quantity !== 0)
                             <span class="badge bg-label-success me-1">Available</span>
                             @else
                             <span class="badge bg-label-danger me-1">Out of stock</span>
                             @endif
                         </td>
                         <td>
-                            <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$inventory->id}}">
+                            <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$item->id}}">
                             </a>
                             @include('inventories.modal.information')
                         </td>
                         @if(Auth::user()->role == 'Admin')
                         <td>
-                            <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$inventory->id}}">
+                            <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$item->id}}">
                             </a>
                             @include('inventories.modal.edit')
-                            <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$inventory->id}}">
+                            <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$item->id}}">
                                 <i class="fas fa-trash"></i>
                             </a>
                             @include('inventories.modal.delete')

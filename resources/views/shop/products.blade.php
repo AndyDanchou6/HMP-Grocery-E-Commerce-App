@@ -81,7 +81,9 @@
                     <div class="col-lg-4 col-md-6 col-sm-6 product-item" data-category-id="{{ $item->category_id }}">
                         <div class="product__item">
                             <div class="product__item__pic set-bg text-center">
-                                <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
+                                <a href="{{ route('shop.details', ['id' => $item->id]) }}">
+                                    <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
+                                </a>
                                 <ul class="product__item__pic__hover">
                                     <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
                                     <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
@@ -91,7 +93,14 @@
                             <div class="product__item__text">
                                 <h6><a href="#">{{ $item->product_name }}</a></h6>
                                 <h5>₱{{ $item->price }}.00</h5>
-                                <h6 style="margin-top: 9px;">{{ $item->category->category_name }}</h6>
+                                <h6 style="margin-top: 9px; text-align: center;">{{ $item->category->category_name }}</h6>
+                            </div>
+                            <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <input type="text" name="items[{{ $item->id }}]" value="1" id="quantity" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
