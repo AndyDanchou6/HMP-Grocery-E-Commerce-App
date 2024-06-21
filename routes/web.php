@@ -82,8 +82,10 @@ Route::get('/shop/carts', [shopController::class, 'carts'])->name('shop.carts');
 Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
 Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
 Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
+Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])->name('shop.placeOrder');
 
 Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+Route::get('/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
@@ -91,4 +93,3 @@ Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->na
 
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
-Route::get('/check1', [shopController::class, 'placeOrder']);

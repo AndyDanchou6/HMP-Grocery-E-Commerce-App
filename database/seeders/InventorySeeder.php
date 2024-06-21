@@ -24,8 +24,8 @@ class InventorySeeder extends Seeder
             'category_id' => 1,
             'product_img' => $img1,
             'product_name' => "Melchard's Milky Dicky",
-            'price' => 1000,
-            'quantity' => 10000,
+            'price' => rand(10, 100),
+            'quantity' => rand(15, 50),
             'information' => 'lami ni labaw nag tag iya lami pud',
             'description' => 'lami ni labaw nag tag iya lami pud',
         ]);
@@ -34,8 +34,8 @@ class InventorySeeder extends Seeder
             'category_id' => 2,
             'product_img' => $img2,
             'product_name' => "Melchard's Juicy Meat",
-            'price' => 1000,
-            'quantity' => 10000,
+            'price' => rand(10, 100),
+            'quantity' => rand(15, 50),
             'information' => 'lami ni kaajo murag sa tag iya',
             'description' => 'lami ni labaw nag tag iya lami pud',
         ]);

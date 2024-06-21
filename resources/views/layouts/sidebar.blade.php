@@ -98,6 +98,12 @@
         <div data-i18n="Tables">For Pickup</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('carts.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cart"></i>
+        <div data-i18n=" Tables">Carts</div>
+      </a>
+    </li>
     @endif
     <li id="tables" class="menu-item">
       <a href="{{ route('shop.index') }}" class="menu-link">
@@ -112,9 +118,9 @@
       </a>
     </li>
     <li id="tables" class="menu-item">
-      <a href="{{ route('carts.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-cart"></i>
-        <div data-i18n=" Tables">Carts</div>
+      <a href="{{ route('selectedItems.orders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-list-ul "></i>
+        <div data-i18n="Tables">Orders</div>
       </a>
     </li>
 </aside>
