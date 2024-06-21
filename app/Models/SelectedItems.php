@@ -26,4 +26,9 @@ class SelectedItems extends Model
     {
         return $this->belongsTo(Inventory::class, 'item_id');
     }
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 }
