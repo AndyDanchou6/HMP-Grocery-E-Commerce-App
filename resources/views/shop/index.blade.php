@@ -61,7 +61,7 @@
         <div class="row featured__filter" id="featuredFilter">
             @foreach(App\Models\Inventory::inRandomOrder()->take(8)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
-                <div class="featured__item">
+                <div class="featured__item product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
                     <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center">
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
                         <ul class="featured__item__pic__hover">
@@ -285,5 +285,7 @@
     </div>
 </section>
 <!-- Blog Section End -->
+
+@include('shop.floatingTotal')
 
 @endsection

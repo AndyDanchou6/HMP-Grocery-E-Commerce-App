@@ -9,7 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
-use App\Http\Controllers\shopController;
+use App\Http\Controllers\ShopController;
 use App\Models\Category;
 use App\Models\SelectedItems;
 use Illuminate\Http\Request;
@@ -77,11 +77,11 @@ Route::post('/carts/update', [CartController::class, 'update'])->name('carts.upd
 Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
 
 
-Route::get('/shop', [shopController::class, 'index'])->name('shop.index');
-Route::get('/shop/carts', [shopController::class, 'carts'])->name('shop.carts');
-Route::get('/shop/products', [shopController::class, 'shop'])->name('shop.products');
-Route::get('/shop/products/details/{id}', [shopController::class, 'details'])->name('shop.details');
-Route::get('/shop/products/checkout', [shopController::class, 'checkout'])->name('shop.checkout');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/carts', [ShopController::class, 'carts'])->name('shop.carts');
+Route::get('/shop/products', [ShopController::class, 'shop'])->name('shop.products');
+Route::get('/shop/products/details/{id}', [ShopController::class, 'details'])->name('shop.details');
+Route::get('/shop/products/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
 Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])->name('shop.placeOrder');
 
 Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');

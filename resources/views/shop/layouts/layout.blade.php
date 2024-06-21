@@ -29,9 +29,9 @@
 
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
+    <!-- <div id="preloder">
         <div class="loader"></div>
-    </div>
+    </div> -->
 
     <!-- Humberger Begin -->
     <div class="humberger__menu__overlay"></div>
@@ -206,6 +206,82 @@
             $('.set-bg').each(function() {
                 var bg = $(this).data('setbg');
                 $(this).css('background-image', 'url(' + bg + ')');
+            });
+        });
+
+        function totalItemCost() {
+            var itemSelected = sessionStorage.getItem('selectedItems');
+
+            if (itemSelected != null) {
+
+                var parsedItems = JSON.parse(itemSelected);
+                var totalCost;
+
+                Object.keys(parsedItems).forEach(key => {
+                    var itemPrice = parsedItems[key].item_price;
+                    var itemQuantity = parsedItems[key].item_quantity;
+
+                    if (totalCost != null) {
+                        totalCost += itemPrice * itemQuantity;
+                    } else {
+                        totalCost = itemPrice * itemQuantity;
+                    }
+                });
+
+                return totalCost;
+            }
+
+            return 0;
+
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            var refreshedTotal = document.querySelector('#floating-total input');
+
+            refreshedTotal.value = totalItemCost();
+
+            console.log(totalItemCost());
+
+            const clickedItems = document.querySelectorAll('.product_onDisplay');
+
+            clickedItems.forEach(function(clickedItem) {
+                clickedItem.addEventListener('click', function() {
+                    var itemId = clickedItem.getAttribute('data-item-id');
+                    var itemPrice = clickedItem.getAttribute('data-price');
+
+                    var key = 'item_' + itemId;
+
+                    var storeItem = {
+                        [key]: {
+                            'item_id': itemId,
+                            'item_price': itemPrice,
+                            'item_quantity': 1
+                        }
+                    };
+
+                    var alreadySelected = sessionStorage.getItem('selectedItems');
+                    var parsedSelected = JSON.parse(alreadySelected);
+
+                    if (alreadySelected != null) {
+                        if (parsedSelected[key] != null) {
+                            parsedSelected[key].item_quantity += 1;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        } else {
+                            parsedSelected[key] = {
+                                'item_id': itemId,
+                                'item_price': itemPrice,
+                                'item_quantity': 1
+                            };
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        }
+                    } else {
+                        sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
+                    }
+
+                    var totalField = document.querySelector('#floating-total input');
+                    totalField.value = totalItemCost();
+                });
             });
         });
     </script>

@@ -26,7 +26,7 @@ class ShopSeeder extends Seeder
                 'description' => 'Description for Meat category',
             ],
             [
-                'category_img' => 'products/logo/category3.jpg',
+                'category_img' => 'products/logo/category3.png',
                 'category_name' => 'Meat and Seafood',
                 'description' => 'Description for Dairy category',
             ],
@@ -36,7 +36,7 @@ class ShopSeeder extends Seeder
                 'description' => 'Description for Meat category',
             ],
             [
-                'category_img' => 'products/logo/category5.jpg',
+                'category_img' => 'products/logo/category5.png',
                 'category_name' => 'Bakery and Snacks',
                 'description' => 'Description for Dairy category',
             ],
