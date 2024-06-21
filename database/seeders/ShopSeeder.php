@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Inventory;
 
-class CombinedSeeder extends Seeder
+class ShopSeeder extends Seeder
 {
     /**
      * Run the database seeds.
