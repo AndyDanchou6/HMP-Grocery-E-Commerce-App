@@ -16,11 +16,15 @@ class CartController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
-        $cartTotal = 0;
+        if (Auth::user()->role == 'Admin') {
+            $user = Auth::user();
+            $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+            $cartTotal = 0;
 
-        return view('carts.index', compact('carts', 'cartTotal'));
+            return view('carts.index', compact('carts', 'cartTotal'));
+        } else {
+            return redirect()->route('error404');
+        }
     }
 
     /**
@@ -29,18 +33,19 @@ class CartController extends Controller
     public function checkout(Request $request)
     {
         try {
-            // get the authenticated user
             $user = Auth::user();
-
-            $itemIds = $request->input('items');
 
             $orderRetrievalType = $request->input('orderRetrievalType');
 
-            if (!is_array($itemIds) || empty($itemIds)) {
-                return response()->json(['success' => false, 'message' => 'No items selected.']);
+            if (!$orderRetrievalType) {
+                return response()->json(['success' => false, 'message' => 'Please select order retrieval type before proceeding to checkout.']);
             }
 
-            $items = Cart::whereIn('id', $itemIds)->where('user_id', $user->id)->get();
+            $items = Cart::where('user_id', $user->id)->get();
+
+            if ($items->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'No items found in the cart.']);
+            }
 
             $referenceNo = rand(100000, 999999);
 
@@ -54,6 +59,7 @@ class CartController extends Controller
                     'order_retrieval' => $orderRetrievalType,
                     'status' => 'forCheckout'
                 ]);
+
                 $item->delete();
             }
 
@@ -64,7 +70,6 @@ class CartController extends Controller
             return response()->json(['success' => false, 'message' => 'An error occurred during checkout.']);
         }
     }
-
 
     /**
      * Store a newly created resource in storage.

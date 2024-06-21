@@ -11,30 +11,16 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
                         <div class="checkout__input">
-                            <p>Full name<span></span></p>
-                            <input type="text" name="name" value="{{ $user->name }}" readonly>
+                            <p>Address<span></span></p>
+                            <textarea name="address" id="address" class="form-control"></textarea>
                         </div>
                         <div class="checkout__input">
-                            <p>Address<span></span></p>
-                            <textarea name="address" id="address" class="form-control" readonly>{{ $user->address }}</textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Phone<span></span></p>
-                                    <input type="text" name="phone" value="{{ $user->phone }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Email<span></span></p>
-                                    <input type="text" name="email" value="{{ $user->email }}" readonly>
-                                </div>
-                            </div>
+                            <p>Phone<span></span></p>
+                            <input type="text" name="phone" value="{{ $user->phone }}">
                         </div>
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
-                            <textarea name="fb_link" id="fb_link" class="form-control" readonly>{{ $user->fb_link }}</textarea>
+                            <textarea name="fb_link" id="fb_link" class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
@@ -58,7 +44,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <!-- <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>   -->
+                            <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
                             <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                             <div class="checkout__input__checkbox">
@@ -80,29 +66,11 @@
                     </div>
                 </div>
             </form>
+            <form action="{{ route('shop.cancelCheckout') }}" method="POST" style="margin-top: 20px;">
+                @csrf
+                <button type="submit" class="site-btn" style="background-color: #ff6961;">CANCEL CHECKOUT</button>
+            </form>
         </div>
     </div>
 </section>
-<style>
-    .checkout__order__products {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .checkout__order__products th,
-    .checkout__order__products td {
-        border: 1px solid #ddd;
-        padding: 7px;
-    }
-
-    .checkout__order__products th {
-        background-color: #f2f2f2;
-        text-align: left;
-    }
-
-    .checkout__order__products td {
-        font-weight: normal;
-    }
-</style>
 @endsection

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SelectedItems;
+use App\Models\Inventory;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -23,6 +26,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $package = SelectedItems::where('status', 'forPackage')->count();
+        $delivery = SelectedItems::where('status', 'readyForRetrieval ')->where('order_retrieval', 'delivery')->count();
+        $pickup = SelectedItems::where('status', 'readyForRetrieval')->where('order_retrieval', 'pickup')->count();
+        $products = Inventory::where('quantity', '<=', 10)->get();
+        $categories = Category::pluck('category_name', 'id');
+
+        return view('home', compact('package', 'delivery', 'pickup', 'products', 'categories'));
     }
 }

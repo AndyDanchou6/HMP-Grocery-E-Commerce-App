@@ -3556,3 +3556,24 @@ ol {
 .mix-categories[style*="opacity: 0"] {
     pointer-events: none;
 }
+
+.checkout__order__products {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.checkout__order__products th,
+.checkout__order__products td {
+    border: 1px solid #ddd;
+    padding: 7px;
+}
+
+.checkout__order__products th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.checkout__order__products td {
+    font-weight: normal;
+}

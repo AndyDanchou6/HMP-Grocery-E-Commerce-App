@@ -14,7 +14,7 @@ class SelectedItemsController extends Controller
      */
     public function forPackaging()
     {
-        if (empty(Auth::user()->role)) {
+        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Delivery_Driver')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
@@ -55,7 +55,7 @@ class SelectedItemsController extends Controller
 
     public function forDelivery()
     {
-        if (empty(Auth::user()->role)) {
+        if (!Auth::check() || (Auth::user()->role == 'Customer')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
@@ -98,7 +98,7 @@ class SelectedItemsController extends Controller
 
     public function forPickup()
     {
-        if (empty(Auth::user()->role)) {
+        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Delivery_Driver')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
@@ -156,13 +156,17 @@ class SelectedItemsController extends Controller
 
         //     return view('selectedItems.forPackaging', compact('users'));
         // }
+        if (!Auth::check() || !(Auth::user()->role != 'Admin' && Auth::user()->role == 'Delivery_Driver')) {
+            return redirect()->route('error404');
+        } else {
+            $users = User::whereHas('selectedItems', function ($query) {
+                $query->where('selected_items.status', 'forCheckout');
+            })->with(['selectedItems' => function ($query) {
+                $query->where('selected_items.status', 'forCheckout')
+                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
+            }])->get();
+        }
 
-        $users = User::whereHas('selectedItems', function ($query) {
-            $query->where('selected_items.status', 'forCheckout');
-        })->with(['selectedItems' => function ($query) {
-            $query->where('selected_items.status', 'forCheckout')
-                ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
-        }])->get();
 
         // dd($users);
     }
