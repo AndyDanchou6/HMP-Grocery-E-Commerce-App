@@ -19,6 +19,10 @@ class SelectedItems extends Model
         'item_id',
         'status',
         'quantity',
+        'phone',
+        'address',
+        'fb_link',
+        'courier_id',
         'order_retrieval',
     ];
 
@@ -27,8 +31,13 @@ class SelectedItems extends Model
         return $this->belongsTo(Inventory::class, 'item_id');
     }
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function courier()
+    {
+        return $this->belongsTo(User::class, 'courier_id');
+    }
 }

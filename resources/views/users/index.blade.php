@@ -38,6 +38,8 @@
                         <td>
                             @if($user->role == 'Admin')
                             <span class="badge bg-label-success me-1">Admin</span>
+                            @elseif($user->role == 'Courier')
+                            <span class="badge bg-label-info me-1">Courier</span>
                             @else
                             <span class="badge bg-label-primary me-1">Customer</span>
                             @endif

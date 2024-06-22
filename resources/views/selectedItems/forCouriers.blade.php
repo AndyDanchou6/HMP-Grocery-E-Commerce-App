@@ -13,8 +13,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Reference No.</th>
                         <th>User Name</th>
+                        <th>Reference No.</th>
                         <th>Facebook</th>
                         <th>Address</th>
                         <th>Items</th>
@@ -24,14 +24,15 @@
                     @if(count($userByReference) > 0)
                     @foreach ($userByReference as $user)
                     <tr>
+                        <td style="display: none;" class="id-field">{{ $user['id'] }}</td>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user['referenceNo'] }}</td>
                         <td>{{ $user['name'] }}</td>
+                        <td>{{ $user['referenceNo'] }}</td>
                         <td>{{ $user['fb_link'] }}</td>
                         <td>{{ $user['address'] }}</td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.readyPackage')
+                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#deliverInfo{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            @include('selectedItems.modal.deliveryInfo')
                         </td>
                     </tr>
                     @endforeach
@@ -47,7 +48,7 @@
 </div>
 
 @endsection
-<!-- Edit subtotal and total -->
+
 @section('customScript')
 <script>
     addEventListener('DOMContentLoaded', function() {

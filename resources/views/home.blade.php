@@ -40,7 +40,7 @@
             <div class="card shadow-none bg-transparent border border-info mb-3">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-bag  me-2"></i>
+                        <i class="bi bi-bag me-2"></i>
                         <h5 class="card-title mb-0">Pickup</h5>
                         <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $pickup }}</span>
                     </div>
@@ -50,6 +50,8 @@
                 </div>
             </div>
         </div>
+
+
 
         <div class="col-md-12">
             <div class="card">
@@ -106,5 +108,37 @@
         </div>
     </div>
 </div>
+@elseif(Auth::user()->role == 'Courier')
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-none bg-transparent border border-info mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-truck me-2"></i>
+                        <h5 class="card-title mb-0">Delivery Request</h5>
+                        <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $deliveryRequest }}</span>
+                    </div>
+                    <a href="{{ route('selectedItems.courierDashboard') }}">
+                        <button class="btn btn-info btn-sm mt-3">View here</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-none bg-transparent border border-success mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-truck me-2"></i>
+                        <h5 class="card-title mb-0">Complete Delivery</h5>
+                        <span class="badge bg-success ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $delivered }}</span>
+                    </div>
+                    <button class="btn btn-success btn-sm mt-3">View here</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endif
+
 @endsection

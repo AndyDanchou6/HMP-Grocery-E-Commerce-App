@@ -19,7 +19,13 @@ return new class extends Migration
             $table->string('status')->nullable()->default('forPackage');
             $table->string('order_retrieval')->nullable();
             $table->integer('quantity')->default(1);
+            $table->unsignedBigInteger('courier_id')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('fb_link')->nullable();
             $table->timestamps();
+
+            $table->foreign('courier_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('inventories')->onDelete('cascade');
         });

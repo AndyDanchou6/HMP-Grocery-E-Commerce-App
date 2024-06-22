@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function selectedItems()
     {
-        return $this->belongsToMany(Inventory::class, 'selected_items', 'user_id', 'item_id')
+        return $this->belongsToMany(Inventory::class, 'selected_items', 'user_id', 'item_id',)
             ->withPivot('referenceNo')
             ->withTimestamps();
     }

@@ -14,14 +14,14 @@ class SelectedItemsController extends Controller
      */
     public function forPackaging()
     {
-        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Delivery_Driver')) {
+        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
                 $query->where('selected_items.status', 'forPackage');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'forPackage')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+                    ->select('inventories.*', 'selected_items.*');
             }])->get();
 
             $userByReference = [];
@@ -35,9 +35,9 @@ class SelectedItemsController extends Controller
                             'referenceNo' => $item->referenceNo,
                             'name' => $user->name,
                             'email' => $user->email,
-                            'phone' => $user->phone,
-                            'fb_link' => $user->fb_link,
-                            'address' => $user->address,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -48,14 +48,18 @@ class SelectedItemsController extends Controller
                     }
                 }
             }
+            // dd($userByReference);
 
-            return view('selectedItems.forPackaging', compact('userByReference'));
+            $couriers = User::where('role', 'Courier')->get();
+            // dd($courier[0]->id);
+            return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
         }
     }
 
+
     public function forDelivery()
     {
-        if (!Auth::check() || (Auth::user()->role == 'Customer')) {
+        if (!Auth::check() || !(Auth::user()->role == 'Admin')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
@@ -64,7 +68,7 @@ class SelectedItemsController extends Controller
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+                    ->select('inventories.*', 'selected_items.*');
             }])->get();
 
             $userByReference = [];
@@ -73,14 +77,16 @@ class SelectedItemsController extends Controller
                 foreach ($user->selectedItems as $item) {
 
                     if (!isset($userByReference[$item->referenceNo])) {
+                        $courier = User::find($item->courier_id);
                         $userByReference[$item->referenceNo] = [
                             'id' => $user->id,
                             'referenceNo' => $item->referenceNo,
                             'name' => $user->name,
                             'email' => $user->email,
-                            'phone' => $user->phone,
-                            'fb_link' => $user->fb_link,
-                            'address' => $user->address,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
+                            'courier_id' => $courier ? $courier->name : 'Unknown',
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -98,7 +104,7 @@ class SelectedItemsController extends Controller
 
     public function forPickup()
     {
-        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Delivery_Driver')) {
+        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
@@ -139,6 +145,58 @@ class SelectedItemsController extends Controller
         }
     }
 
+    public function courierDashboard()
+    {
+        if (Auth::user()->role == 'Courier') {
+            $courier = Auth::user();
+
+            // Query to fetch users who have selected items assigned to the authenticated courier
+            $users = User::whereHas('selectedItems', function ($query) use ($courier) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'delivery')
+                    ->where('selected_items.courier_id', $courier->id);
+            })->with(['selectedItems' => function ($query) use ($courier) {
+                $query->where('selected_items.status', 'readyForRetrieval')
+                    ->where('selected_items.order_retrieval', 'delivery')
+                    ->where('selected_items.courier_id', $courier->id)
+                    ->select('selected_items.*', 'inventories.*');
+            }])->get();
+
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                        ];
+
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    } else {
+                        $userByReference[$item->referenceNo]['items'][] = $item;
+                    }
+                }
+            }
+
+            // Fetch courier name
+            $courierName = $courier->name;
+
+            // Return the view with compacted data
+            return view('selectedItems.forCouriers', compact('userByReference', 'courierName', 'courier'));
+        } else {
+            return redirect()->route('error404');
+        }
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -176,15 +234,19 @@ class SelectedItemsController extends Controller
      */
     public function orders(Request $request)
     {
-        $user = Auth::user();
+        if (Auth::user()->role == 'Courier') {
+            return redirect()->route('error404');
+        } else {
+            $user = Auth::user();
 
-        $selectedItems = SelectedItems::where('user_id', $user->id)
-            ->where('status', '!=', 'forCheckout')
-            ->with('inventory')
-            ->orderBy('created_at', 'desc')
-            ->paginate(6);
+            $selectedItems = SelectedItems::where('user_id', $user->id)
+                ->where('status', '!=', 'forCheckout')
+                ->with('inventory')
+                ->orderBy('created_at', 'desc')
+                ->paginate(6);
 
-        return view('selectedItems.orders', compact('selectedItems'));
+            return view('selectedItems.orders', compact('selectedItems'));
+        }
     }
 
 
@@ -220,9 +282,19 @@ class SelectedItemsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SelectedItems $selectedItems)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'phone' => 'required',
+            'address' => 'required',
+            'fb_link' => 'required'
+        ]);
+
+        SelectedItems::create([
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'fb_link' => $request->input('fb_link')
+        ]);
     }
 
     /**
@@ -235,26 +307,29 @@ class SelectedItemsController extends Controller
 
     public function updateStatus(Request $request, string $referenceNo)
     {
-        $selectedItems  = SelectedItems::where('referenceNo', $referenceNo)->get();
+        $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
 
         foreach ($selectedItems as $item) {
-
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
-                $item->save();
             } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
                     $item->status = 'delivered';
-                    $item->save();
                 } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
-                    $item->save();
                 }
             }
+
+            if ($request->has('courier_id')) {
+                $item->courier_id = $request->courier_id;
+            }
+
+            $item->save();
         }
 
         return redirect()->back();
     }
+
 
     /**
      * Remove the specified resource from storage.

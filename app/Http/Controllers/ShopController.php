@@ -119,7 +119,10 @@ class ShopController extends Controller
             // Update status of selected items and adjust inventory quantities
             foreach ($selectedItems as $item) {
                 $item->update([
-                    'status' => 'forPackage'
+                    'status' => 'forPackage',
+                    'phone' => $request->input('phone'),
+                    'address' => $request->input('address'),
+                    'fb_link' => $request->input('fb_link'),
                 ]);
 
                 // Deduct quantity from inventory
@@ -130,7 +133,7 @@ class ShopController extends Controller
             }
 
             // Return success response
-            return redirect()->route('shop.products')->with('success', 'Thank you for shopping, come buy again!');
+            return redirect()->route('shop.index')->with('success', 'Thank you for shopping, come buy again!');
         } catch (\Exception $e) {
             // Log the error
             Log::error('Place Order Error: ' . $e->getMessage());
