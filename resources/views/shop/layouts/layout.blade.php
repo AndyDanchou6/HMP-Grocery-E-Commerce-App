@@ -232,56 +232,113 @@
             }
 
             return 0;
+        }
 
+        function stashItemsSelected(itemPrice, itemId, operation) {
+            var key = 'item_' + itemId;
+
+            var storeItem = {
+                [key]: {
+                    'item_id': itemId,
+                    'item_price': itemPrice,
+                    'item_quantity': 1
+                }
+            };
+
+            var alreadySelected = sessionStorage.getItem('selectedItems');
+            var parsedSelected = JSON.parse(alreadySelected);
+
+            //      Store in session storage an object with items selected (converted to string)
+
+            if (alreadySelected != null) { // Check if there are selected items
+                if (parsedSelected[key] != null && operation == 'increment') { // Check if item is selected already and increment
+                    parsedSelected[key].item_quantity += 1;
+                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                }
+
+                if (parsedSelected[key] != null && operation == 'decrement' && parsedSelected[key].item_quantity != 0) { // Check if item is selected already and decrement
+                    parsedSelected[key].item_quantity -= 1;
+                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                }
+
+                if (parsedSelected[key] == null && operation == 'increment') {
+                    parsedSelected[key] = { // If item is already selected
+                        'item_id': itemId,
+                        'item_price': itemPrice,
+                        'item_quantity': 1
+                    };
+                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                }
+            } else { // If no item is selected yet
+                sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
 
-            var refreshedTotal = document.querySelector('#floating-total input');
+            var totalField = document.querySelector('#floating-total input');
 
-            refreshedTotal.value = totalItemCost();
-
-            console.log(totalItemCost());
+            totalField.value = totalItemCost(); // Loads the Total cost
 
             const clickedItems = document.querySelectorAll('.product_onDisplay');
 
+            const itemQuantityFields = document.querySelectorAll('.quantityInput');
+
+            itemQuantityFields.forEach(function(fields) {
+
+                var storedSelectedItems = sessionStorage.getItem('selectedItems');
+                var parsedSelectedItems = JSON.parse(storedSelectedItems);
+
+                var itemIdentifier = 'item_' + fields.getAttribute('data-item-id');
+
+                if (parsedSelectedItems) {
+                    if (parsedSelectedItems[itemIdentifier]) {
+                    fields.value = parsedSelectedItems[itemIdentifier].item_quantity;
+                }
+                }
+                
+            })
+
             clickedItems.forEach(function(clickedItem) {
-                clickedItem.addEventListener('click', function() {
+
+                clickedItem.addEventListener('click', function() { // Listens to every click on items
+
                     var itemId = clickedItem.getAttribute('data-item-id');
                     var itemPrice = clickedItem.getAttribute('data-price');
 
-                    var key = 'item_' + itemId;
+                    stashItemsSelected(itemPrice, itemId, 'increment'); // Stores the selected item
 
-                    var storeItem = {
-                        [key]: {
-                            'item_id': itemId,
-                            'item_price': itemPrice,
-                            'item_quantity': 1
-                        }
-                    };
-
-                    var alreadySelected = sessionStorage.getItem('selectedItems');
-                    var parsedSelected = JSON.parse(alreadySelected);
-
-                    if (alreadySelected != null) {
-                        if (parsedSelected[key] != null) {
-                            parsedSelected[key].item_quantity += 1;
-                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                        } else {
-                            parsedSelected[key] = {
-                                'item_id': itemId,
-                                'item_price': itemPrice,
-                                'item_quantity': 1
-                            };
-                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                        }
-                    } else {
-                        sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
-                    }
-
-                    var totalField = document.querySelector('#floating-total input');
-                    totalField.value = totalItemCost();
+                    totalField.value = totalItemCost(); // Loads a new total after clicking item
                 });
+            });
+
+            const quantityButton = document.querySelectorAll('.pro-qty');
+
+            quantityButton.forEach(function(quantity) {
+
+                var itemId = quantity.getAttribute('data-item-id');
+                var itemPrice = quantity.getAttribute('data-item-price');
+                var quantityAdjustButton = quantity.querySelectorAll('.qtybtn');
+
+                quantityAdjustButton.forEach(function(buttons) {
+
+                    buttons.addEventListener('click', function(event) { // Listens and stores selected items via buttons
+
+                        var inputValue = document.querySelector('#quantity' + itemId).value;
+                        var itemQuantity = '';
+
+                        if (buttons.classList.contains('inc')) { // increment quantity by button
+                            itemQuantity = JSON.parse(inputValue) + 1;
+                            stashItemsSelected(itemPrice, itemId, 'increment');
+                        } else { // decrement quantity by button
+                            itemQuantity = JSON.parse(inputValue) - 1;
+                            stashItemsSelected(itemPrice, itemId, 'decrement');
+                        }
+
+                        totalField.value = totalItemCost();
+                    });
+                });
+
             });
         });
     </script>

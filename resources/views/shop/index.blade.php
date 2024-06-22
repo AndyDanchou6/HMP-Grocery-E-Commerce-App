@@ -61,8 +61,8 @@
         <div class="row featured__filter" id="featuredFilter">
             @foreach(App\Models\Inventory::inRandomOrder()->take(8)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
-                <div class="featured__item product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
-                    <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center">
+                <div class="featured__item">
+                    <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
@@ -74,6 +74,13 @@
                         <h6><a href="#">{{ $item->product_name }}</a></h6>
                         <h5>₱{{ number_format($item->price, 2) }}</h5>
                         <h6 style="margin-top: 9px;">{{ $item->category->category_name }}</h6>
+                    </div>
+                    <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <div class="quantity">
+                            <div class="pro-qty" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}">
+                                <input type="text" name="items[{{ $item->id }}]" value="0" id="quantity{{$item->id}}" class="quantityInput" data-item-id="{{ $item->id }}" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,16 +210,16 @@
                         @foreach ($inventory->chunk(3) as $chunk)
                         <div class="latest-prdouct__slider__item">
                             @foreach ($chunk as $product)
-                            <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ number_format($item->price, 2) }}</span>
-                                    <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
-                                </div>
-                            </a>
+                            <!-- <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item"> -->
+                            <div class="latest-product__item__pic">
+                                <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
+                            </div>
+                            <div class="latest-product__item__text">
+                                <h6>{{ $product->product_name }}</h6>
+                                <span>₱{{ number_format($item->price, 2) }}</span>
+                                <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
+                            </div>
+                            <!-- </a> -->
                             @endforeach
                         </div>
                         @endforeach
