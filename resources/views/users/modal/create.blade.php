@@ -11,7 +11,7 @@
                     <div class="row mb-3">
                         <label for="role" class="col-sm-2 col-form-label">Role</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="role" name="role" value="Customer" readonly>
+                            <input type="text" class="form-control" id="role" name="role" value="Courier" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">

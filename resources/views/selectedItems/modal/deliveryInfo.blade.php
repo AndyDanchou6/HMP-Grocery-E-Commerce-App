@@ -1,4 +1,4 @@
-<div class="modal fade" id="messages{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="deliverInfo{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,7 +86,8 @@
                                 <label for="courier_id" class="col-form-label" style="margin-right: 20px;">Courier name:</label>
                             </div>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" value="{{ $user['courier_id'] }}" readonly style="margin-left: 10px;">
+                                <input type="text" class="form-control" value="{{ $courierName }}" readonly style="margin-left: 10px;">
+                                <input type="hidden" name="courier_id" value="{{ $courier->id }}">
                             </div>
                         </div>
                         @endif

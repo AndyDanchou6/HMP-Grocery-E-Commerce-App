@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SelectedItems;
 use App\Models\Inventory;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -32,6 +33,10 @@ class HomeController extends Controller
         $products = Inventory::where('quantity', '<=', 10)->get();
         $categories = Category::pluck('category_name', 'id');
 
-        return view('home', compact('package', 'delivery', 'pickup', 'products', 'categories'));
+        $courierID = Auth::user();
+        $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')->where('courier_id', $courierID->id)->where('status', 'readyForRetrieval')->count();
+        $delivered = SelectedItems::where('order_retrieval', 'delivery')->where('courier_id', $courierID->id)->where('status', 'delivered')->count();
+
+        return view('home', compact('package', 'delivery', 'pickup', 'products', 'categories', 'deliveryRequest', 'delivered'));
     }
 }
