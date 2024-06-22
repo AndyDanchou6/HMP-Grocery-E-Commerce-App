@@ -58,7 +58,7 @@
 
         subTotalField.forEach(function(subtotal) {
 
-            var itemReferenceNo= subtotal.getAttribute('data-item-id');
+            var itemReferenceNo = subtotal.getAttribute('data-item-id');
             var toSplit = itemReferenceNo;
             var [referenceNo, itemId] = toSplit.split('_');
 

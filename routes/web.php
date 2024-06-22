@@ -87,6 +87,7 @@ Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelChec
 Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
 
 Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+Route::get('/selectedItems/courierDashboard', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
 Route::get('/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
 Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');

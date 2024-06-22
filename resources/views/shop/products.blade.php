@@ -79,11 +79,11 @@
                 <div class="row">
                     @foreach($inventory as $item)
                     <div class="col-lg-4 col-md-6 col-sm-6 product-item" data-category-id="{{ $item->category_id }}">
-                        <div class="product__item">
+
+                        <div class="product__item" >
                             <div class="product__item__pic set-bg text-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
-                                <!-- <a href="{{ route('shop.details', ['id' => $item->id]) }}"> -->
                                 <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
-                                <!-- </a> -->
+
                                 <ul class="product__item__pic__hover">
                                     <!-- <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
                                     <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>

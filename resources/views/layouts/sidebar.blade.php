@@ -105,6 +105,7 @@
       </a>
     </li>
     @endif
+    @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Customer')
     <li id="tables" class="menu-item">
       <a href="{{ route('shop.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-shop"></i>
@@ -123,4 +124,13 @@
         <div data-i18n="Tables">Orders</div>
       </a>
     </li>
+    @endif
+    @if(Auth::user()->role == 'Courier')
+    <li id="tables" class="menu-item">
+      <a href="{{ route('selectedItems.courierDashboard') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-list-ul "></i>
+        <div data-i18n="Tables">Delivery Request</div>
+      </a>
+    </li>
+    @endif
 </aside>

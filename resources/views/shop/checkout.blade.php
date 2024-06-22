@@ -5,22 +5,22 @@
 <section class="checkout spad">
     <div class="container">
         <div class="checkout__form">
-            <h4>Billing Details</h4>
+            <h4>Delivery Details</h4>
             <form action="{{ route('shop.placeOrder') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
                         <div class="checkout__input">
                             <p>Address<span></span></p>
-                            <textarea name="address" id="address" class="form-control"></textarea>
+                            <textarea name="address" id="address" class="form-control" required></textarea>
                         </div>
                         <div class="checkout__input">
                             <p>Phone<span></span></p>
-                            <input type="text" name="phone" value="{{ $user->phone }}">
+                            <input type="text" name="phone" required>
                         </div>
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
-                            <textarea name="fb_link" id="fb_link" class="form-control"></textarea>
+                            <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
