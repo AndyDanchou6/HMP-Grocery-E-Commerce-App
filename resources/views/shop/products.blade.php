@@ -79,13 +79,15 @@
                 <div class="row">
                     @foreach($inventory as $item)
                     <div class="col-lg-4 col-md-6 col-sm-6 product-item" data-category-id="{{ $item->category_id }}">
-                        <div class="product__item product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
-                            <div class="product__item__pic set-bg text-center">
+
+                        <div class="product__item" >
+                            <div class="product__item__pic set-bg text-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
                                 <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
+
                                 <ul class="product__item__pic__hover">
-                                    <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
+                                    <!-- <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
                                     <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li> -->
                                 </ul>
                             </div>
                             <div class="product__item__text">
@@ -95,8 +97,8 @@
                             </div>
                             <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
                                 <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" name="items[{{ $item->id }}]" value="1" id="quantity" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
+                                    <div class="pro-qty" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}">
+                                        <input type="text" name="items[{{ $item->id }}]" value="0" id="quantity{{$item->id}}" class="quantityInput" data-item-id="{{ $item->id }}" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
                                     </div>
                                 </div>
                             </div>
