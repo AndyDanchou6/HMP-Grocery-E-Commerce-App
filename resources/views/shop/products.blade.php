@@ -79,7 +79,7 @@
                 <div class="row">
                     @foreach($inventory as $item)
                     <div class="col-lg-4 col-md-6 col-sm-6 product-item" data-category-id="{{ $item->category_id }}">
-                        <div class="product__item">
+                        <div class="product__item product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
                             <div class="product__item__pic set-bg text-center">
                                 <a href="{{ route('shop.details', ['id' => $item->id]) }}">
                                     <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
@@ -113,4 +113,6 @@
         </div>
     </div>
 </section>
+
+@include('shop.floatingTotal')
 @endsection

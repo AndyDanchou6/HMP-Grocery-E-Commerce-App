@@ -15,17 +15,30 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
       
-        $avatarPath = 'logo/1.png';
+        $avatarPath1 = 'logo/1.png';
 
 
         User::factory()->create([
             'role' => 'Admin',
-            'avatar' => $avatarPath,
+            'avatar' => $avatarPath1,
             'name' => 'E-Mart',
             'email' => 'e.mart@admin.me',
             'phone' => 639638753244,
             'fb_link' => 'https://www.facebook.com/jerryparrocha1234/',
             'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'password' => Hash::make('12345678'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        User::factory()->create([
+            'role' => 'Admin',
+            'avatar' => $avatarPath1,
+            'name' => 'E-mart Eridiano',
+            'email' => 'e.mart@eridiano.admin',
+            'phone' => 639638753244,
+            'fb_link' => 'https://www.facebook.com/',
+            'address' => 'Kagwapo Street, Kapogian, Southern Gwapo',
             'password' => Hash::make('12345678'),
             'created_at' => now(),
             'updated_at' => now(),
