@@ -88,6 +88,26 @@
                         </div>
                     </div>
                     @endif
+                    <div class="row align-items-center" style="margin-bottom: 10px; margin-right: 80px; width: 100%; margin-left: 10px;">
+                        <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
+                            <label for="payment_type" class="col-sm-2 col-form-label">Payment Type:</label>
+                            <div class="col-sm-4" style="margin-left: 66px; width: 500px;">
+                                <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    @if($item->payment_condition == NULL)
+                    <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
+                    <select name="payment_type" id="payment_type" class="form-select" style="width: 50%;">
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                    @else
+                    <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
+                    <div class="col-sm-4" style="margin-left: 66px; width: 500px;">
+                        <input type="text" class="form-control" value="{{ $item->payment_condition }}" readonly>
+                    </div>
+                    @endif
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-outline-primary me-2">Finished</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>

@@ -28,7 +28,6 @@ class SelectedItemsController extends Controller
 
             foreach ($users as $user) {
                 foreach ($user->selectedItems as $item) {
-
                     if (!isset($userByReference[$item->referenceNo])) {
                         $userByReference[$item->referenceNo] = [
                             'id' => $user->id,
@@ -48,14 +47,56 @@ class SelectedItemsController extends Controller
                     }
                 }
             }
-            // dd($userByReference);
-
             $couriers = User::where('role', 'Courier')->get();
-            // dd($courier[0]->id);
+
             return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
         }
     }
 
+    public function show()
+    {
+        if (Auth::user()->role == 'Admin') {
+            $users = User::whereHas('selectedItems', function ($query) {
+                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup']);
+            })->with(['selectedItems' => function ($query) {
+                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
+                    ->select('inventories.*', 'selected_items.*');
+            }])->get();
+
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+                    // Assuming $item is already an Eloquent model instance
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $courier = User::find($item->courier_id);
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
+                            'order_retrieval' => $item->order_retrieval,
+                            'status' => $item->status, // Ensure $item is an object
+                            'courier_id' => $courier ? $courier->name : 'Unknown',
+                            'payment_type' => $item->payment_type,
+                            'payment_condition' => $item->payment_condition,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                            'items' => []
+                        ];
+                    }
+                    $userByReference[$item->referenceNo]['items'][] = $item;
+                }
+            }
+
+            return view('selectedItems.history', compact('userByReference'));
+        } else {
+            return redirect()->route('error404');
+        }
+    }
 
     public function forDelivery()
     {
@@ -87,6 +128,7 @@ class SelectedItemsController extends Controller
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
                             'courier_id' => $courier ? $courier->name : 'Unknown',
+                            'payment_type' => $item->payment_type,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -113,7 +155,7 @@ class SelectedItemsController extends Controller
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+                    ->select('inventories.*', 'selected_items.*');
             }])->get();
 
             $userByReference = [];
@@ -132,6 +174,7 @@ class SelectedItemsController extends Controller
                             'address' => $user->address,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
+                            'payment_type' => $item->payment_type,
                         ];
 
                         $userByReference[$item->referenceNo]['items'][] = $item;
@@ -253,31 +296,7 @@ class SelectedItemsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
-    {
-        // $history = SelectedItems::where('status', 'delivered')
-        // ->orWhere('status', 'pickedUp')
-        // ->select('selected_items.*')
-        // ->get();
 
-        // $transactions = User::whereHas('selectedItems', function ($query) {
-        //     $query->where('selected_items.status', 'delivered')
-        //         ->orWhere('selected_items.status', 'pickedUp');
-        // })->with('selectedItems', function ($query) {
-        //     $query->where('selected_items.status', 'delivered')
-        //         ->orWhere('selected_items.status', 'pickedUp')
-        //         ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
-        // })->get();
-
-        $transactions = User::whereHas('selectedItems', function ($query) {
-            $query->where('selected_items.referenceNo', 110000);
-        })->with('selectedItems', function ($query) {
-            $query->where('selected_items.referenceNo', 110000)
-                ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
-        })->get();
-
-        dd($transactions);
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -312,11 +331,14 @@ class SelectedItemsController extends Controller
         foreach ($selectedItems as $item) {
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
+                $item->payment_condition = $request->input('payment_type');
             } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
                     $item->status = 'delivered';
+                    $item->payment_condition = $request->input('payment_type');
                 } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
+                    $item->payment_condition = $request->input('payment_type');
                 }
             }
 

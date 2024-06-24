@@ -46,4 +46,9 @@ class Inventory extends Model
     {
         return $this->hasMany(Cart::class, 'product_id', 'id');
     }
+
+    // public function selectedItems()
+    // {
+    //     return $this->hasMany(SelectedItems::class);
+    // }
 }

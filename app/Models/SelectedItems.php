@@ -23,6 +23,8 @@ class SelectedItems extends Model
         'address',
         'fb_link',
         'courier_id',
+        'payment_type',
+        'payment_condition',
         'order_retrieval',
     ];
 

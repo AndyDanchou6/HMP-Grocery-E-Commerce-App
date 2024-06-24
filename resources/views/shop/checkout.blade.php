@@ -16,7 +16,7 @@
                         </div>
                         <div class="checkout__input">
                             <p>Phone<span></span></p>
-                            <input type="text" name="phone" required>
+                            <input type="text" name="phone" requiredx>
                         </div>
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
@@ -46,21 +46,38 @@
                             </table>
                             <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
-                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <p>Choose your payment</p>
+                            @if($item->order_retrieval == 'delivery')
                             <div class="checkout__input__checkbox">
                                 <label for="payment">
-                                    Check Payment
-                                    <input type="checkbox" id="payment">
+                                    Cash on delivery(COD)
+                                    <input type="checkbox" name="payment_type" id="payment" value="COD">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
                             <div class="checkout__input__checkbox">
                                 <label for="paypal">
-                                    Paypal
-                                    <input type="checkbox" id="paypal">
+                                    G-cash
+                                    <input type="checkbox" name="payment_type" id="paypal" value="G-cash">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
+                            @else
+                            <div class="checkout__input__checkbox">
+                                <label for="payment">
+                                    G-cash
+                                    <input type="checkbox" name="payment_type" id="payment" value="G-cash">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="paypal">
+                                    In-store
+                                    <input type="checkbox" name="payment_type" id="paypal" value="In-store">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            @endif
                             <button type="submit" class="site-btn" style="background-color: #696cff;">PLACE ORDER</button>
                         </div>
                     </div>

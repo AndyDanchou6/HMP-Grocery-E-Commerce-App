@@ -80,7 +80,6 @@
                     <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3">
                         @csrf
                         @method('POST')
-                        @if($item->order_retrieval == 'delivery')
                         <div class="row align-items-center" style="margin-bottom: 10px; margin-right: 80px; width: 100%; margin-left: 10px;">
                             <div class="col-sm-3">
                                 <label for="courier_id" class="col-form-label" style="margin-right: 20px;">Courier name:</label>
@@ -89,6 +88,23 @@
                                 <input type="text" class="form-control" value="{{ $courierName }}" readonly style="margin-left: 10px;">
                                 <input type="hidden" name="courier_id" value="{{ $courier->id }}">
                             </div>
+                            <div class="col-sm-3">
+                                <label for="courier_id" class="col-form-label" style="margin-right: 20px; margin-top: 10px;">Payment Type:</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly style="margin-left: 10px; margin-top: 10px;">
+                            </div>
+                        </div>
+                        @if($item->payment_condition == NULL)
+                        <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
+                        <select name="payment_type" id="payment_type" class="form-select" style="width: 50%;">
+                            <option value="unpaid">Unpaid</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                        @else
+                        <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
+                        <div class="col-sm-4" style="margin-left: 66px; width: 500px;">
+                            <input type="text" class="form-control" value="{{ $item->payment_condition }}" readonly>
                         </div>
                         @endif
                 </div>

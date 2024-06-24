@@ -110,35 +110,32 @@ class ShopController extends Controller
         $user = Auth::user();
 
         try {
-            // Retrieve selected items from SelectedItems model
             $selectedItems = SelectedItems::with('inventory')
                 ->where('user_id', $user->id)
                 ->where('status', 'forCheckout')
                 ->get();
 
-            // Update status of selected items and adjust inventory quantities
             foreach ($selectedItems as $item) {
-                $item->update([
-                    'status' => 'forPackage',
-                    'phone' => $request->input('phone'),
-                    'address' => $request->input('address'),
-                    'fb_link' => $request->input('fb_link'),
-                ]);
+                if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
+                    $item->update([
+                        'status' => 'forPackage',
+                        'phone' => $request->input('phone'),
+                        'address' => $request->input('address'),
+                        'fb_link' => $request->input('fb_link'),
+                        'payment_type' => $request->input('payment_type')
+                    ]);
+                }
 
-                // Deduct quantity from inventory
                 $newQuantity = $item->inventory->quantity - $item->quantity;
                 $item->inventory->update([
                     'quantity' => $newQuantity
                 ]);
             }
 
-            // Return success response
             return redirect()->route('shop.index')->with('success', 'Thank you for shopping, come buy again!');
         } catch (\Exception $e) {
-            // Log the error
             Log::error('Place Order Error: ' . $e->getMessage());
 
-            // Redirect back with error message
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
     }
@@ -206,21 +203,26 @@ class ShopController extends Controller
     {
         if (empty(Auth::user()->role)) {
             return redirect()->route('error404');
-        } else {
-            $user = Auth::user();
-            $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
-
-            $subtotal = $carts->sum(function ($item) {
-                return $item->inventory->price * $item->quantity;
-            });
-
-            $total = $subtotal;
-
-            $category = Category::all();
-
-            return view('shop.carts', compact('category', 'carts', 'subtotal', 'total'));
         }
+
+        $user = Auth::user();
+        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+
+        $subtotal = $carts->sum(function ($item) {
+            return $item->inventory->price * $item->quantity;
+        });
+
+        $total = $subtotal;
+
+        $category = Category::all();
+
+        $forCheckoutStatus = SelectedItems::where('user_id', $user->id)
+            ->where('status', 'forCheckout')
+            ->exists();
+
+        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total', 'forCheckoutStatus'));
     }
+
 
     /**
      * Remove the specified resource from storage.
