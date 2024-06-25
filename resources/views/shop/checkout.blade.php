@@ -61,7 +61,7 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <button type="submit" class="site-btn" style="background-color: #696cff;">PLACE ORDER</button>
+                            <button type="submit" class="site-btn placeOrderBtn" style="background-color: #696cff;">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>
@@ -73,4 +73,18 @@
         </div>
     </div>
 </section>
+
+<script>
+    const placeOrderBtn = document.querySelector('.placeOrderBtn')
+
+    placeOrderBtn.addEventListener('click', function(event) {
+
+        var sessionStoredItems2 = sessionStorage.getItem('selectedItems');
+
+        if (sessionStoredItems2) {
+
+            sessionStorage.removeItem('selectedItems');
+        }
+    })
+</script>
 @endsection

@@ -94,5 +94,6 @@ Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPick
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
 Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
 
+// Route::post('/inventory/searchItems', [InventoryController::class, 'searchItems'])->name('inventory.searchItems');
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);

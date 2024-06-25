@@ -6,6 +6,6 @@
             </div>
             <input type="number" class="form-control text-right" value="0" readonly>
         </div>
-        <a href="/shop/carts"><button class="btn btn-success btn-block">Cart</button></a>
+        <a id="toCartButton"><button class="btn btn-success btn-block">Cart</button></a>
     </div>
 </div>

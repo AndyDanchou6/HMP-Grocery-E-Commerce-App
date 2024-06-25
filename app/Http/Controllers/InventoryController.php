@@ -149,4 +149,20 @@ class InventoryController extends Controller
 
         return redirect()->back()->with('success', 'Deleted successfully.');
     }
+
+    // public function searchItems(Request $request)
+    // {
+    //     $ids = $request->input('ids', []);
+ 
+    //     $items = Inventory::whereIn('id', $ids)->get();
+
+    //     // return view('shop.carts', compact('selectedItems'));
+
+    //     return response()->json([
+    //         'status' => 200,
+    //         'message' => 'Items Found',
+    //         'data' => $items
+    //     ]);
+
+    // }
 }
