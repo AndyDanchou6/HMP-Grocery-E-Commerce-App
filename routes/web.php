@@ -32,28 +32,52 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/test-select', function () {
-    $pickup1 = \App\Models\SelectedItems::create([
-        'referenceNo' => rand(10000000, 99999999),
+    // $pickup1 = \App\Models\SelectedItems::create([
+    //     'referenceNo' => rand(10000000, 99999999),
+    //     'user_id' => 1,
+    //     'item_id' => 1,
+    //     'status' => 'forPackage',
+    //     'quantity' => 4,
+    //     'order_retrieval' => 'pickup'
+    // ]);
+
+    // $pickup2 = \App\Models\SelectedItems::create([
+    //     'referenceNo' => rand(10000000, 99999999),
+    //     'user_id' => 1,
+    //     'item_id' => 3,
+    //     'status' => 'forPackage',
+    //     'quantity' => 6,
+    //     'order_retrieval' => 'pickup'
+    // ]);
+
+
+    $cart1 = \App\Models\Cart::create([
         'user_id' => 1,
-        'item_id' => 1,
-        'status' => 'forPackage',
-        'quantity' => 4,
-        'order_retrieval' => 'pickup'
+        'product_id' => 6,
+        'quantity' => 6,
     ]);
 
-    $pickup2 = \App\Models\SelectedItems::create([
-        'referenceNo' => rand(10000000, 99999999),
+    $cart2 = \App\Models\Cart::create([
         'user_id' => 1,
-        'item_id' => 3,
-        'status' => 'forPackage',
+        'product_id' => 8,
         'quantity' => 6,
-        'order_retrieval' => 'pickup'
     ]);
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.home');
+});
+
+Route::prefix('customer')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('customer.home');
+});
+
+Route::prefix('courier')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('courier.home');
+});
 
 Route::get('/error', [AuthController::class, 'error'])->name('error');
 
@@ -86,13 +110,14 @@ Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])-
 Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
 Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
 
-Route::get('/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
-Route::get('/selectedItems/courierDashboard', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
-Route::get('/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
-Route::get('/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
-Route::get('/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
+Route::get('/admin/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
+Route::get('/customer/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
+Route::get('/admin/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
+Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
-Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
+Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
 
+Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);

@@ -17,16 +17,14 @@
                         <a href="#"><i class="fa fa-linkedin"></i></a>
                         <a href="#"><i class="fa fa-pinterest-p"></i></a>
                     </div>
-                    @if (Route::has('login'))
-                    @auth
+                    @if(Auth::user()->role == 'Admin')
                     <div class="header__top__right__auth">
-                        <a href="{{ route('home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
+                        <a href="{{ route('admin.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
-                    @else
+                    @elseif(Auth::user()->role == 'Customer')
                     <div class="header__top__right__auth">
-                        <a href="#"><i class="fa fa-user"></i>Login</a>
+                        <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
-                    @endauth
                     @endif
                 </div>
             </div>

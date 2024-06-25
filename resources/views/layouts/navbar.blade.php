@@ -5,8 +5,20 @@
       <i class="bx bx-menu bx-sm"></i>
     </a>
   </div>
+
   <!-- ...Existing navbar code... -->
   <ul class="navbar-nav flex-row align-items-center ms-auto">
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('carts.index') }}">
+      <i class="bx bx-cart bx-sm"></i>
+    </a>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
+      <i class="bi bi-shop bx-sm"></i>
+    </a>
+    @if(Auth::user()->role == 'Admin')
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('selectedItems.history') }}">
+      <i class="bx bx-history bx-sm"></i>
+    </a>
+    @endif
     <!-- User dropdown -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
       <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
