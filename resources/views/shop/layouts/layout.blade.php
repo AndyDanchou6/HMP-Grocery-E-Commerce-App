@@ -211,6 +211,7 @@
         function totalItemCost() {
             var itemSelected = sessionStorage.getItem('selectedItems');
 
+
             if (itemSelected != null) {
 
                 var parsedItems = JSON.parse(itemSelected);
@@ -273,17 +274,8 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-
-            var totalField = document.querySelector('#floating-total input');
-
-            totalField.value = totalItemCost(); // Loads the Total cost
-
-            const clickedItems = document.querySelectorAll('.product_onDisplay');
-
-            const itemQuantityFields = document.querySelectorAll('.quantityInput');
-
-            itemQuantityFields.forEach(function(fields) {
+        function updateAmountSelected(quantityFields) {
+            quantityFields.forEach(function(fields) {
 
                 var storedSelectedItems = sessionStorage.getItem('selectedItems');
                 var parsedSelectedItems = JSON.parse(storedSelectedItems);
@@ -295,8 +287,45 @@
                         fields.value = parsedSelectedItems[itemIdentifier].item_quantity;
                     }
                 }
+            });
+        }
+
+        function onCartBanner() {
+            var onCartBannerField = document.querySelectorAll('.onCartBanner');
+
+            onCartBannerField.forEach(function(banner) {
+
+                var bannerItemId = banner.getAttribute('data-item-id');
+                var uniqueItemId = 'item_' + bannerItemId;
+                var stashedItems = sessionStorage.getItem('selectedItems');
+                var parsedItems = JSON.parse(stashedItems);
+
+                if (parsedItems) {
+                    if (parsedItems[uniqueItemId] && parsedItems[uniqueItemId].item_quantity != 0) {
+                        banner.style.display = 'block';
+                    } else {
+                        banner.style.display = 'none';
+                    }
+                }
 
             })
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            var totalField = document.querySelector('#floating-total input');
+
+            if (totalField) {
+                totalField.value = totalItemCost(); // Loads the Total cost
+            }
+
+            const clickedItems = document.querySelectorAll('.product_onDisplay');
+
+            const itemQuantityFields = document.querySelectorAll('.quantityInput');
+
+            updateAmountSelected(itemQuantityFields);
+
+            onCartBanner();
 
             clickedItems.forEach(function(clickedItem) {
 
@@ -308,10 +337,12 @@
                     stashItemsSelected(itemPrice, itemId, 'increment'); // Stores the selected item
 
                     totalField.value = totalItemCost(); // Loads a new total after clicking item
+                    updateAmountSelected(itemQuantityFields);
+                    onCartBanner();
                 });
             });
 
-            const quantityButton = document.querySelectorAll('.pro-qty');
+            const quantityButton = document.querySelectorAll('.productAdjustButton');
 
             quantityButton.forEach(function(quantity) {
 
@@ -329,16 +360,69 @@
                         if (buttons.classList.contains('inc')) { // increment quantity by button
                             itemQuantity = JSON.parse(inputValue) + 1;
                             stashItemsSelected(itemPrice, itemId, 'increment');
+                            onCartBanner();
                         } else { // decrement quantity by button
                             itemQuantity = JSON.parse(inputValue) - 1;
                             stashItemsSelected(itemPrice, itemId, 'decrement');
+                            onCartBanner();
                         }
 
                         totalField.value = totalItemCost();
+
                     });
                 });
-
             });
+
+            var toCartButton = document.querySelector('#toCartButton');
+
+            if (toCartButton) {
+                toCartButton.addEventListener('click', function() {
+
+                    var stashedItems = sessionStorage.getItem('selectedItems')
+                    var parsedItems = JSON.parse(stashedItems)
+
+                    if (parsedItems) {
+                        var parsedItemId = Object.keys(parsedItems)
+                        var tempItemStorage = {};
+
+
+                        parsedItemId.forEach(function(parsedId) {
+
+                            var [prefix, rawId] = parsedId.split('_')
+
+                            if (parsedItems[parsedId] && parsedItems[parsedId].item_quantity != 0) {
+
+                                tempItemStorage[rawId] = parsedItems[parsedId].item_quantity
+                            }
+                        })
+
+                        toCartItems = {
+                            'items': tempItemStorage
+                        }
+                        console.log(toCartItems)
+
+                        const storeCartApi = "/carts"
+
+                        fetch(storeCartApi, {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(toCartItems)
+                        }).then(res => {
+                            if (!res.ok) {
+                                throw new Error('Network Response is Bad')
+                            }
+                            return res.json()
+                        }).then(data => {
+                            if (data.status == 200) {
+                                location.href = "/shop/carts"
+                            }
+                        })
+                    }
+                })
+            }   
         });
     </script>
 

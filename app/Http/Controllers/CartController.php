@@ -79,42 +79,69 @@ class CartController extends Controller
         $user = Auth::user();
         $items = $request->input('items');
 
-        foreach ($items as $inventory_id => $quantity) {
-            $inventory = Inventory::find($inventory_id);
+        $cartItems = Cart::where('user_id', $user->id)->get();
+        $existingCartRequest = [];
 
-            if ($inventory) {
-                // Ensure available quantity
-                if ($quantity > $inventory->quantity) {
-                    $quantity = $inventory->quantity;
-                }
+        foreach ($cartItems as $cartItem) {
+            $cartFound = false;
 
-                $cartItem = Cart::where('user_id', $user->id)
-                    ->where('product_id', $inventory_id)
-                    ->first();
+            foreach ($items as $inventory_id => $quantity) {
 
-                if ($cartItem) {
-                    // Update existing cart item
-                    $newQuantity = $cartItem->quantity + $quantity;
+                $inventory = Inventory::find($inventory_id);
 
-                    // Limit the quantity to available inventory
-                    if ($newQuantity > $inventory->quantity) {
-                        $newQuantity = $inventory->quantity;
-                    }
 
-                    $cartItem->quantity = $newQuantity;
-                    $cartItem->save();
-                } else {
-                    Cart::create([
-                        'user_id' => $user->id,
-                        'product_id' => $inventory_id,
-                        'quantity' => $quantity,
+                if (!$inventory) {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'Items does not exists!'
                     ]);
+                } else {
+
+                    if ($cartItem->product_id == $inventory_id) {
+                        // Update existing cart item
+                        $newQuantity = $quantity;
+
+                        // Limit the quantity to available inventory
+                        if ($newQuantity > $inventory->quantity) {
+                            $newQuantity = $inventory->quantity;
+                        }
+
+                        $cartItem->quantity = $newQuantity;
+                        $cartItem->save();
+
+                        $cartFound = true;
+                        $existingCartRequest[] = $inventory_id;
+
+                        break;
+                    }
                 }
+            }
+
+            if ($cartFound == false) {
+                $cartItem->delete();
             }
         }
 
-        return redirect()->back();
+        $newItemsToAdd = array_diff(array_keys($items), $existingCartRequest);
+
+        foreach ($newItemsToAdd as $newInventoryId) {
+
+            $quantity = $items[$newInventoryId];
+
+            Cart::create([
+                'user_id' => $user->id,
+                'product_id' => $newInventoryId,
+                'quantity' => $quantity,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Items added to cart',
+            'data' => $newItemsToAdd
+        ]);
     }
+
     /**
      * Display the specified resource.
      */

@@ -63,6 +63,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
+                        <p class="text-light bg-danger onCartBanner" style="position: absolute; top: 0; left: 0; display: none;" data-item-id="{{ $item->id }}">On Cart</p>
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
@@ -77,7 +78,7 @@
                     </div>
                     <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
                         <div class="quantity">
-                            <div class="pro-qty" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}">
+                            <div class="pro-qty productAdjustButton" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}">
                                 <input type="text" name="items[{{ $item->id }}]" value="0" id="quantity{{$item->id}}" class="quantityInput" data-item-id="{{ $item->id }}" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
                             </div>
                         </div>

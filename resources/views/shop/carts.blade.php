@@ -39,7 +39,7 @@
                             <tbody>
                                 @if($carts->count() > 0)
                                 @foreach($carts as $item)
-                                <tr>
+                                <tr class="itemsRow">
                                     <td class="shoping__cart__item">
                                         <img src="{{ asset('storage/' . $item->inventory->product_img) }}" alt="" style="width: 100px; height: 100px">
                                         <h5>{{ $item->inventory->product_name }}</h5>
@@ -49,7 +49,7 @@
                                     </td>
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
-                                            <div class="pro-qty">
+                                            <div class="pro-qty cartAdjustButton" data-item-id="cart_{{ $item->inventory->id }}">
                                                 <input type="text" name="quantities[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}">
                                             </div>
                                         </div>
@@ -58,7 +58,7 @@
                                         ₱<span class="item-subtotal">{{ number_format($item->inventory->price * $item->quantity, 2) }}</span>
                                     </td>
                                     <td>
-                                        <button type="button" class="shoping__cart__item__close delete-button" data-action="{{ route('carts.destroy', $item->id) }}">
+                                        <button type="button" class="shoping__cart__item__close delete-button" data-action="{{ route('carts.destroy', $item->id) }}" data-item-id="{{ $item->inventory->id }}">
                                             <span class="icon_close"></span>
                                         </button>
                                     </td>
@@ -79,7 +79,7 @@
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
                     <a href="{{ route('shop.products') }}" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right">
+                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn">
                         <span class="icon_loading"></span> Update Cart
                     </button>
                 </div>
@@ -159,6 +159,21 @@
                     },
                 }).then(response => {
                     if (response.ok) {
+
+                        var buttonId1 = button.getAttribute('data-item-id');
+                        // let [prefix1, identifier1] = buttonId.split('_');
+
+                        var sessionStoredItems1 = sessionStorage.getItem('selectedItems');
+
+                        if (sessionStoredItems1) {
+                            var parsedStoredItems1 = JSON.parse(sessionStoredItems1);
+                            var sessionItemsId1 = 'item_' + buttonId1;
+
+                            parsedStoredItems1[sessionItemsId1].item_quantity = 0;
+
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedStoredItems1));
+                        }
+
                         window.location.reload();
                     } else {
                         throw new Error('Failed to delete item.');
@@ -217,6 +232,32 @@
                 });
             });
         });
+
+        var updateCartButton = document.querySelector('.updateCartBtn')
+
+        updateCartButton.addEventListener('click', function(event) {
+
+            const quantityButtons = document.querySelectorAll('.cartAdjustButton');
+
+            quantityButtons.forEach(function(quantityButton) {
+
+                var buttonId = quantityButton.getAttribute('data-item-id');
+                let [prefix, identifier] = buttonId.split('_');
+
+                var sessionStoredItems = sessionStorage.getItem('selectedItems');
+
+                if (sessionStoredItems) {
+                    var parsedStoredItems = JSON.parse(sessionStoredItems);
+                    var sessionItemsId = 'item_' + identifier;
+
+                    var inputs = quantityButton.querySelector('input').value
+
+                    parsedStoredItems[sessionItemsId].item_quantity = parseFloat(inputs);
+
+                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedStoredItems));
+                }
+            })
+        })
     });
 </script>
 
