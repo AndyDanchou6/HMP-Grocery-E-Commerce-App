@@ -16,7 +16,7 @@
                         </div>
                         <div class="checkout__input">
                             <p>Phone<span></span></p>
-                            <input type="text" name="phone" required>
+                            <input type="text" name="phone" requiredx>
                         </div>
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
@@ -46,22 +46,41 @@
                             </table>
                             <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
-                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            <div class="checkout__input__checkbox">
-                                <label for="payment">
-                                    Check Payment
-                                    <input type="checkbox" id="payment">
-                                    <span class="checkmark"></span>
+                            <p>Choose your payment</p>
+                            @if($item->order_retrieval == 'delivery')
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_cod" value="COD" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_cod">
+                                    Cash on delivery (COD)
                                 </label>
                             </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="paypal">
-                                    Paypal
-                                    <input type="checkbox" id="paypal">
-                                    <span class="checkmark"></span>
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_gcash">
+                                    G-cash
                                 </label>
                             </div>
+                            
+                            @else
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_gcash">
+                                    G-cash
+                                </label>
+                            </div>
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_instore" value="In-store" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_instore">
+                                    In-store
+                                </label>
+                            </div>
+                            @endif
                             <button type="submit" class="site-btn placeOrderBtn" style="background-color: #696cff;">PLACE ORDER</button>
+
                         </div>
                     </div>
                 </div>

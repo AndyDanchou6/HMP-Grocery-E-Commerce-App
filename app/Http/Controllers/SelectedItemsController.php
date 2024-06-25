@@ -28,7 +28,6 @@ class SelectedItemsController extends Controller
 
             foreach ($users as $user) {
                 foreach ($user->selectedItems as $item) {
-
                     if (!isset($userByReference[$item->referenceNo])) {
                         $userByReference[$item->referenceNo] = [
                             'id' => $user->id,
@@ -48,13 +47,72 @@ class SelectedItemsController extends Controller
                     }
                 }
             }
-            // dd($userByReference);
-
             $couriers = User::where('role', 'Courier')->get();
-            // dd($courier[0]->id);
+
             return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
         }
     }
+
+    public function show(Request $request)
+    {
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
+
+            $usersQuery = User::whereHas('selectedItems', function ($query) {
+                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup']);
+            });
+
+            if ($search) {
+                $usersQuery->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('selectedItems', function ($query) use ($search) {
+                            $query->where('referenceNo', 'like', "%{$search}%");
+                        });
+                });
+            }
+
+            $users = $usersQuery->with(['selectedItems' => function ($query) {
+                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
+                    ->select('inventories.*', 'selected_items.*');
+            }])->get();
+
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $courier = User::find($item->courier_id);
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
+                            'order_retrieval' => $item->order_retrieval,
+                            'status' => $item->status,
+                            'courier_id' => $courier ? $courier->name : 'Unknown',
+                            'payment_type' => $item->payment_type,
+                            'payment_condition' => $item->payment_condition,
+                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                            'items' => []
+                        ];
+                    }
+                    $userByReference[$item->referenceNo]['items'][] = $item;
+                }
+            }
+
+            return view('selectedItems.history', compact('userByReference', 'search'));
+        } else {
+            return redirect()->route('error404');
+        }
+    }
+
+
+
 
 
     public function forDelivery()
@@ -87,6 +145,7 @@ class SelectedItemsController extends Controller
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
                             'courier_id' => $courier ? $courier->name : 'Unknown',
+                            'payment_type' => $item->payment_type,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -113,7 +172,7 @@ class SelectedItemsController extends Controller
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
+                    ->select('inventories.*', 'selected_items.*');
             }])->get();
 
             $userByReference = [];
@@ -132,6 +191,7 @@ class SelectedItemsController extends Controller
                             'address' => $user->address,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
+                            'payment_type' => $item->payment_type,
                         ];
 
                         $userByReference[$item->referenceNo]['items'][] = $item;
@@ -253,31 +313,7 @@ class SelectedItemsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
-    {
-        // $history = SelectedItems::where('status', 'delivered')
-        // ->orWhere('status', 'pickedUp')
-        // ->select('selected_items.*')
-        // ->get();
 
-        // $transactions = User::whereHas('selectedItems', function ($query) {
-        //     $query->where('selected_items.status', 'delivered')
-        //         ->orWhere('selected_items.status', 'pickedUp');
-        // })->with('selectedItems', function ($query) {
-        //     $query->where('selected_items.status', 'delivered')
-        //         ->orWhere('selected_items.status', 'pickedUp')
-        //         ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
-        // })->get();
-
-        $transactions = User::whereHas('selectedItems', function ($query) {
-            $query->where('selected_items.referenceNo', 110000);
-        })->with('selectedItems', function ($query) {
-            $query->where('selected_items.referenceNo', 110000)
-                ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity');
-        })->get();
-
-        dd($transactions);
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -312,11 +348,24 @@ class SelectedItemsController extends Controller
         foreach ($selectedItems as $item) {
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
+                $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
+                    if ($item->payment_type == 'Gcash') {
+                        $item->payment_condition = 'paid';
+                    } else {
+                        $item->payment_condition = $request->input('payment_condition');
+                    }
+
                     $item->status = 'delivered';
+
+                    if ($request->hasFile('proof_of_delivery')) {
+                        $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
+                        $item->proof_of_delivery = $avatarPath;
+                    }
                 } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
+                    $item->payment_condition = $request->input('payment_condition');
                 }
             }
 
@@ -330,6 +379,20 @@ class SelectedItemsController extends Controller
         return redirect()->back();
     }
 
+    public function updatePaymentCondition(Request $request, string $referenceNo)
+    {
+        $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
+
+        foreach ($selectedItems as $item) {
+            if ($request->has('payment_condition')) {
+                $item->payment_condition = $request->input('payment_condition');
+            }
+
+            $item->save();
+        }
+
+        return redirect()->back()->with('success', 'Paid Successfully.');
+    }
 
     /**
      * Remove the specified resource from storage.

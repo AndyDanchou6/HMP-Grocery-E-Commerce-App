@@ -90,8 +90,8 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul>
-                        <li>Subtotal <span id="subtotal">₱0.00</span></li>
-                        <li>Total <span id="total">₱0.00</span></li>
+                        <li>Subtotal <span id="subtotal">₱{{ number_format($subtotal, 2) }}</span></li>
+                        <li>Total <span id="total">₱{{ number_format($total, 2) }}</span></li>
                     </ul>
                     <div class="text-end mt-3" style="margin-right: 10px;">
                         <div class="row align-items-center">
@@ -111,6 +111,11 @@
                     <div class="text-end mt-3" style="margin-right: 10px; margin-bottom: 10px;">
                         <button id="checkoutButton" class="primary-btn">PROCEED TO CHECKOUT</button>
                     </div>
+                    @if($forCheckoutStatus == 'forCheckout')
+                    <div class="text-end mt-3" style="margin-right: 10px;">
+                        <a href="{{ route('shop.checkout') }}" class="primary-btn">GO BACK TO CHECKOUT</a>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -182,6 +187,17 @@
 
         document.getElementById('checkoutButton').addEventListener('click', function() {
             let orderRetrievalType = document.getElementById('orderRetrievalType').value;
+            let cartItemsCount = document.querySelectorAll('.shoping__cart__item').length;
+
+            if (cartItemsCount === 0) {
+                swal({
+                    title: "Oops",
+                    text: "Your cart is empty. Please add items to the cart before proceeding to checkout.",
+                    icon: "error",
+                    button: "Ok",
+                });
+                return;
+            }
 
             if (!orderRetrievalType) {
                 swal({
@@ -190,6 +206,7 @@
                     icon: "error",
                     button: "Ok",
                 });
+                return;
             }
 
             fetch('{{ route("carts.checkout") }}', {
@@ -205,7 +222,15 @@
                 if (data.success) {
                     window.location.href = "{{ route('shop.checkout') }}";
                 }
-            })
+            }).catch(error => {
+                console.error('Error:', error);
+                swal({
+                    title: "Error",
+                    text: "An error occurred while proceeding to checkout. Please try again.",
+                    icon: "error",
+                    button: "Ok",
+                });
+            });
         });
 
         var updateCartButton = document.querySelector('.updateCartBtn')

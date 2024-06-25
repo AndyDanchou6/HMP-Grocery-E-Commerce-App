@@ -21,3 +21,14 @@
 .rating input[type="radio"]:checked ~ label {
     color: gold; /* Color of selected stars */
 }
+
+.navbar-icon {
+    margin-right: 1rem;
+    /* Adjust as needed */
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-icon {
+        margin-right: 0.5rem;
+    }
+}

@@ -211,17 +211,17 @@
                         @foreach ($inventory->chunk(3) as $chunk)
                         <div class="latest-prdouct__slider__item">
                             @foreach ($chunk as $product)
-                            <!-- <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item"> -->
-                            <div class="latest-product__item__pic">
-                                <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
-                            </div>
-                            <div class="latest-product__item__text">
-                                <h6>{{ $product->product_name }}</h6>
-                                <span>₱{{ number_format($item->price, 2) }}</span>
-                                <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
-                            </div>
-                            <!-- </a> -->
-                            @endforeach
+                            <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item">
+                                <div class="latest-product__item__pic">
+                                    <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
+                                </div>
+                                <div class="latest-product__item__text">
+                                    <h6>{{ $product->product_name }}</h6>
+                                    <span>₱{{ number_format($item->price, 2) }}</span>
+                                    <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
+                                </div>
+                                <!-- </a> -->
+                                @endforeach
                         </div>
                         @endforeach
                     </div>

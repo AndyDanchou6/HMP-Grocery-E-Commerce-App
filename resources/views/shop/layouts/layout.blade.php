@@ -49,48 +49,47 @@
         <div class="humberger__menu__widget">
             <div class="header__top__right__language">
             </div>
-            @if (Route::has('login'))
-            @auth
+            @if(Auth::check())
+            @if(Auth::user()->role == 'Admin')
             <div class="header__top__right__auth">
-                <a href="{{ route('home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
+                <a href="{{ route('admin.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
             </div>
-            @else
+            @elseif(Auth::user()->role == 'Customer')
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i>Login</a>
+                <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
             </div>
+            @endif
+            @endif
         </div>
-        @endauth
-        @endif
-    </div>
-    <nav class="humberger__menu__nav mobile-menu">
-        <ul>
-            <li><a href="{{ route('shop.index') }}">Home</a></li>
-            <li><a href="{{ route('shop.products') }}">Shop</a></li>
-            <li><a href="#">Pages</a>
-                <ul class="header__menu__dropdown">
-                    <li><a href="./shop-details.html">Shop Details</a></li>
-                    <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                    <li><a href="./checkout.html">Check Out</a></li>
-                    <li><a href="./blog-details.html">Blog Details</a></li>
-                </ul>
-            </li>
-            <li><a href="./blog.html">Blog</a></li>
-            <li><a href="./contact.html">Contact</a></li>
-        </ul>
-    </nav>
-    <div id="mobile-menu-wrap"></div>
-    <div class="header__top__right__social">
-        <a href="#"><i class="fa fa-facebook"></i></a>
-        <a href="#"><i class="fa fa-twitter"></i></a>
-        <a href="#"><i class="fa fa-linkedin"></i></a>
-        <a href="#"><i class="fa fa-pinterest-p"></i></a>
-    </div>
-    <div class="humberger__menu__contact">
-        <ul>
-            <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-            <li>Free Shipping for all Order of $99</li>
-        </ul>
-    </div>
+        <nav class="humberger__menu__nav mobile-menu">
+            <ul>
+                <li><a href="{{ route('shop.index') }}">Home</a></li>
+                <li><a href="{{ route('shop.products') }}">Shop</a></li>
+                <li><a href="#">Pages</a>
+                    <ul class="header__menu__dropdown">
+                        <li><a href="./shop-details.html">Shop Details</a></li>
+                        <li><a href="./shoping-cart.html">Shoping Cart</a></li>
+                        <li><a href="./checkout.html">Check Out</a></li>
+                        <li><a href="./blog-details.html">Blog Details</a></li>
+                    </ul>
+                </li>
+                <li><a href="./blog.html">Blog</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div id="mobile-menu-wrap"></div>
+        <div class="header__top__right__social">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-linkedin"></i></a>
+            <a href="#"><i class="fa fa-pinterest-p"></i></a>
+        </div>
+        <div class="humberger__menu__contact">
+            <ul>
+                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
+                <li>Free Shipping for all Order of $99</li>
+            </ul>
+        </div>
     </div>
     <!-- Humberger End -->
 
