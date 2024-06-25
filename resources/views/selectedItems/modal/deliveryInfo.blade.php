@@ -77,7 +77,7 @@
                             <input type="text" class="form-control" style="width: 200px;" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y') }}" readonly>
                         </div>
                     </div>
-                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3">
+                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
                         <div class="row align-items-center" style="margin-bottom: 10px; margin-right: 80px; width: 100%; margin-left: 10px;">
@@ -94,17 +94,25 @@
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly style="margin-left: 10px; margin-top: 10px;">
                             </div>
+                            <div class="col-sm-3" style="margin-top: 10px;">
+                                <label for="courier_id" class="col-form-label" style="margin-right: 100px;">Proof of Delivery:</label>
+                            </div>
+                            <div class="col-sm-9" style="margin-top: 10px;">
+                                <input type="file" class="form-control" style="margin-left: 10px;" name="proof_of_delivery" id="proof_of_delivery" required>
+                            </div>
                         </div>
+                        @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
                         @if($item->payment_condition == NULL)
                         <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
-                        <select name="payment_type" id="payment_type" class="form-select" style="width: 50%;">
-                            <option value="unpaid">Unpaid</option>
+                        <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;">
+                            <option value="">Unpaid</option>
                             <option value="paid">Paid</option>
                         </select>
-                        @else
+                        @endif
+                        @elseif($item->payment_condition == 'paid')
                         <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
                         <div class="col-sm-4" style="margin-left: 66px; width: 500px;">
-                            <input type="text" class="form-control" value="{{ $item->payment_condition }}" readonly>
+                            <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>
                         </div>
                         @endif
                 </div>

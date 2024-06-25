@@ -53,12 +53,25 @@ class SelectedItemsController extends Controller
         }
     }
 
-    public function show()
+    public function show(Request $request)
     {
         if (Auth::user()->role == 'Admin') {
-            $users = User::whereHas('selectedItems', function ($query) {
+            $search = $request->input('search');
+
+            $usersQuery = User::whereHas('selectedItems', function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup']);
-            })->with(['selectedItems' => function ($query) {
+            });
+
+            if ($search) {
+                $usersQuery->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('selectedItems', function ($query) use ($search) {
+                            $query->where('referenceNo', 'like', "%{$search}%");
+                        });
+                });
+            }
+
+            $users = $usersQuery->with(['selectedItems' => function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
                     ->select('inventories.*', 'selected_items.*');
             }])->get();
@@ -67,7 +80,6 @@ class SelectedItemsController extends Controller
 
             foreach ($users as $user) {
                 foreach ($user->selectedItems as $item) {
-                    // Assuming $item is already an Eloquent model instance
                     if (!isset($userByReference[$item->referenceNo])) {
                         $courier = User::find($item->courier_id);
                         $userByReference[$item->referenceNo] = [
@@ -79,10 +91,11 @@ class SelectedItemsController extends Controller
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
                             'order_retrieval' => $item->order_retrieval,
-                            'status' => $item->status, // Ensure $item is an object
+                            'status' => $item->status,
                             'courier_id' => $courier ? $courier->name : 'Unknown',
                             'payment_type' => $item->payment_type,
                             'payment_condition' => $item->payment_condition,
+                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                             'items' => []
@@ -92,11 +105,15 @@ class SelectedItemsController extends Controller
                 }
             }
 
-            return view('selectedItems.history', compact('userByReference'));
+            return view('selectedItems.history', compact('userByReference', 'search'));
         } else {
             return redirect()->route('error404');
         }
     }
+
+
+
+
 
     public function forDelivery()
     {
@@ -331,14 +348,24 @@ class SelectedItemsController extends Controller
         foreach ($selectedItems as $item) {
             if ($item->status == 'forPackage') {
                 $item->status = 'readyForRetrieval';
-                $item->payment_condition = $request->input('payment_type');
+                $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
+                    if ($item->payment_type == 'Gcash') {
+                        $item->payment_condition = 'paid';
+                    } else {
+                        $item->payment_condition = $request->input('payment_condition');
+                    }
+
                     $item->status = 'delivered';
-                    $item->payment_condition = $request->input('payment_type');
+
+                    if ($request->hasFile('proof_of_delivery')) {
+                        $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
+                        $item->proof_of_delivery = $avatarPath;
+                    }
                 } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
-                    $item->payment_condition = $request->input('payment_type');
+                    $item->payment_condition = $request->input('payment_condition');
                 }
             }
 
@@ -352,6 +379,20 @@ class SelectedItemsController extends Controller
         return redirect()->back();
     }
 
+    public function updatePaymentCondition(Request $request, string $referenceNo)
+    {
+        $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
+
+        foreach ($selectedItems as $item) {
+            if ($request->has('payment_condition')) {
+                $item->payment_condition = $request->input('payment_condition');
+            }
+
+            $item->save();
+        }
+
+        return redirect()->back()->with('success', 'Paid Successfully.');
+    }
 
     /**
      * Remove the specified resource from storage.

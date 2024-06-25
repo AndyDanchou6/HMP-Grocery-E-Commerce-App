@@ -25,6 +25,7 @@ class SelectedItems extends Model
         'courier_id',
         'payment_type',
         'payment_condition',
+        'proof_of_delivery',
         'order_retrieval',
     ];
 

@@ -53,14 +53,14 @@ Route::get('/test-select', function () {
 
     $cart1 = \App\Models\Cart::create([
         'user_id' => 1,
-        'product_id' => 6,
-        'quantity' => 6,
+        'product_id' => rand(1, 20),
+        'quantity' => rand(5, 10),
     ]);
 
     $cart2 = \App\Models\Cart::create([
-        'user_id' => 1,
-        'product_id' => 8,
-        'quantity' => 6,
+        'user_id' => 3,
+        'product_id' => rand(1, 20),
+        'quantity' => rand(5, 10),
     ]);
 });
 
@@ -116,6 +116,7 @@ Route::get('/customer/selectedItems/orders', [SelectedItemsController::class, 'o
 Route::get('/admin/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
+Route::post('/selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
 Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
 
 Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
