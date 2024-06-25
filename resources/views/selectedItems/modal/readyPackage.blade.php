@@ -97,15 +97,15 @@
                         </div>
                     </div>
                     @if($item->payment_condition == NULL)
-                    <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
-                    <select name="payment_type" id="payment_type" class="form-select" style="width: 50%;">
-                        <option value="unpaid">Unpaid</option>
+                    <label for="payment_condition" class="col-sm-2 col-form-label">Payment Condition:</label>
+                    <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;">
+                        <option value="">Unpaid</option>
                         <option value="paid">Paid</option>
                     </select>
                     @else
-                    <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
+                    <label for="payment_condition" class="col-sm-2 col-form-label">Payment Condition:</label>
                     <div class="col-sm-4" style="margin-left: 66px; width: 500px;">
-                        <input type="text" class="form-control" value="{{ $item->payment_condition }}" readonly>
+                        <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>
                     </div>
                     @endif
                     <div class="d-flex justify-content-end">

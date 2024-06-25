@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('fb_link')->nullable();
             $table->string('payment_type')->nullable();
             $table->string('payment_condition')->nullable();
+            $table->string('proof_of_delivery')->nullable();
             $table->timestamps();
 
             $table->foreign('courier_id')->references('id')->on('users')->onDelete('cascade');

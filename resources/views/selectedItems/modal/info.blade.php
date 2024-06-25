@@ -56,6 +56,7 @@
                     </div>
                 </div>
                 @endforeach
+
                 <div class="modal-footer">
                     <div class="row align-items-center mb-3">
                         <div class="col-sm-3">

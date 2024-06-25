@@ -48,33 +48,33 @@
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
                             <p>Choose your payment</p>
                             @if($item->order_retrieval == 'delivery')
-                            <div class="checkout__input__checkbox">
-                                <label for="payment">
-                                    Cash on delivery(COD)
-                                    <input type="checkbox" name="payment_type" id="payment" value="COD">
-                                    <span class="checkmark"></span>
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_cod" value="COD" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_cod">
+                                    Cash on delivery (COD)
                                 </label>
                             </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="paypal">
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_gcash">
                                     G-cash
-                                    <input type="checkbox" name="payment_type" id="paypal" value="G-cash">
-                                    <span class="checkmark"></span>
                                 </label>
                             </div>
                             @else
-                            <div class="checkout__input__checkbox">
-                                <label for="payment">
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_gcash">
                                     G-cash
-                                    <input type="checkbox" name="payment_type" id="payment" value="G-cash">
-                                    <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="paypal">
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_instore" value="In-store" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_instore">
                                     In-store
-                                    <input type="checkbox" name="payment_type" id="paypal" value="In-store">
-                                    <span class="checkmark"></span>
                                 </label>
                             </div>
                             @endif

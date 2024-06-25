@@ -6,14 +6,20 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
             <h4 style="margin: auto 0;">Package History</h4>
+            <form action="{{ route('selected-items.show') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-search-alt-2'></i>
+                    </button>
+                </div>
+            </form>
         </div>
-
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <!-- <th>Date</th> -->
                         <th>Reference No.</th>
                         <th>User Name</th>
                         <th>Items</th>
@@ -25,18 +31,14 @@
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
                     @if(count($userByReference) > 0)
-                    @foreach ($userByReference as $referenceNo => $user) {{-- Note the change here --}}
+                    @foreach ($userByReference as $referenceNo => $user)
                     <tr>
-                        <td style="display: none;" class="id-field">{{ $user['id'] }}</td>
                         <td>{{ $loop->iteration }}</td>
-                        <!-- <td>
-                            <span class="badge bg-label-dark me-1">{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y') }}</span>
-                        </td> -->
                         <td>{{ $referenceNo }}</td>
                         <td>{{ $user['name'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.info')
+                            @include('selectedItems.modal.info', ['user' => $user])
                         </td>
                         <td>
                             @if($user['order_retrieval'] == 'delivery')
@@ -61,12 +63,27 @@
                             <span class="badge bg-label-success me-1">Completed</span>
                             @endif
                         </td>
-                        <td></td>
+                        <td>
+                            @if($user['payment_condition'] == NULL)
+                            <form action="{{ route('selected-items.updatePaymentCondition', ['referenceNo' => $referenceNo]) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('POST')
+                                <input type="hidden" name="payment_condition" id="payment_condition" value="paid">
+                                <button type="submit" class="btn btn-link p-0 m-0">
+                                    <i class="bx bx-check details-button"></i>
+                                </button>
+                            </form>
+                            @endif
+                            @if($user['order_retrieval'] == 'delivery')
+                            <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.proof', ['user' => $user])
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No Package Items found.</td>
+                        <td colspan="8" class="text-center">No Package Items found.</td>
                     </tr>
                     @endif
                 </tbody>
@@ -74,7 +91,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('customScript')

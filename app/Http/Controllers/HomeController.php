@@ -35,7 +35,7 @@ class HomeController extends Controller
 
         $courierID = Auth::user();
         $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')->where('courier_id', $courierID->id)->where('status', 'readyForRetrieval')->count();
-        $delivered = SelectedItems::where('order_retrieval', 'delivery')->where('courier_id', $courierID->id)->where('status', 'delivered')->count();
+        $delivered = SelectedItems::where('order_retrieval', 'delivery')->where('courier_id', $courierID->id)->where('status', 'delivered')->select('referenceNo')->count();
 
         return view('home', compact('package', 'delivery', 'pickup', 'products', 'categories', 'deliveryRequest', 'delivered'));
     }
