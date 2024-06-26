@@ -83,11 +83,11 @@ Route::get('/error', [AuthController::class, 'error'])->name('error');
 
 Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
 
-Route::resource('categories', CategoryController::class);
+Route::resource('admin/categories', CategoryController::class);
 
-Route::resource('inventories', InventoryController::class);
+Route::resource('admin/inventories', InventoryController::class);
 
-Route::resource('users', AdminController::class)->middleware('admin');
+Route::resource('admin/users', AdminController::class)->middleware('admin');
 
 Route::resource('profile', ProfileController::class);
 
@@ -96,6 +96,7 @@ Route::resource('profile', ProfileController::class);
 Route::resource('reviews', ReviewController::class);
 
 Route::resource('carts', CartController::class);
+
 Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
 Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
 Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');

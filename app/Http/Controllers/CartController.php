@@ -146,6 +146,7 @@ class CartController extends Controller
                 } 
                 
                 elseif ($newQuantity <= $inventory->quantity && $inventory->quantity != 0) {
+
                     Cart::create([
                         'user_id' => $user->id,
                         'product_id' => $newInventoryId,
