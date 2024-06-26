@@ -46,7 +46,7 @@
                             <img src="{{ asset('storage/' . $item->product_img) }}" style="width: 45px; height: 45px" alt="Product Image" class="rounded-circle">
                         </td>
                         <td>{{ $item->product_name }}</td>
-                        <td>{{ $item->price }}</td>
+                        <td>₱{{ number_format($item->price, 2) }}</td>
                         <td>
                             @if($item->quantity <= 10) <span class="badge bg-label-danger me-1">{{ $item->quantity }}</span>
                                 @elseif($item->quantity <= 20) <span class="badge bg-label-warning me-1">{{ $item->quantity }}</span>

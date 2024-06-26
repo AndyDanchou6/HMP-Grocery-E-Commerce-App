@@ -35,22 +35,18 @@
                     <div class="col-sm-4">
                         <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
                     </div>
-
-                    <label for="phone" class="col-sm-2 col-form-label">Item Price</label>
+                    <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->price }}" readonly>
+                        <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
                     </div>
-
-                    <label for="phone" class="col-sm-2 col-form-label">Quantity</label>
+                    <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
                     <div class="col-sm-4">
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
-
-                    <label for="phone" class="col-sm-2 col-form-label">SubTotal</label>
+                    <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
+                        <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
-
                     <div class="col-sm-12">
                         <hr>
                     </div>
@@ -112,7 +108,7 @@
                         @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
                         @if($item->payment_condition == NULL)
                         <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
-                        <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;">
+                        <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;" required>
                             <option value="">Unpaid</option>
                             <option value="paid">Paid</option>
                         </select>

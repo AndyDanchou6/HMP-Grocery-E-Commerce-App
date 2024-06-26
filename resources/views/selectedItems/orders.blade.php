@@ -13,12 +13,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Reference No.</th>
                         <th>Product Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Total Cost</th>
-                        <th>Status</th>
                         <th>Order Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
@@ -27,10 +29,20 @@
                     <tr>
                         <td style="display: none;" class="id-field">{{ $user->id }}</td>
                         <td>{{ $loop->iteration }}</td>
+                        <td>
+                            <span class="badge bg-label-primary me-1">{{ $user->referenceNo }}</span>
+                        </td>
                         <td>{{ $user->inventory->product_name }}</td>
-                        <td>{{ $user->inventory->price }}</td>
+                        <td>₱{{ number_format($user->inventory->price, 2) }}</td>
                         <td>{{ $user->quantity }}</td>
-                        <td>{{ $user->inventory->price * $user->quantity }}</td>
+                        <td>₱{{ number_format($user->inventory->price * $user->quantity, 2) }}</td>
+                        <td>
+                            @if($user->order_retrieval == 'delivery')
+                            <span class="badge bg-label-info me-1">Delivery</span>
+                            @else
+                            <span class="badge bg-label-primary me-1">Pickup</span>
+                            @endif
+                        </td>
                         <td>
                             @if($user->status == 'forPackage')
                             <span class="badge bg-label-danger me-1">Pending</span>
@@ -40,13 +52,7 @@
                             <span class="badge bg-label-success me-1">Completed</span>
                             @endif
                         </td>
-                        <td>
-                            @if($user->order_retrieval == 'delivery')
-                            <span class="badge bg-label-info me-1">Delivery</span>
-                            @else
-                            <span class="badge bg-label-primary me-1">Pickup</span>
-                            @endif
-                        </td>
+                        <td></td>
                     </tr>
                     @endforeach
                     @else
@@ -66,42 +72,40 @@
 
 @section('customScript')
 <script>
-    addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
         var subTotalField = document.querySelectorAll('.item-sub-total');
-        var totalContainer = [];
+        var totalContainer = {};
 
         subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute('data-item-id');
+            var [referenceNo, itemId] = itemReferenceNo.split('_');
 
-            var itemUserId = subtotal.getAttribute('data-item-id');
-            var toSplit = itemUserId;
-            var [itemId, userId] = toSplit.split('_');
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
 
-            var price = document.querySelector('.item-price[data-item-id="' + itemUserId + '"]').value;
-            var quantity = document.querySelector('.item-quantity[data-item-id="' + itemUserId + '"]').value;
-            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemUserId + '"]');
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
 
-            var tempSubTotal;
-            tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal;
-
-            if (totalContainer[userId] == null) {
-                totalContainer[userId] = tempSubTotal;
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
             } else {
-                totalContainer[userId] += tempSubTotal;
+                totalContainer[referenceNo] += tempSubTotal;
             }
         });
-
 
         var totals = document.querySelectorAll('.purchase-total');
 
         totals.forEach(function(total) {
-
             var totalId = total.getAttribute('data-total-id');
-
-            total.querySelector('.purchase-total[data-total-id="' + totalId + '"]');
-
-            total.value = totalContainer[totalId];
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
         });
     });
 </script>

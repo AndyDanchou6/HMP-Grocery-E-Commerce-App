@@ -6,6 +6,7 @@ use App\Models\SelectedItems;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class SelectedItemsController extends Controller
 {
@@ -74,7 +75,7 @@ class SelectedItemsController extends Controller
             $users = $usersQuery->with(['selectedItems' => function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
                     ->select('inventories.*', 'selected_items.*');
-            }])->get();
+            }])->paginate(3);
 
             $userByReference = [];
 
@@ -105,13 +106,12 @@ class SelectedItemsController extends Controller
                 }
             }
 
-            return view('selectedItems.history', compact('userByReference', 'search'));
+            // Pass data to the view
+            return view('selectedItems.history', compact('userByReference', 'search', 'users'));
         } else {
             return redirect()->route('error404');
         }
     }
-
-
 
 
 
@@ -186,9 +186,9 @@ class SelectedItemsController extends Controller
                             'referenceNo' => $item->referenceNo,
                             'name' => $user->name,
                             'email' => $user->email,
-                            'phone' => $user->phone,
-                            'fb_link' => $user->fb_link,
-                            'address' => $user->address,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                             'payment_type' => $item->payment_type,
@@ -351,7 +351,8 @@ class SelectedItemsController extends Controller
                 $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
                 if ($item->order_retrieval == 'delivery') {
-                    if ($item->payment_type == 'Gcash') {
+
+                    if ($item->payment_type == 'G-cash') {
                         $item->payment_condition = 'paid';
                     } else {
                         $item->payment_condition = $request->input('payment_condition');
@@ -365,7 +366,12 @@ class SelectedItemsController extends Controller
                     }
                 } elseif ($item->order_retrieval == 'pickup') {
                     $item->status = 'pickedUp';
-                    $item->payment_condition = $request->input('payment_condition');
+
+                    if ($item->payment_type == 'G-cash') {
+                        $item->payment_condition = 'paid';
+                    } else {
+                        $item->payment_condition = $request->input('payment_condition');
+                    }
                 }
             }
 

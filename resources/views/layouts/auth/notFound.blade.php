@@ -73,10 +73,17 @@
         <h2 class="mb-2 mx-2">Page Not Found :(</h2>
         <p class="mb-4 mx-2">Oops! 😖 The requested URL was not found on this server.</p>
         @auth
-        <a href="{{ route('home') }}" class="btn btn-primary">Back to home</a>
+        @if(Auth::user()->role == 'Admin')
+        <a href="{{ route('admin.home') }}" class="btn btn-primary">Back to home</a>
+        @elseif(Auth::user()->role == 'Customer')
+        <a href="{{ route('customer.home') }}" class="btn btn-primary">Back to home</a>
+        @elseif(Auth::user()->role == 'Courier')
+        <a href="{{ route('courier.home') }}" class="btn btn-primary">Back to home</a>
         @else
         <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
+        @endif
         @endauth
+        <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
         <div class="mt-3">
           <img
             src="../assets/img/illustrations/page-misc-error-light.png"

@@ -1,3 +1,4 @@
+<!-- Modal Content -->
 <div class="modal fade" id="readyMessages{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -35,7 +36,7 @@
                     </div>
                     <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->price }}" readonly>
+                        <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
                     </div>
                     <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
                     <div class="col-sm-4">
@@ -43,7 +44,7 @@
                     </div>
                     <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
+                        <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
                     <div class="col-sm-12">
                         <hr>
@@ -79,7 +80,7 @@
                             <label for="courier_id" class="col-form-label" style="margin-right: 20px;">Courier name:</label>
                         </div>
                         <div class="col-sm-9">
-                            <select class="form-select" name="courier_id" id="courier_id">
+                            <select class="form-select" name="courier_id" id="courier_id" required>
                                 <option value="" selected disabled>Choose Courier</option>
                                 @foreach($couriers as $courier)
                                 <option value="{{ $courier->id }}">{{ $courier->name }}</option>

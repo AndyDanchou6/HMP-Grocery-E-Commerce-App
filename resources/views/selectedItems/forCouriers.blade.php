@@ -51,42 +51,40 @@
 
 @section('customScript')
 <script>
-    addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
         var subTotalField = document.querySelectorAll('.item-sub-total');
-        var totalContainer = [];
+        var totalContainer = {};
 
         subTotalField.forEach(function(subtotal) {
-
             var itemReferenceNo = subtotal.getAttribute('data-item-id');
-            var toSplit = itemReferenceNo;
-            var [referenceNo, itemId] = toSplit.split('_');
+            var [referenceNo, itemId] = itemReferenceNo.split('_');
 
-            var price = document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value;
-            var quantity = document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value;
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
             var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
 
-            var tempSubTotal;
-            tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal;
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
 
-            if (totalContainer[referenceNo] == null) {
+            if (!totalContainer[referenceNo]) {
                 totalContainer[referenceNo] = tempSubTotal;
             } else {
                 totalContainer[referenceNo] += tempSubTotal;
             }
         });
 
-
         var totals = document.querySelectorAll('.purchase-total');
 
         totals.forEach(function(total) {
-
             var totalId = total.getAttribute('data-total-id');
-
-            total.querySelector('.purchase-total[data-total-id="' + totalId + '"]');
-
-            total.value = totalContainer[totalId];
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
         });
     });
 </script>
