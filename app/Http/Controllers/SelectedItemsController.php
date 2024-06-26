@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SelectedItemsController extends Controller
 {
@@ -75,7 +76,7 @@ class SelectedItemsController extends Controller
             $users = $usersQuery->with(['selectedItems' => function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
                     ->select('inventories.*', 'selected_items.*');
-            }])->paginate(3);
+            }])->get();
 
             $userByReference = [];
 
@@ -86,6 +87,7 @@ class SelectedItemsController extends Controller
                         $userByReference[$item->referenceNo] = [
                             'id' => $user->id,
                             'referenceNo' => $item->referenceNo,
+                            'item_id' => $item->item_id,
                             'name' => $user->name,
                             'email' => $user->email,
                             'phone' => $item->phone,
@@ -106,14 +108,28 @@ class SelectedItemsController extends Controller
                 }
             }
 
-            // Pass data to the view
-            return view('selectedItems.history', compact('userByReference', 'search', 'users'));
+            if ($search) {
+                $userByReference = array_filter($userByReference, function ($user) use ($search) {
+                    return stripos($user['referenceNo'], $search) !== false ||
+                        stripos($user['name'], $search) !== false;
+                });
+            }
+
+            $perPage = 5;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.history', [
+                'userByReference' => $paginatedItems,
+                'search' => $search,
+            ]);
         } else {
             return redirect()->route('error404');
         }
     }
-
-
 
     public function forDelivery()
     {
@@ -205,6 +221,68 @@ class SelectedItemsController extends Controller
         }
     }
 
+    public function orders(Request $request)
+    {
+        if (Auth::user()->role == 'Courier') {
+            return redirect()->route('error404');
+        } else {
+            $userId = Auth::id();
+
+            // Fetch users with selected items for checkout
+            $users = User::whereHas('selectedItems', function ($query) use ($userId) {
+                $query->where('selected_items.status', '!=', 'forCheckout')
+                    ->where('selected_items.user_id', $userId);
+            })->with(['selectedItems' => function ($query) use ($userId) {
+                $query->where('selected_items.status', '!=', 'forCheckout')
+                    ->where('selected_items.user_id', $userId)
+                    ->select('selected_items.*', 'inventories.*');
+            }])->get();
+
+            $userByReference = [];
+
+            foreach ($users as $user) {
+                foreach ($user->selectedItems as $item) {
+                    if (!isset($userByReference[$item->referenceNo])) {
+                        $courier = User::find($item->courier_id);
+                        $userByReference[$item->referenceNo] = [
+                            'id' => $user->id,
+                            'referenceNo' => $item->referenceNo,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $item->phone,
+                            'fb_link' => $item->fb_link,
+                            'address' => $item->address,
+                            'order_retrieval' => $item->order_retrieval,
+                            'status' => $item->status,
+                            'courier_id' => $courier ? $courier->name : 'Unknown',
+                            'payment_type' => $item->payment_type,
+                            'payment_condition' => $item->payment_condition,
+                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                            'created_at' => $user->created_at,
+                            'updated_at' => $user->updated_at,
+                            'items' => []
+                        ];
+                    }
+                    $userByReference[$item->referenceNo]['items'][] = $item;
+                }
+            }
+
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.orders', [
+                'userByReference' => $paginatedItems,
+            ]);
+
+            // return view('selectedItems.orders', compact('userByReference'));
+        }
+    }
+
+
     public function courierDashboard()
     {
         if (Auth::user()->role == 'Courier') {
@@ -292,22 +370,6 @@ class SelectedItemsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function orders(Request $request)
-    {
-        if (Auth::user()->role == 'Courier') {
-            return redirect()->route('error404');
-        } else {
-            $user = Auth::user();
-
-            $selectedItems = SelectedItems::where('user_id', $user->id)
-                ->where('status', '!=', 'forCheckout')
-                ->with('inventory')
-                ->orderBy('created_at', 'desc')
-                ->paginate(6);
-
-            return view('selectedItems.orders', compact('selectedItems'));
-        }
-    }
 
 
     /**

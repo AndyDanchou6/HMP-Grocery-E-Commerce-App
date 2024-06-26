@@ -47,17 +47,6 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
-        // $validator = Validator::make($request->all(), [
-        //     'product_id' => 'required|exists:inventories,id',
-        //     'rating' => 'required|integer|min:1|max:5',
-        //     'comment' => 'required|string|max:255',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator)->withInput();
-        // }
-
         $user = new Review();
         $user->user_id = auth()->user()->id;
         $user->product_id = $request->input('product_id');
@@ -66,7 +55,7 @@ class ReviewController extends Controller
 
         $user->save();
 
-        return redirect()->route('reviews.index')->with('success', 'Created successfully.');
+        return redirect()->back();
     }
 
     /**
