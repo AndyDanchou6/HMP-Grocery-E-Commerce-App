@@ -30,23 +30,27 @@
                     <h5>Purchased Items</h5>
                 </div>
                 @foreach($user['items'] as $item)
-                <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
-                    <label for="phone" class="col-sm-2 col-form-label">Item Name</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
+                <div class="row item-row" data-item-id="{{ $item->id }}">
+
+                    <div class="col-sm-12 mb-3">
+                        <label for="phone" class="col-sm-2 col-form-label">Item Name</label>
+                        <span><input type="text" class="form-control" value="{{ $item->product_name }}" readonly></span>
                     </div>
 
-                    <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
+                    <div class="col-sm-4 mb-3">
+                        <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                        <span><input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly></span>
                     </div>
-                    <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
-                    <div class="col-sm-4">
-                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
+
+                    <div class="col-sm-4 mb-3">
+                        <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
+                        <span><input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly></span>
                     </div>
-                    <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
+
+
+                    <div class="col-sm-4 mb-3">
+                        <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
+                        <span><input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly></span>
                     </div>
 
                     <div class="col-sm-12">
@@ -56,20 +60,20 @@
                 @endforeach
 
                 <div class="modal-footer">
-                    <div class="row align-items-center mb-3">
-                        <div class="col-sm-3">
+                    <div class="row row-cols-1 row-cols-md-2 align-items-center mb-3">
+                        <div class="mb-3">
                             <label for="total" class="col-form-label">Total</label>
                             <input type="text" name="total" class="form-control purchase-total" data-total-id="{{ $user['referenceNo'] }}" readonly>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="mb-3">
                             <label for="reference" class="col-form-label">Reference No.</label>
                             <input type="text" name="reference" class="form-control" value="{{ $user['referenceNo'] }}" readonly>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="mb-3">
                             <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
                             <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="mb-3">
                             <label for="order_date" class="col-form-label">Date</label>
                             <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y') }}" readonly>
                         </div>

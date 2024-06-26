@@ -302,7 +302,7 @@
 
                 if (parsedItems) {
                     if (parsedItems[uniqueItemId] && parsedItems[uniqueItemId].item_quantity != 0) {
-                        banner.style.display = 'block';
+                        banner.style.display = 'inline-block';
                     } else {
                         banner.style.display = 'none';
                     }
@@ -319,7 +319,6 @@
                 totalField.value = totalItemCost(); // Loads the Total cost
             }
 
-            const clickedItems = document.querySelectorAll('.product_onDisplay');
 
             const itemQuantityFields = document.querySelectorAll('.quantityInput');
 
@@ -327,19 +326,43 @@
 
             onCartBanner();
 
+            // Out of Stock Banner 
+            var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
+
+            outOfStockBanners.forEach(function(outOfStock) {
+                var dataQuantity = outOfStock.getAttribute('data-quantity');
+                var dataIdentifier = outOfStock.getAttribute('data-item-id');
+                var quantityFields = document.querySelector('.quantity[data-item-id="' + dataIdentifier + '"]');
+
+                if (dataQuantity == 0) {
+                    outOfStock.style.display = 'block';
+
+                    quantityFields.style.display = "none";
+                    console.log(quantityFields)
+                }
+            })
+
+            const clickedItems = document.querySelectorAll('.product_onDisplay');
+
             clickedItems.forEach(function(clickedItem) {
 
-                clickedItem.addEventListener('click', function() { // Listens to every click on items
+                var quantityAvailable = clickedItem.getAttribute('data-quantity')
 
-                    var itemId = clickedItem.getAttribute('data-item-id');
-                    var itemPrice = clickedItem.getAttribute('data-price');
+                if (quantityAvailable != 0) {
 
-                    stashItemsSelected(itemPrice, itemId, 'increment'); // Stores the selected item
+                    clickedItem.addEventListener('click', function() { // Listens to every click on items
 
-                    totalField.value = totalItemCost(); // Loads a new total after clicking item
-                    updateAmountSelected(itemQuantityFields);
-                    onCartBanner();
-                });
+                        var itemId = clickedItem.getAttribute('data-item-id');
+                        var itemPrice = clickedItem.getAttribute('data-price');
+
+                        stashItemsSelected(itemPrice, itemId, 'increment'); // Stores the selected item
+
+                        totalField.value = totalItemCost(); // Loads a new total after clicking item
+                        updateAmountSelected(itemQuantityFields);
+                        onCartBanner();
+                    });
+                }
+
             });
 
             const quantityButton = document.querySelectorAll('.productAdjustButton');
@@ -422,7 +445,9 @@
                         })
                     }
                 })
-            }   
+            } else {
+                console.log('Button not Found')
+            }
         });
     </script>
 
