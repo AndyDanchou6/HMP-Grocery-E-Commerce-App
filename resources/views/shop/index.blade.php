@@ -65,11 +65,11 @@
                     <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
                         <p class="text-light bg-danger onCartBanner" style="position: absolute; top: 0; left: 0; display: none;" data-item-id="{{ $item->id }}">On Cart</p>
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
-                        <ul class="featured__item__pic__hover">
+                        <!-- <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
                             <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
                             <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div class="featured__item__text text-center mt-3">
                         <h6><a href="#">{{ $item->product_name }}</a></h6>

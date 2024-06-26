@@ -97,7 +97,7 @@ Route::resource('reviews', ReviewController::class);
 
 Route::resource('carts', CartController::class);
 Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
-Route::post('/carts/update', [CartController::class, 'update'])->name('carts.update');
+Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
 Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
 
 
