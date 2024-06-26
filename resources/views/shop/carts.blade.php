@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__table">
-                    <form id="update-cart-form" action="{{ route('carts.update') }}" method="POST">
+                    <form id="update-cart-form" action="{{ route('carts.updateQty') }}" method="POST">
                         @csrf
                         @method('PATCH')
                         <table>

@@ -128,11 +128,23 @@ class CartController extends Controller
 
             $quantity = $items[$newInventoryId];
 
-            Cart::create([
-                'user_id' => $user->id,
-                'product_id' => $newInventoryId,
-                'quantity' => $quantity,
-            ]);
+            $inventory = Inventory::find($newInventoryId);
+
+            if ($inventory) {
+
+                $newQuantity = $quantity;
+
+                if ($newQuantity > $inventory->quantity && $inventory->quantity != 0) {
+
+                    $newQuantity = $inventory->quantity;
+
+                    Cart::create([
+                        'user_id' => $user->id,
+                        'product_id' => $newInventoryId,
+                        'quantity' => $newQuantity,
+                    ]);
+                }
+            }
         }
 
         return response()->json([
