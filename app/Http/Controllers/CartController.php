@@ -143,6 +143,12 @@ class CartController extends Controller
                         'product_id' => $newInventoryId,
                         'quantity' => $newQuantity,
                     ]);
+                } else {
+                    Cart::create([
+                        'user_id' => $user->id,
+                        'product_id' => $newInventoryId,
+                        'quantity' => $quantity,
+                    ]);
                 }
             }
         }
