@@ -55,7 +55,7 @@ class ShopController extends Controller
                     $queryBuilder->where('category_id', $categoryFilter);
                 })
                 ->orderBy('created_at', 'desc')
-                ->paginate(6);
+                ->paginate(9);
 
             return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
         }

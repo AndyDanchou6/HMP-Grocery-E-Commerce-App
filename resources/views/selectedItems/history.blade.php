@@ -34,7 +34,7 @@
                     @foreach ($userByReference as $referenceNo => $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $referenceNo }}</td>
+                        <td><span class="badge bg-label-primary me-1">{{ $referenceNo }}</span></td>
                         <td>{{ $user['name'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
@@ -89,6 +89,57 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3" style="margin-bottom: 10px; margin-right: 10px;">
+            <div class="text-muted" style="margin-left: 10px;">
+                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} Results
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-end mb-0">
+                    @if ($users->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="tf-icon bx bx-chevrons-left"></i></span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="tf-icon bx bx-chevron-left"></i></span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $users->previousPageUrl() }}"><i class="tf-icon bx bx-chevron-left"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $users->url(1) }}"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                    </li>
+                    @endif
+
+                    @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                    @if ($page == $users->currentPage())
+                    <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                    @else
+                    <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                    @endif
+                    @endforeach
+
+                    @if ($users->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $users->nextPageUrl() }}"><i class="tf-icon bx bx-chevron-right"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $users->url($users->lastPage()) }}"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="tf-icon bx bx-chevron-right"></i></span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="tf-icon bx bx-chevrons-right"></i></span>
+                    </li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+        <!-----End of Pagination----->
     </div>
 </div>
 @endsection
@@ -96,6 +147,7 @@
 @section('customScript')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         var subTotalField = document.querySelectorAll('.item-sub-total');
         var totalContainer = {};
 
@@ -103,23 +155,31 @@
             var itemReferenceNo = subtotal.getAttribute('data-item-id');
             var [referenceNo, itemId] = itemReferenceNo.split('_');
 
-            var price = document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value;
-            var quantity = document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value;
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
             var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
 
             var tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
 
             if (!totalContainer[referenceNo]) {
-                totalContainer[referenceNo] = 0;
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
             }
-            totalContainer[referenceNo] += tempSubTotal;
         });
 
         var totals = document.querySelectorAll('.purchase-total');
+
         totals.forEach(function(total) {
             var totalId = total.getAttribute('data-total-id');
-            total.value = totalContainer[totalId];
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
         });
     });
 </script>
