@@ -15,14 +15,14 @@ class UserSeeder extends Seeder
     public function run(): void
     {
 
-        $avatarPath1 = 'avatars/maki.jpg';
-        $avatarPath2 = 'avatars/1.jpg';
-        $avatarPath3 = 'avatars/logo.jpg';
+        $admin1 = 'user_avatar/avatar1.jpg';
+        $admin2 = 'user_avatar/avatar2.jpg';
+        $users = 'user_avatar/avatar.jpg';
 
 
         User::factory()->create([
             'role' => 'Admin',
-            'avatar' => $avatarPath1,
+            'avatar' => $admin1,
             'name' => 'E-Mart',
             'email' => 'e.mart@admin.me',
             'phone' => 639638753244,
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'role' => 'Admin',
-            'avatar' => $avatarPath2,
+            'avatar' => $admin2,
             'name' => 'Melchard Lina',
             'email' => 'e.mart@eridiano.admin',
             'phone' => 639232423,
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'role' => 'Customer',
-            'avatar' => $avatarPath3,
+            'avatar' => $users,
             'name' => 'Elessa Fermano',
             'email' => 'esang@ungo.com',
             'phone' => 639232423,
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'role' => 'Courier',
-            'avatar' => $avatarPath3,
+            'avatar' => $users,
             'name' => 'Antonette Lozares',
             'email' => 'tonette@ungo.com',
             'phone' => 639232423,
@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'role' => 'Courier',
-            'avatar' => $avatarPath3,
+            'avatar' => $users,
             'name' => 'Janine Rosales',
             'email' => 'anine@ungo.com',
             'phone' => 639232423,

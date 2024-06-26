@@ -56,7 +56,7 @@ class InventoryController extends Controller
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'quantity' => 'required|integer',
+            'quantity' => 'required|integer|min:0',
             'information' => 'required',
             'description' => 'required',
             'category_id' => 'required|exists:categories,id',
@@ -110,7 +110,7 @@ class InventoryController extends Controller
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'quantity' => 'required|integer',
+            'quantity' => 'required|integer|min:0',
             'information' => 'required|string|max:1000',
             'description' => 'required|string|max:1000',
             'category_id' => 'required|exists:categories,id',
@@ -153,7 +153,7 @@ class InventoryController extends Controller
     // public function searchItems(Request $request)
     // {
     //     $ids = $request->input('ids', []);
- 
+
     //     $items = Inventory::whereIn('id', $ids)->get();
 
     //     // return view('shop.carts', compact('selectedItems'));

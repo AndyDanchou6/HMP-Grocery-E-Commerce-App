@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="row featured__filter" id="featuredFilter">
-            @foreach(App\Models\Inventory::inRandomOrder()->take(8)->get() as $item)
+            @foreach(App\Models\Inventory::inRandomOrder()->take(12)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}">
@@ -220,8 +220,8 @@
                                     <span>₱{{ number_format($item->price, 2) }}</span>
                                     <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
                                 </div>
-                                <!-- </a> -->
-                                @endforeach
+                            </a>
+                            @endforeach
                         </div>
                         @endforeach
                     </div>
