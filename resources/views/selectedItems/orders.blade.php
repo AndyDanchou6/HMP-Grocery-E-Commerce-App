@@ -57,7 +57,7 @@
                             @if($user['proof_of_delivery'] != NULL)
                             @if($user['order_retrieval'] == 'delivery')
                             <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.proof', ['user' => $user])
+                            @include('selectedItems.modal.proof')
                             @endif
                             @endif
                         </td>
@@ -75,6 +75,7 @@
     </div>
 </div>
 @endsection
+
 
 @section('customScript')
 <script>

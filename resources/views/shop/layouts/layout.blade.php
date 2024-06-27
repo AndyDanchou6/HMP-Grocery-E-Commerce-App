@@ -33,7 +33,7 @@
         <div class="loader"></div>
     </div> -->
 
-    <!-- Humberger Begin -->
+    <!-- Hamburger Menu -->
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
@@ -41,8 +41,8 @@
         </div>
         <div class="humberger__menu__cart">
             <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                <li><a href="{{ route('selectedItems.orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
+                <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
             </ul>
             <div class="header__cart__price">item: <span>$150.00</span></div>
         </div>
@@ -67,10 +67,7 @@
                 <li><a href="{{ route('shop.products') }}">Shop</a></li>
                 <li><a href="#">Pages</a>
                     <ul class="header__menu__dropdown">
-                        <li><a href="./shop-details.html">Shop Details</a></li>
-                        <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                        <li><a href="./checkout.html">Check Out</a></li>
-                        <li><a href="./blog-details.html">Blog Details</a></li>
+                        <li><a href="{{ route('shop.carts') }}">Shopping Cart</a></li>
                     </ul>
                 </li>
                 <li><a href="./blog.html">Blog</a></li>
@@ -91,7 +88,6 @@
             </ul>
         </div>
     </div>
-    <!-- Humberger End -->
 
     <!-- Header Section Begin -->
     <header class="header">

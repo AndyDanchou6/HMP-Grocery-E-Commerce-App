@@ -47,13 +47,13 @@
                     <li class="">
                         <a href="{{ route('shop.products') }}">Shop</a>
                     </li>
-                    <li>
+                    <li class="">
                         <a href="#">Pages</a>
                         <ul class="header__menu__dropdown">
-                            <li><a href="shop-details.html">Shop Details</a></li>
-                            <li><a href="shopping-cart.html">Shopping Cart</a></li>
-                            <li><a href="checkout.html">Checkout</a></li>
-                            <li><a href="blog-details.html">Blog Details</a></li>
+                            <!-- <li><a href="shop-details.html">Shop Details</a></li> -->
+                            <li><a href="{{ route('shop.carts') }}">Shopping Cart</a></li>
+                            <!-- <li><a href="checkout.html">Checkout</a></li> -->
+                            <!-- <li><a href="blog-details.html">Blog Details</a></li> -->
                         </ul>
                     </li>
                     <li><a href="blog.html">Blog</a></li>
@@ -65,15 +65,16 @@
         <div class="col-lg-3">
             <div class="header__cart">
                 <ul>
-                    <!-- <li><a href="#"><i class="fa fa-heart"></i> <span style="background-color: #696cff;">1</span></a></li> -->
+                    <li><a href="{{ route('selectedItems.orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
                     <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
                 </ul>
-                <!-- <div class=" header__cart__price">item: <span>$150.00</span> -->
+                <!-----item------>
+                <div class=" header__cart__price"><span></span>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="humberger__open">
-    <i class="fa fa-bars"></i>
-</div>
+    <div class="humberger__open">
+        <i class="fa fa-bars"></i>
+    </div>
 </div>

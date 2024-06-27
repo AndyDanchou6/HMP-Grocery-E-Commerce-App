@@ -73,6 +73,8 @@ class RegisterController extends Controller
     {
         if ($user->role === 'Customer') {
             return redirect()->route('shop.index');
+        } elseif ($user->role === 'Courier') {
+            return redirect()->route('customer.home');
         }
 
         return redirect($this->redirectPath());

@@ -228,7 +228,7 @@
 })(jQuery);
 
 document.addEventListener("DOMContentLoaded", function () {
-    var currentUrl = window.location.href;
+    var currentUrl = window.location.origin + window.location.pathname;
 
     // Function to set active state for header menu based on current URL
     function setActiveHeaderMenuItem() {
@@ -243,9 +243,23 @@ document.addEventListener("DOMContentLoaded", function () {
             if (link.href === currentUrl) {
                 // Add 'active' class to the parent <li> element
                 link.parentNode.classList.add("active");
+
+                // Check if the link is inside a dropdown menu
+                var parentUl = link.closest("ul.header__menu__dropdown");
+                if (parentUl) {
+                    // Add 'active' class to the parent <li> element of the dropdown
+                    parentUl.closest("li").classList.add("active");
+                }
             } else {
                 // Remove 'active' class from the parent <li> element
                 link.parentNode.classList.remove("active");
+
+                // Check if the link is inside a dropdown menu
+                var parentUl = link.closest("ul.header__menu__dropdown");
+                if (parentUl) {
+                    // Remove 'active' class from the parent <li> element of the dropdown
+                    parentUl.closest("li").classList.remove("active");
+                }
             }
         });
     }
@@ -266,8 +280,15 @@ document.addEventListener("DOMContentLoaded", function () {
             // Add 'active' class to the clicked link's parent <li> element
             this.parentNode.classList.add("active");
 
+            // Check if the clicked link is inside a dropdown menu
+            var parentUl = this.closest("ul.header__menu__dropdown");
+            if (parentUl) {
+                // Add 'active' class to the parent <li> element of the dropdown
+                parentUl.closest("li").classList.add("active");
+            }
+
             // Update current URL
-            currentUrl = this.href;
+            currentUrl = window.location.origin + window.location.pathname;
 
             // Allow default link behavior to proceed after handling active state
             // Remove the following line to restore normal link behavior without preventing redirection:

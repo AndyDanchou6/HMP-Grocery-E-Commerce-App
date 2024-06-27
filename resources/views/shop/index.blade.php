@@ -29,7 +29,7 @@
                 @foreach($category as $item)
                 <div class="col-lg-3">
                     <div class="categories__item {{ 'background-color-' . $loop->iteration }} text-center d-flex flex-column align-items-center">
-                        <img src="{{ asset('storage/' . $item->category_img) }}" alt="{{ $item->category_name }}" style="width: 270px; height: 270px;">
+                        <a href="{{ route('shop.products', ['category' => $item->id]) }}" data-category-id="{{ $item->id }}"><img src="{{ asset('storage/' . $item->category_img) }}" alt="{{ $item->category_name }}" style="width: 270px; height: 270px;"></a>
                         <h5 class="mt-3"><a href="{{ route('shop.products', ['category' => $item->id]) }}" data-category-id="{{ $item->id }}">{{ $item->category_name }}</a></h5>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                                 </div>
                                 <div class=" latest-product__item__text">
                                     <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ number_format($item->price, 2) }}</span>
+                                    <span>₱{{ number_format($product->price, 2) }}</span>
                                 </div>
                             </a>
                             @endforeach
@@ -147,7 +147,7 @@
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-1.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-1.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -156,7 +156,7 @@
                             </a>
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-2.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-2.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -165,7 +165,7 @@
                             </a>
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-3.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-3.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -176,7 +176,7 @@
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-1.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-1.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -185,7 +185,7 @@
                             </a>
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-2.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-2.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -194,7 +194,7 @@
                             </a>
                             <a href="#" class="latest-product__item">
                                 <div class="latest-product__item__pic">
-                                    <img src="img/latest-product/lp-3.jpg" alt="">
+                                    <img src="index/img/latest-product/lp-3.jpg" alt="">
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>Crab Pool Security</h6>
@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ number_format($item->price, 2) }}</span>
+                                    <span>₱{{ number_format($product->price, 2) }}</span>
                                     <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
                                 </div>
                             </a>
