@@ -132,7 +132,7 @@ class ShopController extends Controller
                 ]);
             }
 
-            return redirect()->route('shop.index')->with('success', 'Thank you for shopping, come buy again!');
+            return redirect()->route('shop.index')->with('success', 'Thank you for shopping, Check your items in dashboard!');
         } catch (\Exception $e) {
             Log::error('Place Order Error: ' . $e->getMessage());
 

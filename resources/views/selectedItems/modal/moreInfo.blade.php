@@ -104,7 +104,6 @@
                                 <div class="col-sm-4">
                                     <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
                                 </div>
-
                                 @endif
                                 @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
                                 @if($item->payment_condition == NULL)
@@ -113,12 +112,12 @@
                                     <option value="">Unpaid</option>
                                     <option value="paid">Paid</option>
                                 </select>
-                                @endif
                                 @elseif($item->payment_condition == 'paid')
                                 <label for="payment_type" class="col-md-4 col-form-label">Payment Condition:</label>
                                 <div class="col-sm-4">
                                     <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>
                                 </div>
+                                @endif
                                 @endif
                             </div>
 

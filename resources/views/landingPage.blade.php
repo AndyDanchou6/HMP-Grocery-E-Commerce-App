@@ -10,7 +10,7 @@
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
+    <link rel="icon" type="image/x-icon" href="{{ asset('index/img/favicon.ico') }}" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,19 @@
                     <li class="casual-font"><a class="color-main" href="#welcome-section">Home</a></li>
                     <li class="casual-font"><a class="color-main" href="#about">About</a></li>
                     <li class="casual-font"><a class="color-main" href="#contact">Contact</a></li>
-                    <li class="casual-font"><a class="color-main" href="/login">Sign in</a></li>
+                    @if (Route::has('login'))
+                    @auth
+                    @if(Auth::user()->role == 'Admin')
+                    <li class="casual-font"><a class="color-main" href="{{ route('admin.home') }}">Dashboard</a></li>
+                    @elseif(Auth::user()->role == 'Customer')
+                    <li class="casual-font"><a class="color-main" href="{{ route('customer.home') }}">Dashboard</a></li>
+                    @elseif(Auth::user()->role == 'Courier')
+                    <li class="casual-font"><a class="color-main" href="{{ route('courier.home') }}">Dashboard</a></li>
+                    @endif
+                    @endauth
+                    @else
+                    <li class="casual-font"><a class="color-main" href="{{ route('login') }}">Login</a></li>
+                    @endif
                 </ul>
             </nav>
         </aside>
@@ -38,7 +50,19 @@
                     <li class="casual-font"><a href="#welcome-section">Home</a></li>
                     <li class="casual-font"><a href="#about">About</a></li>
                     <li class="casual-font"><a href="#contact">Contact</a></li>
-                    <li class="casual-font"><a href="/login">Sign in</a></li>
+                    @if (Route::has('login'))
+                    @auth
+                    @if(Auth::user()->role == 'Admin')
+                    <li class="casual-font"><a class="color-main" href="{{ route('admin.home') }}">Dashboard</a></li>
+                    @elseif(Auth::user()->role == 'Customer')
+                    <li class="casual-font"><a class="color-main" href="{{ route('customer.home') }}">Dashboard</a></li>
+                    @elseif(Auth::user()->role == 'Courier')
+                    <li class="casual-font"><a class="color-main" href="{{ route('courier.home') }}">Dashboard</a></li>
+                    @endif
+                    @else
+                    <li class="casual-font"><a class="color-main" href="{{ route('login') }}">Sign in</a></li>
+                    @endauth
+                    @endif
                 </ul>
             </nav>
             <div class="toggle-sidebar">
