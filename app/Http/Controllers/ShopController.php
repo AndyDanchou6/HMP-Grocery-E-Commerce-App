@@ -206,7 +206,7 @@ class ShopController extends Controller
         }
 
         $user = Auth::user();
-        $carts = Cart::with('inventory')->where('user_id', $user->id)->get();
+        $carts = Cart::with('inventory')->where('user_id', $user->id)->where('quantity', '!=', 0)->get();
 
         $subtotal = $carts->sum(function ($item) {
             return $item->inventory->price * $item->quantity;
