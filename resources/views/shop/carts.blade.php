@@ -47,13 +47,16 @@
                                     <td class="shoping__cart__price">
                                         ₱{{ number_format($item->inventory->price, 2) }}
                                     </td>
+                                    @if($item->quantity != 0)
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty cartAdjustButton" data-item-id="cart_{{ $item->inventory->id }}">
-                                                <input type="text" name="quantities[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}">
+                                                <input type="text" name="quantities[{{ $item->id }}]" id="cartQuantity{{$item->inventory->id}}" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}" data-quantity="{{ $item->inventory->quantity }}">
                                             </div>
                                         </div>
                                     </td>
+                                    @endif
+
                                     <td class="shoping__cart__total">
                                         ₱<span class="item-subtotal">{{ number_format($item->inventory->price * $item->quantity, 2) }}</span>
                                     </td>
@@ -233,11 +236,11 @@
             });
         });
 
-        var updateCartButton = document.querySelector('.updateCartBtn')
+        var updateCartButton = document.querySelector('.updateCartBtn');
+        const quantityButtons = document.querySelectorAll('.cartAdjustButton');
 
+        // Update Stashed Selected Items Via Update Cart
         updateCartButton.addEventListener('click', function(event) {
-
-            const quantityButtons = document.querySelectorAll('.cartAdjustButton');
 
             quantityButtons.forEach(function(quantityButton) {
 
@@ -258,6 +261,31 @@
                 }
             })
         })
+
+        // Limit purchase based on available stock
+        quantityButtons.forEach(function(qButton) {
+
+            var qtyBtn2 = qButton.querySelectorAll('.qtybtn')
+            var cartItemId = qButton.getAttribute('data-item-id')
+            let idNumber = cartItemId.substring(5);
+
+            qtyBtn2.forEach(function(qtyBtn1) {
+                qtyBtn1.addEventListener('click', function() {
+
+                    var inputField = document.querySelector('#cartQuantity' + idNumber)
+                    var availableStock = inputField.getAttribute('data-quantity')
+
+
+                    if (qtyBtn1.classList.contains('inc')) {
+                        if (parseFloat(inputField.value) >= parseFloat(availableStock) - 1) {
+
+                            inputField.value = availableStock - 1
+                        }
+                    }
+                })
+
+            })
+        });
     });
 </script>
 

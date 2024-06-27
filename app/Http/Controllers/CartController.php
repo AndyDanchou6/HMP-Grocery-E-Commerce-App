@@ -143,9 +143,7 @@ class CartController extends Controller
                         'product_id' => $newInventoryId,
                         'quantity' => $newQuantity,
                     ]);
-                } 
-                
-                elseif ($newQuantity <= $inventory->quantity && $inventory->quantity != 0) {
+                } elseif ($newQuantity <= $inventory->quantity && $inventory->quantity != 0) {
 
                     Cart::create([
                         'user_id' => $user->id,
@@ -185,22 +183,32 @@ class CartController extends Controller
     public function update(Request $request)
     {
         $quantities = $request->input('quantities', []);
+
         foreach ($quantities as $cartId => $quantity) {
             $cart = Cart::find($cartId);
 
             if ($cart) {
                 $inventory = $cart->inventory;
+
                 if ($inventory) {
                     if ($quantity > $inventory->quantity) {
                         $quantity = $inventory->quantity;
                     }
+
                     $cart->quantity = $quantity;
-                    $cart->save();
+
+                    if ($quantity == 0) {
+                        $cart->delete();
+                    } else {
+                        $cart->save();
+                    }
                 }
             }
         }
+
         return redirect()->back();
     }
+
 
     /**
      * Remove the specified resource from storage.

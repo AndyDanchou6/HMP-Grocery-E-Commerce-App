@@ -79,8 +79,8 @@
                     </div>
                     <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
                         <div class="quantity" data-item-id="{{ $item->id }}">
-                            <div class="pro-qty productAdjustButton" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}">
-                                <input type="text" name="items[{{ $item->id }}]" value="0" id="quantity{{$item->id}}" class="quantityInput" data-item-id="{{ $item->id }}" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;">
+                            <div class="pro-qty productAdjustButton" data-item-id="{{ $item->id }}" data-item-price="{{ $item->price }}" data-quantity="{{ $item->quantity }}">
+                                <input type="text" name="items[{{ $item->id }}]" value="0" id="quantity{{$item->id}}" class="quantityInput" data-item-id="{{ $item->id }}" style="width: 50px; padding: 4px; text-align: center; font-size: 14px;" readonly>
                             </div>
                         </div>
                     </div>

@@ -230,7 +230,7 @@
             return 0;
         }
 
-        function stashItemsSelected(itemPrice, itemId, operation) {
+        function stashItemsSelected(itemPrice, itemId, operation, quantity) {
             var key = 'item_' + itemId;
 
             var storeItem = {
@@ -242,31 +242,41 @@
             };
 
             var alreadySelected = sessionStorage.getItem('selectedItems');
-            var parsedSelected = JSON.parse(alreadySelected);
+
 
             //      Store in session storage an object with items selected (converted to string)
 
-            if (alreadySelected != null) { // Check if there are selected items
-                if (parsedSelected[key] != null && operation == 'increment') { // Check if item is selected already and increment
-                    parsedSelected[key].item_quantity += 1;
-                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                }
-
-                if (parsedSelected[key] != null && operation == 'decrement' && parsedSelected[key].item_quantity != 0) { // Check if item is selected already and decrement
-                    parsedSelected[key].item_quantity -= 1;
-                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                }
-
-                if (parsedSelected[key] == null && operation == 'increment') {
-                    parsedSelected[key] = { // If item is already selected
-                        'item_id': itemId,
-                        'item_price': itemPrice,
-                        'item_quantity': 1
-                    };
-                    sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                }
-            } else { // If no item is selected yet
+            if (alreadySelected == null) { // Check if there are selected items
                 sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
+            } else {
+
+                var parsedSelected = JSON.parse(alreadySelected);
+
+                if (parsedSelected[key] != null) {
+                    if (parsedSelected[key].item_quantity > quantity - 1 && operation != 'decrement') {
+                        parsedSelected[key].item_quantity = parseFloat(quantity);
+                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                    } else {
+                        if (operation == 'increment') { // Check if item is selected already and increment
+                            parsedSelected[key].item_quantity += 1;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        }
+
+                        if (operation == 'decrement') { // Check if item is selected already and decrement
+                            parsedSelected[key].item_quantity -= 1;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        }
+                    }
+                } else {
+                    if (operation == 'increment') {
+                        parsedSelected[key] = { // If item is already selected
+                            'item_id': itemId,
+                            'item_price': itemPrice,
+                            'item_quantity': 1
+                        };
+                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                    }
+                }
             }
         }
 
@@ -303,7 +313,24 @@
                         banner.style.display = 'none';
                     }
                 }
+            })
+        }
 
+        function outOfStockBanner(outOfStockBanners, userInput = "none") {
+
+            outOfStockBanners.forEach(function(outOfStock) {
+                var dataQuantity = outOfStock.getAttribute('data-quantity');
+                var dataIdentifier = outOfStock.getAttribute('data-item-id');
+                var quantityFields = document.querySelector('.quantity[data-item-id="' + dataIdentifier + '"]');
+
+                if (dataQuantity == 0) {
+
+                    outOfStock.style.display = 'block';
+
+                    if (userInput == 'none') {
+                        quantityFields.style.display = "none";
+                    }
+                }
             })
         }
 
@@ -325,24 +352,13 @@
             // Out of Stock Banner 
             var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
 
-            outOfStockBanners.forEach(function(outOfStock) {
-                var dataQuantity = outOfStock.getAttribute('data-quantity');
-                var dataIdentifier = outOfStock.getAttribute('data-item-id');
-                var quantityFields = document.querySelector('.quantity[data-item-id="' + dataIdentifier + '"]');
-
-                if (dataQuantity == 0) {
-                    outOfStock.style.display = 'block';
-
-                    quantityFields.style.display = "none";
-                    console.log(quantityFields)
-                }
-            })
+            outOfStockBanner(outOfStockBanners);
 
             const clickedItems = document.querySelectorAll('.product_onDisplay');
 
             clickedItems.forEach(function(clickedItem) {
 
-                var quantityAvailable = clickedItem.getAttribute('data-quantity')
+                var quantityAvailable = clickedItem.getAttribute('data-quantity');
 
                 if (quantityAvailable != 0) {
 
@@ -351,14 +367,23 @@
                         var itemId = clickedItem.getAttribute('data-item-id');
                         var itemPrice = clickedItem.getAttribute('data-price');
 
-                        stashItemsSelected(itemPrice, itemId, 'increment'); // Stores the selected item
+                        var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
+                        var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
 
-                        totalField.value = totalItemCost(); // Loads a new total after clicking item
-                        updateAmountSelected(itemQuantityFields);
-                        onCartBanner();
+                        // console.log(outOfStock)
+                        if (currentAmount > quantityAvailable) {
+                            currentAmount = currentAmount;
+                            outOfStock.style.display = 'block';
+                        } else {
+                            stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable); // Stores the selected item
+
+                            totalField.value = totalItemCost(); // Loads a new total after clicking item
+                            updateAmountSelected(itemQuantityFields);
+                            onCartBanner();
+
+                        }
                     });
                 }
-
             });
 
             const quantityButton = document.querySelectorAll('.productAdjustButton');
@@ -367,23 +392,37 @@
 
                 var itemId = quantity.getAttribute('data-item-id');
                 var itemPrice = quantity.getAttribute('data-item-price');
+                var itemDataQuantity = quantity.getAttribute('data-quantity');
                 var quantityAdjustButton = quantity.querySelectorAll('.qtybtn');
 
                 quantityAdjustButton.forEach(function(buttons) {
 
-                    buttons.addEventListener('click', function(event) { // Listens and stores selected items via buttons
+                    buttons.addEventListener('click', function(event) { // Listens and stores selected items via buttons (need to change)
 
-                        var inputValue = document.querySelector('#quantity' + itemId).value;
-                        var itemQuantity = '';
+                        var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
+                        var inputValue = document.querySelector('#quantity' + itemId);
+                        var itemQuantity = 0;
+
 
                         if (buttons.classList.contains('inc')) { // increment quantity by button
-                            itemQuantity = JSON.parse(inputValue) + 1;
-                            stashItemsSelected(itemPrice, itemId, 'increment');
+
+                            if (inputValue.value >= parseFloat(itemDataQuantity)) {
+                                itemQuantity = parseFloat(itemDataQuantity);
+                                inputValue.value = itemQuantity - 1;
+                                outOfStock.style.display = 'block';
+                            } else {
+                                itemQuantity = JSON.parse(inputValue.value) + 1;
+
+                                stashItemsSelected(itemPrice, itemId, 'increment', itemDataQuantity);
+                                onCartBanner();
+                            }
+                        }
+
+                        if (buttons.classList.contains('dec') && inputValue.value != 0) { // decrement quantity by button
+                            itemQuantity = JSON.parse(inputValue.value) - 1;
+                            stashItemsSelected(itemPrice, itemId, 'decrement', itemDataQuantity);
                             onCartBanner();
-                        } else { // decrement quantity by button
-                            itemQuantity = JSON.parse(inputValue) - 1;
-                            stashItemsSelected(itemPrice, itemId, 'decrement');
-                            onCartBanner();
+                            outOfStock.style.display = 'none';
                         }
 
                         totalField.value = totalItemCost();
@@ -418,7 +457,7 @@
                         toCartItems = {
                             'items': tempItemStorage
                         }
-                        console.log(toCartItems)
+                        // console.log(toCartItems)
 
                         const storeCartApi = "/carts"
 
@@ -442,7 +481,7 @@
                     }
                 })
             } else {
-                console.log('Button not Found')
+                // console.log('Button not Found')
             }
         });
     </script>
