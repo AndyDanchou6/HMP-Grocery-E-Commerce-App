@@ -11,6 +11,8 @@ use App\Models\Cart;
 use App\Models\SelectedItems;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use App\Events\MyEvent;
+use Illuminate\Support\Facades\Event;
 
 class ShopController extends Controller
 {
@@ -132,13 +134,16 @@ class ShopController extends Controller
                 ]);
             }
 
-            return redirect()->route('shop.index')->with('success', 'Thank you for shopping, Check your items in dashboard!');
+            event(new MyEvent($selectedItems));
+
+            return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
         } catch (\Exception $e) {
             Log::error('Place Order Error: ' . $e->getMessage());
 
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
     }
+
 
     public function cancelCheckout(Request $request)
     {
@@ -166,7 +171,6 @@ class ShopController extends Controller
             return redirect()->route('shop.carts');
         }
     }
-
 
     /**
      * Display the specified resource.

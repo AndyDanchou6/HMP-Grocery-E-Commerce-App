@@ -20,9 +20,11 @@ class SelectedItemsController extends Controller
             return redirect()->route('error404');
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'forPackage');
+                $query->where('selected_items.status', 'forPackage')
+                    ->orderBy('selected_items.created_at', 'desc');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'forPackage')
+                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('inventories.*', 'selected_items.*');
             }])->get();
 
@@ -62,10 +64,12 @@ class SelectedItemsController extends Controller
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery');
+                    ->where('selected_items.order_retrieval', 'delivery')
+                    ->orderBy('selected_items.created_at', 'desc');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
+                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('inventories.*', 'selected_items.*');
             }])->get();
 
@@ -108,11 +112,13 @@ class SelectedItemsController extends Controller
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'pickup');
+                    ->where('selected_items.order_retrieval', 'pickup')
+                    ->orderBy('selected_items.created_at', 'desc');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.*');
+                    ->select('inventories.*', 'selected_items.*')
+                    ->orderBy('selected_items.created_at', 'desc');
             }])->get();
 
             $userByReference = [];
@@ -151,7 +157,9 @@ class SelectedItemsController extends Controller
             $search = $request->input('search');
 
             $usersQuery = User::whereHas('selectedItems', function ($query) {
-                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup']);
+                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
+                    ->where('status', '!=', 'forCheckout')
+                    ->orderBy('selected_items.created_at', 'desc');
             });
 
             if ($search) {
@@ -165,7 +173,9 @@ class SelectedItemsController extends Controller
 
             $users = $usersQuery->with(['selectedItems' => function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
-                    ->select('inventories.*', 'selected_items.*');
+                    ->where('status', '!=', 'forCheckout')
+                    ->select('inventories.*', 'selected_items.*')
+                    ->orderBy('selected_items.created_at', 'desc');
             }])->get();
 
             $userByReference = [];
@@ -230,10 +240,12 @@ class SelectedItemsController extends Controller
 
             $users = User::whereHas('selectedItems', function ($query) use ($userId) {
                 $query->where('selected_items.status', '!=', 'forCheckout')
-                    ->where('selected_items.user_id', $userId);
+                    ->where('selected_items.user_id', $userId)
+                    ->orderBy('selected_items.created_at', 'desc');
             })->with(['selectedItems' => function ($query) use ($userId) {
                 $query->where('selected_items.status', '!=', 'forCheckout')
                     ->where('selected_items.user_id', $userId)
+                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('selected_items.*', 'inventories.*', 'selected_items.quantity');
             }])->get();
 
@@ -288,11 +300,13 @@ class SelectedItemsController extends Controller
             $users = User::whereHas('selectedItems', function ($query) use ($courier) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
-                    ->where('selected_items.courier_id', $courier->id);
+                    ->where('selected_items.courier_id', $courier->id)
+                    ->orderBy('selected_items.created_at', 'desc');
             })->with(['selectedItems' => function ($query) use ($courier) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
                     ->where('selected_items.courier_id', $courier->id)
+                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('selected_items.*', 'inventories.*');
             }])->get();
 
@@ -464,5 +478,31 @@ class SelectedItemsController extends Controller
     public function destroy(SelectedItems $selectedItems)
     {
         //
+    }
+
+    // public function packageCount()
+    // {
+    //     $count = 0;
+    //     $items = SelectedItems::where('status', 'forPackage')->get();
+
+    //     $referenceNo = '';
+
+    //     foreach ($items as $item) {
+    //         if ($item->referenceNo != $referenceNo) {
+    //             $count++;
+    //         }
+    //         $referenceNo = $item->referenceNo;
+    //     }
+
+    //     return response()->json(['count' => $count]);
+    // }
+
+    public function packageCount()
+    {
+        $item = SelectedItems::where('status', 'forPackage')->get();
+
+        $count = $item->pluck('referenceNo')->unique()->count();
+
+        return response()->json(['count' => $count]);
     }
 }

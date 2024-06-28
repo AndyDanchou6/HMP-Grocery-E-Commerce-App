@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SelectedItemsController;
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/selectedItems/forPackagingCount', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.forPackagingCount');
 // Route::controller(AdminController::class)->group(function () {
 //     Route::post('/login', 'login');
 //     Route::post('/register', 'register');

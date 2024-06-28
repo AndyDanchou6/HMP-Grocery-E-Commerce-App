@@ -7,8 +7,7 @@
         @else
         <a href="{{ route('courier.home') }}" class="app-brand-link">
           @endif
-          <span class="app-brand-logo demo">
-          </span>
+          <span class="app-brand-logo demo"></span>
           <span class="app-brand-text demo menu-text fw-bolder ms-2" style="text-transform: none;"><img src="{{asset('logo/4.png')}}" alt=""></span>
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -59,10 +58,11 @@
         <div data-i18n="Tables">Category</div>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forPackaging" class="menu-item">
       <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link">
-        <i class="menu-icon tf-icons bi bi-box-seam "></i>
-        <div data-i18n="Tables">For Packaging</div>
+        <i class="menu-icon tf-icons bi bi-box-seam"></i>
+        <div data-i18n="For Packaging">For Packaging</div>
+        <span id="forPackagingCount" class="badge badge-pill badge-danger" style="color: red; margin-left: 40px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
@@ -78,7 +78,6 @@
       </a>
     </li>
     @endif
-    <!-- Common Menu Items for Admin and Customer -->
     @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Customer')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
     <li id="tables" class="menu-item">
@@ -94,7 +93,6 @@
       </a>
     </li>
     @endif
-    <!-- Menu Item for Courier -->
     @if(Auth::user()->role == 'Courier')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Courier Section</span></li>
     <li id="tables" class="menu-item">
@@ -106,3 +104,37 @@
     @endif
   </ul>
 </aside>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
+      cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+      encrypted: true
+    });
+
+    var channel = pusher.subscribe('orders');
+    channel.bind('order.placed', function(data) {
+      console.log('New order placed:', data);
+      updateForPackagingCount();
+    });
+
+    function updateForPackagingCount() {
+      fetch('{{ route("selectedItems.forPackagingCount") }}')
+        .then(response => response.json())
+        .then(data => {
+          if (data.count) {
+            document.getElementById('forPackagingCount').textContent = data.count;
+          } else {
+            document.getElementById('forPackagingCount').style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching count:', error);
+        });
+    }
+
+    updateForPackagingCount();
+  });
+</script>
