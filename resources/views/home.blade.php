@@ -72,8 +72,8 @@
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0" id="tableBody">
-                            @if($products->count() > 0)
-                            @foreach ($products as $item)
+                            @if($inventories->count() > 0)
+                            @foreach ($inventories as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->product_name }}</td>
@@ -104,6 +104,7 @@
                         </tbody>
                     </table>
                 </div>
+                @include('inventories.pagination')
             </div>
         </div>
     </div>
