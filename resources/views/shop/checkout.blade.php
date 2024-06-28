@@ -62,7 +62,7 @@
                                     G-cash
                                 </label>
                             </div>
-                            
+
                             @else
                             <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
@@ -106,4 +106,5 @@
         }
     })
 </script>
+<!-- Include Pusher JavaScript SDK -->
 @endsection

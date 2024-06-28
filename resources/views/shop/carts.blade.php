@@ -51,7 +51,7 @@
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty cartAdjustButton" data-item-id="cart_{{ $item->inventory->id }}">
-                                                <input type="text" name="quantities[{{ $item->id }}]" id="cartQuantity{{$item->inventory->id}}" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}" data-quantity="{{ $item->inventory->quantity }}">
+                                                <input type="text" name="quantities[{{ $item->id }}]" id="cartQuantity{{$item->inventory->id}}" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}" data-quantity="{{ $item->inventory->quantity }}" readonly>
                                             </div>
                                         </div>
                                     </td>
