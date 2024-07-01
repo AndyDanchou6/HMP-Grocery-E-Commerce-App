@@ -29,23 +29,20 @@
                     <h5>Purchased Item</h5>
                 </div>
                 @foreach($user['items'] as $item)
-
-
                 <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
 
-
                     <div class="col-sm-12 mb-3">
-                        <label for="" class="col-sm-2 col-form-label">Item Name</label>
+                        <label for="phone" class="col-sm-2 col-form-label">Item Name</label>
                         <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
                     </div>
 
                     <div class="col-sm-4 mb-3">
-                        <label for="" class="col-sm-2 col-form-label">Quantity</label>
+                        <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
 
                     <div class="col-sm-4 mb-3">
-                        <label for="" class="col-sm-2 col-form-label">Item Price</label>
+                        <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
                         <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
                     </div>
 
@@ -57,6 +54,7 @@
                     <div class="col-sm-12">
                         <hr>
                     </div>
+
                 </div>
                 @endforeach
                 <div class="modal-footer">

@@ -1,7 +1,6 @@
 @extends('shop.layouts.layout')
 
 @section('content')
-
 <section class="checkout spad">
     <div class="container">
         <div class="checkout__form">
@@ -16,7 +15,7 @@
                         </div>
                         <div class="checkout__input">
                             <p>Phone<span></span></p>
-                            <input type="text" name="phone" requiredx>
+                            <input type="text" name="phone" required>
                         </div>
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
@@ -47,40 +46,30 @@
                             <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
                             <p>Choose your payment</p>
-                            @if($item->order_retrieval == 'delivery')
+                            @if($selectedItems->first()->order_retrieval == 'delivery')
                             <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_cod" value="COD" required>
                                 <span class="checkmark"></span>
-                                <label for="payment_cod">
-                                    Cash on delivery (COD)
-                                </label>
+                                <label for="payment_cod">Cash on delivery (COD)</label>
                             </div>
                             <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
                                 <span class="checkmark"></span>
-                                <label for="payment_gcash">
-                                    G-cash
-                                </label>
+                                <label for="payment_gcash">G-cash</label>
                             </div>
-
                             @else
                             <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
                                 <span class="checkmark"></span>
-                                <label for="payment_gcash">
-                                    G-cash
-                                </label>
+                                <label for="payment_gcash">G-cash</label>
                             </div>
                             <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_instore" value="In-store" required>
                                 <span class="checkmark"></span>
-                                <label for="payment_instore">
-                                    In-store
-                                </label>
+                                <label for="payment_instore">In-store</label>
                             </div>
                             @endif
-                            <button type="submit" class="site-btn placeOrderBtn" style="background-color: #696cff;">PLACE ORDER</button>
-
+                            <button type="submit" class="site-btn" style="background-color: #696cff;">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>
@@ -94,17 +83,14 @@
 </section>
 
 <script>
-    const placeOrderBtn = document.querySelector('.placeOrderBtn')
+    const placeOrderBtn = document.querySelector('.placeOrderBtn');
 
     placeOrderBtn.addEventListener('click', function(event) {
-
         var sessionStoredItems2 = sessionStorage.getItem('selectedItems');
 
         if (sessionStoredItems2) {
-
             sessionStorage.removeItem('selectedItems');
         }
-    })
+    });
 </script>
-<!-- Include Pusher JavaScript SDK -->
 @endsection
