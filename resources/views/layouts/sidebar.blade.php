@@ -62,19 +62,21 @@
       <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <div data-i18n="For Packaging">For Packaging</div>
-        <span id="forPackagingCount" class="badge badge-pill badge-danger" style="color: red; margin-left: 40px;"></span>
+        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 40px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck "></i>
         <div data-i18n="Tables">For Delivery</div>
+        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 60px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag "></i>
         <div data-i18n="Tables">For Pickup</div>
+        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 65px;"></span>
       </a>
     </li>
     @endif
@@ -124,10 +126,22 @@
       fetch('{{ route("selectedItems.forPackagingCount") }}')
         .then(response => response.json())
         .then(data => {
-          if (data.count) {
-            document.getElementById('forPackagingCount').textContent = data.count;
+          if (data.count1) {
+            document.getElementById('forPackagingCount').textContent = data.count1;
           } else {
             document.getElementById('forPackagingCount').style.display = 'none';
+          }
+
+          if (data.count2) {
+            document.getElementById('forDeliveryCount').textContent = data.count2;
+          } else {
+            document.getElementById('forDeliveryCount').style.display = 'none';
+          }
+
+          if (data.count3) {
+            document.getElementById('forPickupCount').textContent = data.count3;
+          } else {
+            document.getElementById('forPickupCount').style.display = 'none';
           }
         })
         .catch(error => {

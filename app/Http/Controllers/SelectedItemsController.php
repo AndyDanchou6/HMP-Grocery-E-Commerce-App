@@ -499,10 +499,18 @@ class SelectedItemsController extends Controller
 
     public function packageCount()
     {
-        $item = SelectedItems::where('status', 'forPackage')->get();
+        $item1 = SelectedItems::where('status', 'forPackage')->get();
+        $item2 = SelectedItems::where('status', 'readyForRetrieval')
+            ->where('order_retrieval', 'delivery')
+            ->get();
+        $item3 = SelectedItems::where('status', 'readyForRetrieval')
+            ->where('order_retrieval', 'pickup')
+            ->get();
 
-        $count = $item->pluck('referenceNo')->unique()->count();
+        $count1 = $item1->pluck('referenceNo')->unique()->count();
+        $count2 = $item2->pluck('referenceNo')->unique()->count();
+        $count3 = $item3->pluck('referenceNo')->unique()->count();
 
-        return response()->json(['count' => $count]);
+        return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3]);
     }
 }

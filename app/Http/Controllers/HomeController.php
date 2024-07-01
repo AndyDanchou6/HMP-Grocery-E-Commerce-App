@@ -27,9 +27,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $package = SelectedItems::where('status', 'forPackage')->count();
-        $delivery = SelectedItems::where('status', 'readyForRetrieval ')->where('order_retrieval', 'delivery')->count();
-        $pickup = SelectedItems::where('status', 'readyForRetrieval')->where('order_retrieval', 'pickup')->count();
+        $package = SelectedItems::where('status', 'forPackage')->pluck('referenceNo')->unique()->count();
+        $delivery = SelectedItems::where('status', 'readyForRetrieval ')->where('order_retrieval', 'delivery')->pluck('referenceNo')->unique()->count();
+        $pickup = SelectedItems::where('status', 'readyForRetrieval')->where('order_retrieval', 'pickup')->pluck('referenceNo')->unique()->count();
         $inventories = Inventory::where('quantity', '<=', 10)->paginate(8);
         $categories = Category::pluck('category_name', 'id');
 
