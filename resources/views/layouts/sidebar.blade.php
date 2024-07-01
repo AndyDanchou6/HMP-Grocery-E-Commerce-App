@@ -77,6 +77,7 @@
         <i class="menu-icon tf-icons bi bi-bag "></i>
         <span data-i18n="Tables">For Pickup</span>
         <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+
       </a>
     </li>
     @endif

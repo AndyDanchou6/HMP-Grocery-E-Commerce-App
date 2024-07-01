@@ -84,28 +84,30 @@ class ShopController extends Controller
     {
         if (!Auth::check()) {
             return redirect()->route('error404');
-        } else {
-            $category = Category::all();
-            $user = Auth::user();
-
-            $selectedItems = SelectedItems::with('inventory')
-                ->where('user_id', $user->id)
-                ->where('status', 'forCheckout')->get();
-
-            if ($selectedItems->isEmpty()) {
-                abort(404);
-            }
-
-
-            $subtotal = $selectedItems->sum(function ($item) {
-                return $item->inventory->price * $item->quantity;
-            });
-
-            $total = $subtotal;
-
-            return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
         }
+
+        $category = Category::all();
+        $user = Auth::user();
+
+        $selectedItems = SelectedItems::with('inventory')
+            ->where('user_id', $user->id)
+            ->where('status', 'forCheckout')
+            ->get();
+
+        if ($selectedItems->isEmpty()) {
+            return redirect()->route('shop.index')->with('message', 'No items available for checkout.');
+        }
+
+        $subtotal = $selectedItems->sum(function ($item) {
+            return $item->inventory->price * $item->quantity;
+        });
+
+        $total = $subtotal;
+
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
     }
+
+
 
     public function placeOrder(Request $request)
     {
@@ -116,6 +118,11 @@ class ShopController extends Controller
                 ->where('user_id', $user->id)
                 ->where('status', 'forCheckout')
                 ->get();
+
+
+            if ($selectedItems->isEmpty()) {
+                return redirect()->route('shop.index')->with('message', 'No items available for checkout.');
+            }
 
             foreach ($selectedItems as $item) {
                 if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
@@ -143,7 +150,6 @@ class ShopController extends Controller
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
     }
-
 
     public function cancelCheckout(Request $request)
     {
