@@ -59,24 +59,25 @@
       </a>
     </li>
     <li id="forPackaging" class="menu-item">
-      <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link">
+      <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link" style="position: relative;">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
-        <div data-i18n="For Packaging">For Packaging</div>
-        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 40px;"></span>
+        <span data-i18n="For Packaging">For Packaging</span>
+        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck "></i>
-        <div data-i18n="Tables">For Delivery</div>
-        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 60px;"></span>
+        <span data-i18n="Tables">For Delivery</span>
+        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag "></i>
-        <div data-i18n="Tables">For Pickup</div>
-        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 65px;"></span>
+        <span data-i18n="Tables">For Pickup</span>
+        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+
       </a>
     </li>
     @endif

@@ -123,3 +123,5 @@ Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'sho
 Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
+
+Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);

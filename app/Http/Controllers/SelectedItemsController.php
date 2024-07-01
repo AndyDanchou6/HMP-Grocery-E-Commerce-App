@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 
 class SelectedItemsController extends Controller
 {
@@ -385,7 +386,18 @@ class SelectedItemsController extends Controller
     /**
      * Display the specified resource.
      */
+    public function showMorning()
+    {
+        $specificDate = Carbon::create(2024, 6, 26);
 
+        $morning = SelectedItems::whereDate('created_at', $specificDate)->get   ();
+
+        // return response()->json([
+        //     'data' => $morning
+        // ]);
+
+        dd($morning);
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -479,23 +491,6 @@ class SelectedItemsController extends Controller
     {
         //
     }
-
-    // public function packageCount()
-    // {
-    //     $count = 0;
-    //     $items = SelectedItems::where('status', 'forPackage')->get();
-
-    //     $referenceNo = '';
-
-    //     foreach ($items as $item) {
-    //         if ($item->referenceNo != $referenceNo) {
-    //             $count++;
-    //         }
-    //         $referenceNo = $item->referenceNo;
-    //     }
-
-    //     return response()->json(['count' => $count]);
-    // }
 
     public function packageCount()
     {
