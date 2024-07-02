@@ -21,7 +21,7 @@ class ShopController extends Controller
      */
     public function index()
     {
-        if (empty(auth()->user()->role) || auth()->user()->role == 'Courier') {
+        if (empty(auth()->user()->role)) {
             return redirect()->route('error404');
         } else {
             $user = Auth::user(); // Assuming user is authenticated
@@ -111,42 +111,36 @@ class ShopController extends Controller
     {
         $user = Auth::user();
 
-        // Retrieve selected items for checkout
-        $selectedItems = SelectedItems::with('inventory')
-            ->where('user_id', $user->id)
-            ->where('status', 'forCheckout')
-            ->get();
+        try {
+            $selectedItems = SelectedItems::with('inventory')
+                ->where('user_id', $user->id)
+                ->where('status', 'forCheckout')
+                ->get();
 
-        foreach ($selectedItems as $item) {
-            // Update item status and additional details if delivery or pickup
-            if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
-                $item->update([
-                    'status' => 'forPackage',
-                    'phone' => $request->input('phone'),
-                    'address' => $request->input('address'),
-                    'fb_link' => $request->input('fb_link'),
-                    'payment_type' => $request->input('payment_type')
+            foreach ($selectedItems as $item) {
+                if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
+                    $item->update([
+                        'status' => 'forPackage',
+                        'phone' => $request->input('phone'),
+                        'address' => $request->input('address'),
+                        'fb_link' => $request->input('fb_link'),
+                        'payment_type' => $request->input('payment_type')
+                    ]);
+                }
+
+                $newQuantity = $item->inventory->quantity - $item->quantity;
+                $item->inventory->update([
+                    'quantity' => $newQuantity
                 ]);
             }
 
-            // Update inventory quantity
-            $newQuantity = $item->inventory->quantity - $item->quantity;
-            $item->inventory->update([
-                'quantity' => $newQuantity
-            ]);
+            return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
+        } catch (\Exception $e) {
+            Log::error('Place Order Error: ' . $e->getMessage());
 
-            // Fire event for order placement
-            // event(new MyEvent($user));
+            return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
-
-        // Log successful order placement
-        // Log::info('Order placed successfully for user: ' . $user->name);
-
-        // Redirect with success message
-        return redirect()->route('shop.index')->with('message', 'Thank you for shopping. Check your items in dashboard!');
     }
-
-
 
     public function cancelCheckout(Request $request)
     {

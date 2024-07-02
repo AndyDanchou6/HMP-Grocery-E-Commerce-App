@@ -24,7 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/selectedItems/forPackagingCount', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.forPackagingCount');
+Route::get('/selectedItems/count', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.count');
+Route::get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
 Route::get('/test', [ShopController::class, 'test']);
 // Route::controller(AdminController::class)->group(function () {
 //     Route::post('/login', 'login');
