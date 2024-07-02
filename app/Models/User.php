@@ -68,8 +68,13 @@ class User extends Authenticatable
         return $this->hasMany(Cart::class);
     }
 
-    public function selectedItemss()
+    // public function selectedItemss()
+    // {
+    //     return $this->hasMany(SelectedItems::class, 'user_id');
+    // }
+
+    public function delivery_schedules()
     {
-        return $this->hasMany(SelectedItems::class, 'user_id');
+        return $this->hasMany(deliverySchedule::class);
     }
 }

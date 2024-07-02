@@ -73,9 +73,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="order_date" class="col-form-label">Date</label>
-                        <!-- <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y') }}" readonly> -->
-                        <input type="text" class="form-control" value="{{ $item->created_at }}" readonly>
-
+                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>
 

@@ -151,8 +151,8 @@
           const forPickupCount = document.getElementById('forPickupCount');
 
           if (forPickupCount) {
-            if (data.count2) {
-              forPickupCount.textContent = data.count2;
+            if (data.count3) {
+              forPickupCount.textContent = data.count3;
             } else {
               forPickupCount.style.display = 'none';
             }
@@ -167,3 +167,4 @@
     updateForPackagingCount();
   });
 </script>
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>

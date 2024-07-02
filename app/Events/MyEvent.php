@@ -16,10 +16,7 @@ class MyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public $selectedItems;
+    public $selectedItems = [];
 
     public function __construct($selectedItems)
     {
