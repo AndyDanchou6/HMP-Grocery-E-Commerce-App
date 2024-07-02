@@ -30,25 +30,30 @@
                 </div>
                 @foreach($user['items'] as $item)
                 <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
-                    <label for="item_name" class="col-sm-2 col-form-label">Item Name</label>
-                    <div class="col-sm-4">
+
+                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                        <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
                         <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
                     </div>
-                    <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
-                    <div class="col-sm-4">
+
+                    <div class="col-6 col-sm-3 col-md-2 mb-3">
+                        <label for="item_price" class="col-6 col-sm-3 col-md-2 col-form-label">Item Price</label>
                         <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
                     </div>
-                    <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
-                    <div class="col-sm-4">
+
+                    <div class="col-6 col-sm-3 col-md-3 mb-3">
+                        <label for="quantity" class="col-6 col-sm-3 col-md-3 col-form-label">Quantity</label>
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
-                    <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
-                    <div class="col-sm-4">
+                    <div class="col-12 col-sm-4 col-md-3 mb-3">
+                        <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
                         <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
+
                     <div class="col-sm-12">
                         <hr>
                     </div>
+
                 </div>
                 @endforeach
             </div>

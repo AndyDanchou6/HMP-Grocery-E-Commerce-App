@@ -72,18 +72,22 @@
       <div class="misc-wrapper">
       <h1>401</h1>
         <h5 class="mb-4 mx-2">Unauthorized! You do not have permission to access this resource.</h5>
+        
         @auth
         @if(Auth::user()->role == 'Admin')
         <a href="{{ route('admin.home') }}" class="btn btn-primary">Back to home</a>
+
         @elseif(Auth::user()->role == 'Customer')
         <a href="{{ route('customer.home') }}" class="btn btn-primary">Back to home</a>
+
         @elseif(Auth::user()->role == 'Courier')
         <a href="{{ route('courier.home') }}" class="btn btn-primary">Back to home</a>
+
         @else
         <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
         @endif
+
         @endauth
-        <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
         <div class="mt-3">
           <img
             src="{{ asset('assets/img/images.png') }}"

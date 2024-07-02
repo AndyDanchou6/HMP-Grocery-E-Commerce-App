@@ -15,6 +15,57 @@ class SelectedItemsController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // public function forPackaging()
+    // {
+    //     $users = SelectedItems::where('status', 'forPackage')
+    //         ->with([
+    //             'user' => function ($query) {
+    //                 $query->select('users.*'); // Select specific fields from users table
+    //             },
+    //             'inventory' => function ($query) {
+    //                 $query->select('inventories.*'); // Select specific fields from inventories table
+    //             }
+    //         ])
+    //         ->orderBy('created_at', 'asc')
+    //         // ->select('selected_items.referenceNo', 'inventories.*', 'users.*')
+    //         ->get()
+    //         ->groupBy('referenceNo');
+
+    //     $couriers = User::where('role', 'Courier')->get();
+
+    //     $userByReference = [];
+
+    //     foreach ($users as $referenceKey => $itemsByReference) {
+
+    //         // $temp[] = $itemsByReference;
+    //         foreach ($itemsByReference as $item) {
+
+    //             // $temp[$item->referenceNo] = $item->referenceNo;
+    //             $userByReference[$item->referenceNo]['userInfo'] = [];
+
+    //             $userByReference[$item->referenceNo]['items'][] = $item;
+
+    //             if (!$userByReference[$item->referenceNo]['userInfo']) {
+    //                 $userByReference[$item->referenceNo]['userInfo'] = [
+    //                     'id' => $item->user->id,
+    //                     'referenceNo' => $item->referenceNo,
+    //                     'name' => $item->user->name,
+    //                     'email' => $item->user->email,
+    //                     'phone' => $item->user->phone,
+    //                     'fb_link' => $item->user->fb_link,
+    //                     'address' => $item->user->address,
+    //                     'created_at' => $item->user->created_at,
+    //                     'updated_at' => $item->user->updated_at,
+    //                 ];
+    //             }
+    //         }
+    //     }
+
+    //     // dd($temp);
+    //     // return response()->json($userByReference);
+    //     return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
+    // }
     public function forPackaging()
     {
         if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
@@ -308,6 +359,7 @@ class SelectedItemsController extends Controller
                     ->select('selected_items.*', 'inventories.*');
             }])->orderBy('created_at', 'desc')->get();
 
+
             $userByReference = [];
 
             foreach ($users as $user) {
@@ -387,11 +439,11 @@ class SelectedItemsController extends Controller
     {
         $specificDate = Carbon::create(2024, 6, 26);
 
-        $morning = SelectedItems::whereDate('created_at', $specificDate)->get   ();
+        $morning = SelectedItems::whereDate('created_at', $specificDate)->get();
 
         // return response()->json([
         //     'data' => $morning
-        // ]);
+        // ]);      
 
         dd($morning);
     }
