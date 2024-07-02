@@ -557,4 +557,23 @@ class SelectedItemsController extends Controller
 
         return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3]);
     }
+
+    public function courierTask()
+    {
+        $user = Auth::user();
+
+        $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')
+            ->where('courier_id', $user)
+            ->where('status', 'readyForRetrieval')
+            ->distinct('referenceNo')
+            ->count('referenceNo');
+
+        $delivered = SelectedItems::where('order_retrieval', 'delivery')
+            ->where('courier_id', $user)
+            ->where('status', 'delivered')
+            ->distinct('referenceNo')
+            ->count('referenceNo');
+
+        return response()->json(['deliveryRequest' => $deliveryRequest, 'delivered' => $delivered]);
+    }
 }
