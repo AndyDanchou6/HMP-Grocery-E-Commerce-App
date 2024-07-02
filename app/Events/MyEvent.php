@@ -16,7 +16,7 @@ class MyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $selectedItems;
+    public $selectedItems = [];
 
     public function __construct($selectedItems)
     {
@@ -30,8 +30,6 @@ class MyEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return [
-            new PrivateChannel('order.placed'),
-        ];
+        return 'order.placed';
     }
 }
