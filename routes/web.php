@@ -125,5 +125,9 @@ Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->na
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
 
+
 //--- Delivery Schedules ----!>
 Route::get('admin/schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
+
+Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
+
