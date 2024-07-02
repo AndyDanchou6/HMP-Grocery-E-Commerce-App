@@ -16,11 +16,11 @@ class MyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $selectedItems = [];
+    public $user = [];
 
-    public function __construct($selectedItems)
+    public function __construct($user)
     {
-        $this->selectedItems = $selectedItems;
+        $this->user = $user;
     }
 
     public function broadcastOn()
