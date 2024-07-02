@@ -20,14 +20,13 @@ class SelectedItemsController extends Controller
         if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
             return redirect()->route('error404');
         } else {
+            // Fetch users and their selected items
             $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'forPackage')
-                    ->orderBy('selected_items.created_at', 'desc');
+                $query->where('selected_items.status', 'forPackage');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'forPackage')
-                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('inventories.*', 'selected_items.*');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
@@ -44,19 +43,27 @@ class SelectedItemsController extends Controller
                             'address' => $item->address,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
+                            'items' => []
                         ];
-
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    } else {
-                        $userByReference[$item->referenceNo]['items'][] = $item;
                     }
+                    $userByReference[$item->referenceNo]['items'][] = $item;
                 }
             }
+
+            // Sort the items array by created_at in ascending order
+            foreach ($userByReference as &$reference) {
+                usort($reference['items'], function ($a, $b) {
+                    return strtotime($a->created_at) - strtotime($b->created_at);
+                });
+            }
+
             $couriers = User::where('role', 'Courier')->get();
 
             return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
         }
     }
+
+
 
     public function forDelivery()
     {
@@ -65,14 +72,12 @@ class SelectedItemsController extends Controller
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery')
-                    ->orderBy('selected_items.created_at', 'desc');
+                    ->where('selected_items.order_retrieval', 'delivery');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
-                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('inventories.*', 'selected_items.*');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
@@ -113,14 +118,12 @@ class SelectedItemsController extends Controller
         } else {
             $users = User::whereHas('selectedItems', function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'pickup')
-                    ->orderBy('selected_items.created_at', 'desc');
+                    ->where('selected_items.order_retrieval', 'pickup');
             })->with(['selectedItems' => function ($query) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.*')
-                    ->orderBy('selected_items.created_at', 'desc');
-            }])->get();
+                    ->select('inventories.*', 'selected_items.*');
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
@@ -159,8 +162,7 @@ class SelectedItemsController extends Controller
 
             $usersQuery = User::whereHas('selectedItems', function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
-                    ->where('status', '!=', 'forCheckout')
-                    ->orderBy('selected_items.created_at', 'desc');
+                    ->where('status', '!=', 'forCheckout');
             });
 
             if ($search) {
@@ -175,9 +177,8 @@ class SelectedItemsController extends Controller
             $users = $usersQuery->with(['selectedItems' => function ($query) {
                 $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
                     ->where('status', '!=', 'forCheckout')
-                    ->select('inventories.*', 'selected_items.*')
-                    ->orderBy('selected_items.created_at', 'desc');
-            }])->get();
+                    ->select('inventories.*', 'selected_items.*');
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
@@ -241,14 +242,12 @@ class SelectedItemsController extends Controller
 
             $users = User::whereHas('selectedItems', function ($query) use ($userId) {
                 $query->where('selected_items.status', '!=', 'forCheckout')
-                    ->where('selected_items.user_id', $userId)
-                    ->orderBy('selected_items.created_at', 'desc');
+                    ->where('selected_items.user_id', $userId);
             })->with(['selectedItems' => function ($query) use ($userId) {
                 $query->where('selected_items.status', '!=', 'forCheckout')
                     ->where('selected_items.user_id', $userId)
-                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('selected_items.*', 'inventories.*', 'selected_items.quantity');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
@@ -301,15 +300,13 @@ class SelectedItemsController extends Controller
             $users = User::whereHas('selectedItems', function ($query) use ($courier) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
-                    ->where('selected_items.courier_id', $courier->id)
-                    ->orderBy('selected_items.created_at', 'desc');
+                    ->where('selected_items.courier_id', $courier->id);
             })->with(['selectedItems' => function ($query) use ($courier) {
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
                     ->where('selected_items.courier_id', $courier->id)
-                    ->orderBy('selected_items.created_at', 'desc')
                     ->select('selected_items.*', 'inventories.*');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
