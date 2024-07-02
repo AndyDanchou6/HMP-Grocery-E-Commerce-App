@@ -95,7 +95,7 @@ class ShopController extends Controller
             ->get();
 
         if ($selectedItems->isEmpty()) {
-            return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
+            abort(404);
         }
 
         $subtotal = $selectedItems->sum(function ($item) {
@@ -134,8 +134,6 @@ class ShopController extends Controller
                 ]);
             }
 
-            event(new MyEvent($selectedItems));
-
             return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
         } catch (\Exception $e) {
             Log::error('Place Order Error: ' . $e->getMessage());
@@ -143,6 +141,7 @@ class ShopController extends Controller
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
     }
+
 
     public function cancelCheckout(Request $request)
     {
