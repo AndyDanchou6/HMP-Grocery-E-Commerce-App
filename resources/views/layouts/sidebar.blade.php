@@ -59,24 +59,25 @@
       </a>
     </li>
     <li id="forPackaging" class="menu-item">
-      <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link">
+      <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link" style="position: relative;">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
-        <div data-i18n="For Packaging">For Packaging</div>
-        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 40px;"></span>
+        <span data-i18n="For Packaging">For Packaging</span>
+        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck "></i>
-        <div data-i18n="Tables">For Delivery</div>
-        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 60px;"></span>
+        <span data-i18n="Tables">For Delivery</span>
+        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag "></i>
-        <div data-i18n="Tables">For Pickup</div>
-        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; margin-left: 65px;"></span>
+        <span data-i18n="Tables">For Pickup</span>
+        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+
       </a>
     </li>
     @endif
@@ -109,7 +110,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    Pusher.logToConsole = true;
+    // Pusher.logToConsole = true;
 
     var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
       cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
@@ -118,7 +119,7 @@
 
     var channel = pusher.subscribe('orders');
     channel.bind('order.placed', function(data) {
-      console.log('New order placed:', data);
+      // console.log('New order placed:', data);
       updateForPackagingCount();
     });
 
@@ -126,23 +127,37 @@
       fetch('{{ route("selectedItems.forPackagingCount") }}')
         .then(response => response.json())
         .then(data => {
-          if (data.count1) {
-            document.getElementById('forPackagingCount').textContent = data.count1;
-          } else {
-            document.getElementById('forPackagingCount').style.display = 'none';
+
+          const forPackagingCount = document.getElementById('forPackagingCount');
+
+          if (forPackagingCount) {
+            if (data.count1) {
+              forPackagingCount.textContent = data.count1;
+            } else {
+              forPackagingCount.style.display = 'none';
+            }
           }
 
-          if (data.count2) {
-            document.getElementById('forDeliveryCount').textContent = data.count2;
-          } else {
-            document.getElementById('forDeliveryCount').style.display = 'none';
+          const forDeliveryCount = document.getElementById('forDeliveryCount');
+
+          if (forDeliveryCount) {
+            if (data.count2) {
+              forDeliveryCount.textContent = data.count2;
+            } else {
+              forDeliveryCount.style.display = 'none';
+            }
           }
 
-          if (data.count3) {
-            document.getElementById('forPickupCount').textContent = data.count3;
-          } else {
-            document.getElementById('forPickupCount').style.display = 'none';
+          const forPickupCount = document.getElementById('forPickupCount');
+
+          if (forPickupCount) {
+            if (data.count3) {
+              forPickupCount.textContent = data.count3;
+            } else {
+              forPickupCount.style.display = 'none';
+            }
           }
+
         })
         .catch(error => {
           console.error('Error fetching count:', error);
@@ -152,3 +167,4 @@
     updateForPackagingCount();
   });
 </script>
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>

@@ -11,7 +11,6 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('logo/2.png ') }}" />
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

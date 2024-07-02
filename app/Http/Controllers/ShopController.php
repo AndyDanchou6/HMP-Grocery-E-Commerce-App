@@ -95,7 +95,7 @@ class ShopController extends Controller
             ->get();
 
         if ($selectedItems->isEmpty()) {
-            return redirect()->route('shop.index')->with('message', 'No items available for checkout.');
+            return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
         }
 
         $subtotal = $selectedItems->sum(function ($item) {
@@ -107,8 +107,6 @@ class ShopController extends Controller
         return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
     }
 
-
-
     public function placeOrder(Request $request)
     {
         $user = Auth::user();
@@ -118,11 +116,6 @@ class ShopController extends Controller
                 ->where('user_id', $user->id)
                 ->where('status', 'forCheckout')
                 ->get();
-
-
-            if ($selectedItems->isEmpty()) {
-                return redirect()->route('shop.index')->with('message', 'No items available for checkout.');
-            }
 
             foreach ($selectedItems as $item) {
                 if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {

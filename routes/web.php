@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DeliveryScheduleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
@@ -123,3 +124,6 @@ Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'sho
 Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
+
+//--- Delivery Schedules ----!>
+Route::get('admin/schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');

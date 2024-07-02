@@ -16,9 +16,6 @@ class MyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
     public $selectedItems;
 
     public function __construct($selectedItems)
@@ -33,6 +30,8 @@ class MyEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'order.placed';
+        return [
+            new PrivateChannel('order.placed'),
+        ];
     }
 }

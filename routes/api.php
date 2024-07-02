@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SelectedItemsController;
+use App\Http\Controllers\ShopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/selectedItems/forPackagingCount', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.forPackagingCount');
+Route::get('/test', [ShopController::class, 'test']);
 // Route::controller(AdminController::class)->group(function () {
 //     Route::post('/login', 'login');
 //     Route::post('/register', 'register');
