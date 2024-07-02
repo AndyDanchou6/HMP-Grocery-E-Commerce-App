@@ -83,7 +83,6 @@
         <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
         @endif
         @endauth
-        <a href="{{ route('welcome') }}" class="btn btn-primary">Back to home</a>
         <div class="mt-3">
           <img
             src="../assets/img/illustrations/page-misc-error-light.png"

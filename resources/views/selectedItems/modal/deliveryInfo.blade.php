@@ -31,23 +31,23 @@
                 @foreach($user['items'] as $item)
                 <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
 
-                    <div class="col-sm-12 mb-3">
-                        <label for="phone" class="col-sm-2 col-form-label">Item Name</label>
+                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                        <label for="phone" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
                         <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
                     </div>
 
-                    <div class="col-sm-4 mb-3">
-                        <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                    <div class="col-6 col-sm-3 col-md-2 mb-3">
+                        <label for="quantity" class="col-6 col-sm-3 col-md-2 col-form-label">Quantity</label>
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
 
-                    <div class="col-sm-4 mb-3">
-                        <label for="item_price" class="col-sm-2 col-form-label">Item Price</label>
+                    <div class="col-6 col-sm-3 col-md-3 mb-3">
+                        <label for="item_price" class="col-6 col-sm-3 col-md-3 col-form-label">Item Price</label>
                         <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
                     </div>
 
-                    <div class="col-sm-4 mb-3">
-                        <label for="subtotal" class="col-sm-2 col-form-label">SubTotal</label>
+                    <div class="col-12 col-sm-4 col-md-3 mb-3">
+                        <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
                         <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
 
@@ -102,8 +102,8 @@
                             @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
                             @if($item->payment_condition == NULL)
                             <div class="row mb-3 item-row">
-                                <label for="payment_type" class="col-sm-2 col-form-label">Payment Condition:</label>
-                                <select name="payment_condition" id="payment_condition" class="form-select col-md-4 mb-3">
+                                <label for="payment_type" class="col-form-label">Payment Condition:</label>
+                                <select name="payment_condition" id="payment_condition" class="form-select col-4 mb-3" style="width: 40%;">
                                     <option value="">Unpaid</option>
                                     <option value="paid">Paid</option>
                                 </select>

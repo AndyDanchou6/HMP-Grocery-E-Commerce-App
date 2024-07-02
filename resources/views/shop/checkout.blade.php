@@ -69,7 +69,7 @@
                                 <label for="payment_instore">In-store</label>
                             </div>
                             @endif
-                            <button type="submit" class="site-btn" style="background-color: #696cff;">PLACE ORDER</button>
+                            <button type="submit" class="site-btn placeOrderBtn" style="background-color: #696cff;">PLACE ORDER</button>
                         </div>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ class ShopController extends Controller
      */
     public function index()
     {
-        if (empty(auth()->user()->role)) {
+        if (empty(auth()->user()->role) || auth()->user()->role == 'Courier') {
             return redirect()->route('error404');
         } else {
             $user = Auth::user(); // Assuming user is authenticated
