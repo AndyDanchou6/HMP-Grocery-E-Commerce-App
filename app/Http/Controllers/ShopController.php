@@ -136,11 +136,11 @@ class ShopController extends Controller
             ]);
 
             // Fire event for order placement
-            event(new MyEvent($user));
+            // event(new MyEvent($user));
         }
 
         // Log successful order placement
-        Log::info('Order placed successfully for user: ' . $user->name);
+        // Log::info('Order placed successfully for user: ' . $user->name);
 
         // Redirect with success message
         return redirect()->route('shop.index')->with('message', 'Thank you for shopping. Check your items in dashboard!');
