@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('payment_type')->nullable();
             $table->string('payment_condition')->nullable();
             $table->string('proof_of_delivery')->nullable();
+            $table->datetime('delivery_date')->nullable();
             $table->timestamps();
 
             $table->foreign('courier_id')->references('id')->on('users')->onDelete('cascade');

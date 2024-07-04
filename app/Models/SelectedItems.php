@@ -27,6 +27,7 @@ class SelectedItems extends Model
         'payment_condition',
         'proof_of_delivery',
         'order_retrieval',
+        'delivery_date',
     ];
 
     public function inventory()

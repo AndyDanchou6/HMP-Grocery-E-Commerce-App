@@ -15,8 +15,8 @@
                         <th>#</th>
                         <th>Reference No.</th>
                         <th>User Name</th>
-                        <th>Facebook</th>
-                        <th>Address</th>
+                        <th>Retrieval</th>
+                        <th>Payment</th>
                         <th>Items</th>
                     </tr>
                 </thead>
@@ -27,8 +27,8 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user['referenceNo'] }}</td>
                         <td>{{ $user['name'] }}</td>
-                        <td>{{ $user['fb_link'] }}</td>
-                        <td>{{ $user['address'] }}</td>
+                        <td>{{ $user['order_retrieval'] }}</td>
+                        <td>{{ $user['payment_type'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
                             @include('selectedItems.modal.readyPackage')

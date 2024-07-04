@@ -83,21 +83,68 @@
                             @method('POST')
                             @if($item->order_retrieval == 'delivery')
                             <div class="column align-items-center">
+
+                                @if($user['courier_id'] != 'Unknown')
                                 <div class="mb-3">
-                                    <label for="courier_id" class="col-form-label">Courier name:</label>
-                                    <input type="text" class="form-control" value="{{ $user['courier_id'] }}" readonly>
+                                    <div>
+                                        <label for="" class="col-form-label">Courier name:</label>
+                                        <input type="text" class="form-control" value="{{ $user['courier_id'] }}" readonly>
+                                    </div>
+                                    <div>
+                                        <label for="" class="col-form-label">Delivery Schedule:</label>
+                                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}" readonly>
+                                    </div>
                                 </div>
+                                @endif
+
                                 <div class="row row-cols-md-2 mb-3 item-row" data-item-id="{{ $item->id }}">
                                     <div class="mb-3">
-                                        <label for="courier_id" class="col-form-label">Payment Type:</label>
+                                        <label for="" class="col-form-label">Payment Type:</label>
                                         <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
                                     </div>
+
+                                    @if($user['courier_id'] != 'Unknown')
                                     <div class="mb-3">
-                                        <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
+                                        <label for="" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery" id="proof_of_delivery" required>
                                     </div>
+                                    @endif
+
                                 </div>
+
+                                @if($user['courier_id'] == 'Unknown')
+                                <div class="mb-3">
+                                    <label for="" class="col-form-label">Courier</label>
+                                    <div>
+                                        <select class="form-select" name="courier_id" id="courier_id" required>
+                                            <option value="" selected>Choose Courier</option>
+                                            @foreach($couriers as $courier)
+                                            <option value="{{ $courier->id }}">{{ $courier->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endif
+
+                                @if(!$user['delivery_date'])
+                                <div class="mb-3">
+                                    <label for="" class="col-form-label">Deliver On</label>
+                                    <div>
+                                        <select class="form-select" name="delivery_schedule" id="delivery_schedule" required>
+                                            <option value="" selected>Choose Schedule</option>
+                                            @foreach($schedules as $schedule)
+                                            <option value="{{ $schedule->id }}">{{ $schedule->day }}
+                                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}-
+                                                {{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endif
+
                             </div>
+
                             @elseif($item->order_retrieval == 'pickup')
                             <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
                                 <label for="payment_type" class="col-md-4 col-form-label">Payment Type:</label>
@@ -105,13 +152,22 @@
                                     <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
                                 </div>
                                 @endif
-                                @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
-                                @if($item->payment_condition == NULL)
+
+                                @if($item->payment_type == 'G-cash' || $item->payment_type == 'In-store')
+                                @if($item->payment_condition == NULL && $item->order_retrieval == 'delivery' && $user['courier_id'] != 'Unknown')
                                 <label for="payment_type" class="col-md-4 col-form-label">Payment Condition:</label>
                                 <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;" required>
                                     <option value="">Unpaid</option>
                                     <option value="paid">Paid</option>
                                 </select>
+
+                                @elseif($item->payment_condition == NULL && $item->order_retrieval == 'delivery')
+                                <label for="payment_type" class="col-md-4 col-form-label">Payment Condition:</label>
+                                <select name="payment_condition" id="payment_condition" class="form-select" style="width: 50%;">
+                                    <option value="">Unpaid</option>
+                                    <option value="paid">Paid</option>
+                                </select>
+
                                 @elseif($item->payment_condition == 'paid')
                                 <label for="payment_type" class="col-md-4 col-form-label">Payment Condition:</label>
                                 <div class="col-sm-4">
@@ -119,6 +175,7 @@
                                 </div>
                                 @endif
                                 @endif
+
                             </div>
 
                             <div class="d-flex justify-content-end">

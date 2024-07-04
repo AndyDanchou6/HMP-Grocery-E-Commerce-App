@@ -15,8 +15,8 @@
                         <th>#</th>
                         <th>User Name</th>
                         <th>Reference No.</th>
-                        <th>Facebook</th>
-                        <th>Address</th>
+                        <th>Payment Type</th>
+                        <th>Delivery Schedule</th>
                         <th>Items</th>
                     </tr>
                 </thead>
@@ -28,8 +28,12 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user['name'] }}</td>
                         <td>{{ $user['referenceNo'] }}</td>
-                        <td>{{ $user['fb_link'] }}</td>
-                        <td>{{ $user['address'] }}</td>
+                        <td>{{ $user['payment_type'] }}</td>
+                        @if($user['delivery_date'])
+                        <td>{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}</td>
+                        @else
+                        <td>Not Scheduled Yet</td>
+                        @endif
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
                             @include('selectedItems.modal.moreInfo')
