@@ -87,7 +87,7 @@
       <a href="{{ route('selectedItems.courierDashboard') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-list-ul"></i>
         <div data-i18n="Tables">Delivery Request</div>
-        <span id="courierCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+        <span id="courierCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
       </a>
     </li>
     @endif
@@ -96,9 +96,9 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    setInterval(updatePackageCount, 5000);
+    setInterval(updateCounts, 5000);
 
-    function updatePackageCount() {
+    function updateCounts() {
       fetch('{{ route("selectedItems.count") }}')
         .then(response => response.json())
         .then(data => {
@@ -120,18 +120,34 @@
             forPickupCount.style.display = data.count3 ? 'block' : 'none';
           }
 
-          const courierCount = document.getElementById('courierCount');
-          if (courierCount) {
-            courierCount.textContent = data.count4;
-            courierCount.style.display = data.count4 ? 'block' : 'none';
-          }
+
         })
 
         .catch(error => {
           console.error('Error fetching count:', error);
         });
-    }
 
-    updatePackageCount();
+      fetch('{{ route("selectedItems.courierCount") }}', {
+          method: 'GET',
+          headers: {
+            'X-CSRF-TOKEN': "{{ csrf_token() }}",
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+          const courierCount = document.getElementById('courierCount');
+          if (courierCount) {
+            courierCount.textContent = data.deliveryRequest;
+            courierCount.style.display = data.deliveryRequest ? 'block' : 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching counts:', error);
+        });
+    }
+    updateCounts();
   });
 </script>

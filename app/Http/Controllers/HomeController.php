@@ -30,21 +30,6 @@ class HomeController extends Controller
         $inventories = Inventory::where('quantity', '<=', 10)->paginate(8);
         $categories = Category::pluck('category_name', 'id');
 
-        $user = Auth::user();
-
-        $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')
-            ->where('courier_id', $user->id)
-            ->where('status', 'readyForRetrieval')
-            ->distinct('referenceNo')
-            ->count('referenceNo');
-
-        $delivered = SelectedItems::where('order_retrieval', 'delivery')
-            ->where('courier_id', $user->id)
-            ->where('status', 'delivered')
-            ->distinct('referenceNo')
-            ->count('referenceNo');
-
-
-        return view('home', compact('inventories', 'categories', 'deliveryRequest', 'delivered'));
+        return view('home', compact('inventories', 'categories'));
     }
 }
