@@ -134,3 +134,4 @@ Route::put('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'up
 
 Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
 
+Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');

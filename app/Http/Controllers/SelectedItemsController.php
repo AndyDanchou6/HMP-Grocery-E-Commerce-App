@@ -626,4 +626,60 @@ class SelectedItemsController extends Controller
 
         return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3]);
     }
+
+    public function courierTask(Request $request)
+    {
+        $user = $request->user()->id;
+
+        $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')
+            ->where('courier_id', $user)
+            ->where('status', 'readyForRetrieval')
+            ->distinct('referenceNo')
+            ->count('referenceNo');
+
+        $delivered = SelectedItems::where('order_retrieval', 'delivery')
+            ->where('courier_id', $user)
+            ->where('status', 'delivered')
+            ->distinct('referenceNo')
+            ->count('referenceNo');
+
+        return response()->json(['deliveryRequest' => $deliveryRequest, 'delivered' => $delivered]);
+    }
+
+    public function notification()
+    {
+        $latestReferenceNos = SelectedItems::where('status', 'forPackage')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->pluck('referenceNo')
+            ->unique();
+
+        if ($latestReferenceNos->isEmpty()) {
+            return response()->json(['notification_message' => 'No new notifications', 'count' => 0]);
+        }
+
+        $users = User::whereHas('selectedItems', function ($query) use ($latestReferenceNos) {
+            $query->whereIn('referenceNo', $latestReferenceNos);
+        })->get();
+
+        $userNotifications = [];
+        $latestNotification = '';
+
+        foreach ($users as $user) {
+            foreach ($latestReferenceNos as $referenceNo) {
+                $itemCount = $user->selectedItems()->where('referenceNo', $referenceNo)->count();
+                if ($itemCount > 0) {
+                    $notification = "{$user->name} bought {$itemCount} products.";
+                    $userNotifications[] = $notification;
+                    $latestNotification = $notification;
+                }
+            }
+        }
+
+        return response()->json([
+            'notification_message' => implode(' ', array_slice($userNotifications, 0, 5)) ?: 'No new notifications',
+            'latest_notification' => $latestNotification,
+            'count' => count($userNotifications),
+        ]);
+    }
 }

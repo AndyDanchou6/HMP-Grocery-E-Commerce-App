@@ -5,7 +5,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Delivery Schedule</h4>
+            <h4 style="margin: auto 0;">Delivery Schedules</h4>
             <form action="{{ route('schedules.index') }}" method="GET" class="d-flex">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search Schedule..." value="{{ request('search') }}">

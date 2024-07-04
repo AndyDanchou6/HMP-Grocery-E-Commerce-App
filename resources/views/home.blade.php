@@ -12,7 +12,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-box-seam me-2"></i>
                         <h5 class="card-title mb-0">Package</h5>
-                        <span class="badge bg-primary ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $package }}</span>
+                        <span class="badge bg-primary ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;" id="packageCount"> </span>
                     </div>
                     <a href="{{ route('selectedItems.forPackaging') }}">
                         <button class="btn btn-primary btn-sm mt-3">View here</button>
@@ -27,7 +27,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-truck me-2"></i>
                         <h5 class="card-title mb-0">Delivery</h5>
-                        <span class="badge bg-success ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $delivery }}</span>
+                        <span class="badge bg-success ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;" id="deliveryCount"></span>
                     </div>
                     <a href="{{ route('selectedItems.forDelivery') }}">
                         <button class="btn btn-success btn-sm mt-3">View here</button>
@@ -42,7 +42,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-bag me-2"></i>
                         <h5 class="card-title mb-0">Pickup</h5>
-                        <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $pickup }}</span>
+                        <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;" id="pickupCount"></span>
                     </div>
                     <a href="{{ route('selectedItems.forPickup') }}">
                         <button class="btn btn-info btn-sm mt-3">View here</button>
@@ -51,7 +51,42 @@
             </div>
         </div>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                function updatePackageCount() {
+                    fetch('{{ route("selectedItems.count") }}')
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(data => {
+                            const forPackagingCount = document.getElementById('packageCount');
+                            if (forPackagingCount) {
+                                forPackagingCount.textContent = data.count1 || '0';
+                                forPackagingCount.style.display = data.count1 !== undefined ? 'block' : 'none';
+                            }
 
+                            const forDeliveryCount = document.getElementById('deliveryCount');
+                            if (forDeliveryCount) {
+                                forDeliveryCount.textContent = data.count2 || '0';
+                                forDeliveryCount.style.display = data.count2 !== undefined ? 'block' : 'none';
+                            }
+
+                            const forPickupCount = document.getElementById('pickupCount');
+                            if (forPickupCount) {
+                                forPickupCount.textContent = data.count3 || '0';
+                                forPickupCount.style.display = data.count3 !== undefined ? 'block' : 'none';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching count:', error);
+                        });
+                }
+
+                updatePackageCount();
+
+                setInterval(updatePackageCount, 5000);
+            });
+        </script>
 
         <div class="col-md-12">
             <div class="card">
@@ -118,7 +153,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-truck me-2"></i>
                         <h5 class="card-title mb-0">Delivery Request</h5>
-                        <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $deliveryRequest }}</span>
+                        <span class="badge bg-info ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;" id="deliveryRequest"></span>
                     </div>
                     <a href="{{ route('selectedItems.courierDashboard') }}">
                         <button class="btn btn-info btn-sm mt-3">View here</button>
@@ -132,7 +167,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-truck me-2"></i>
                         <h5 class="card-title mb-0">Complete Delivery</h5>
-                        <span class="badge bg-success ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">{{ $delivered }}</span>
+                        <span class="badge bg-success ms-auto d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;" id="completeDelivery"></span>
                     </div>
                     <button class="btn btn-success btn-sm mt-3">View here</button>
                 </div>
@@ -140,6 +175,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setInterval(updatePackageCount, 5000);
+
+        function updatePackageCount() {
+            fetch('{{ route("selectedItems.courierCount") }}', {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('deliveryRequest').textContent = data.deliveryRequest || '0';
+                    document.getElementById('completeDelivery').textContent = data.delivered || '0';
+                })
+                .catch(error => {
+                    console.error('Error fetching counts:', error);
+                });
+        }
+
+        updatePackageCount();
+    });
+</script>
+
 @endif
 
 @endsection

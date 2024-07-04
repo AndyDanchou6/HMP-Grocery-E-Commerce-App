@@ -21,7 +21,7 @@ class ShopController extends Controller
      */
     public function index()
     {
-        if (empty(auth()->user()->role) || auth()->user()->role == 'Courier') {
+        if (empty(auth()->user()->role)) {
             return redirect()->route('error404');
         } else {
             $user = Auth::user(); // Assuming user is authenticated
@@ -134,8 +134,6 @@ class ShopController extends Controller
                 ]);
             }
 
-            // event(new MyEvent($selectedItems));
-
             return redirect()->route('shop.index')->with('message', 'Thank you for shopping, Check your items in dashboard!');
         } catch (\Exception $e) {
             Log::error('Place Order Error: ' . $e->getMessage());
@@ -143,7 +141,6 @@ class ShopController extends Controller
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
     }
-
 
     public function cancelCheckout(Request $request)
     {

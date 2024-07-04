@@ -79,7 +79,6 @@
                             </div>
                             @endif
                             <button type="submit" class="site-btn placeOrderBtn" style="background-color: #696cff;">PLACE ORDER</button>
-
                         </div>
                     </div>
                 </div>
