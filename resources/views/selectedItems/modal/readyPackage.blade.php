@@ -29,7 +29,7 @@
                     <h5>Purchased Items</h5>
                 </div>
                 @foreach($user['items'] as $item)
-                <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
+                <div class="row item-row" data-item-id="{{ $item->id }}">
 
                     <div class="col-12 col-sm-6 col-md-4 mb-3">
                         <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
@@ -82,21 +82,10 @@
                         @csrf
                         @method('POST')
 
-
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
-                            @if($item->order_retrieval == 'delivery')
-                            <div class="mb-3">
-                                <label for="" class="col-form-label">Courier</label>
-                                <div>
-                                    <select class="form-select" name="courier_id" id="courier_id" required>
-                                        <option value="" selected disabled>Choose Courier</option>
-                                        @foreach($couriers as $courier)
-                                        <option value="{{ $courier->id }}">{{ $courier->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            @endif
+
+                            
+                            
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>

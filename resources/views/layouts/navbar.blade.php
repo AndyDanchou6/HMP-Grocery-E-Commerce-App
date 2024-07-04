@@ -21,7 +21,7 @@
       <i class="bx bx-history bx-sm"></i>
     </a>
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('schedules.index') }}">
-      <i class="bx bx-history bx-sm"></i>
+      <i class="bx bx-calendar bx-sm"></i>
     </a>
     @endif
     <!-- User dropdown -->

@@ -128,6 +128,9 @@ Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
 
 //--- Delivery Schedules ----!>
 Route::get('admin/schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
+Route::post('admin/schedules/create', [DeliveryScheduleController::class, 'store'])->name('schedules.store');
+Route::delete('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'destroy'])->name('schedules.destroy');
+Route::put('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
 
 Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
 
