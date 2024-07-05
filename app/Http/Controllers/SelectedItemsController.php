@@ -18,56 +18,6 @@ class SelectedItemsController extends Controller
      * Display a listing of the resource.
      */
 
-    // public function forPackaging()
-    // {
-    //     $users = SelectedItems::where('status', 'forPackage')
-    //         ->with([
-    //             'user' => function ($query) {
-    //                 $query->select('users.*'); // Select specific fields from users table
-    //             },
-    //             'inventory' => function ($query) {
-    //                 $query->select('inventories.*'); // Select specific fields from inventories table
-    //             }
-    //         ])
-    //         ->orderBy('created_at', 'asc')
-    //         // ->select('selected_items.referenceNo', 'inventories.*', 'users.*')
-    //         ->get()
-    //         ->groupBy('referenceNo');
-
-    //     $couriers = User::where('role', 'Courier')->get();
-
-    //     $userByReference = [];
-
-    //     foreach ($users as $referenceKey => $itemsByReference) {
-
-    //         // $temp[] = $itemsByReference;
-    //         foreach ($itemsByReference as $item) {
-
-    //             // $temp[$item->referenceNo] = $item->referenceNo;
-    //             $userByReference[$item->referenceNo]['userInfo'] = [];
-
-    //             $userByReference[$item->referenceNo]['items'][] = $item;
-
-    //             if (!$userByReference[$item->referenceNo]['userInfo']) {
-    //                 $userByReference[$item->referenceNo]['userInfo'] = [
-    //                     'id' => $item->user->id,
-    //                     'referenceNo' => $item->referenceNo,
-    //                     'name' => $item->user->name,
-    //                     'email' => $item->user->email,
-    //                     'phone' => $item->user->phone,
-    //                     'fb_link' => $item->user->fb_link,
-    //                     'address' => $item->user->address,
-    //                     'created_at' => $item->user->created_at,
-    //                     'updated_at' => $item->user->updated_at,
-    //                 ];
-    //             }
-    //         }
-    //     }
-
-    //     // dd($temp);
-    //     // return response()->json($userByReference);
-    //     return view('selectedItems.forPackaging', compact('userByReference', 'couriers'));
-    // }
     public function forPackaging()
     {
         if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
@@ -112,21 +62,9 @@ class SelectedItemsController extends Controller
                 });
             }
 
-            //Delivery Schedules
-            // $schedules = deliverySchedule::where('status', 'Active')->get();
-
-            // $couriers = User::where('role', 'Courier')->get();
-
-
-            // foreach($schedules as $days) {
-            //     echo $days->day;
-            // }
-            // dd($schedules->day);
             return view('selectedItems.forPackaging', compact('userByReference'));
         }
     }
-
-
 
     public function forDelivery()
     {
@@ -161,6 +99,7 @@ class SelectedItemsController extends Controller
                             'courier_id' => $courier ? $courier->name : 'Unknown',
                             'payment_type' => $item->payment_type,
                             'delivery_date' => $item->delivery_date,
+                            'order_retrieval' => $item->order_retrieval,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -208,6 +147,7 @@ class SelectedItemsController extends Controller
                             'phone' => $item->phone,
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
+                            'order_retrieval' => $item->order_retrieval,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                             'payment_type' => $item->payment_type,
@@ -391,6 +331,7 @@ class SelectedItemsController extends Controller
                             'phone' => $item->phone,
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
+                            'delivery_date' => $item->delivery_date,
                             'created_at' => $user->created_at,
                             'updated_at' => $user->updated_at,
                         ];
@@ -441,8 +382,6 @@ class SelectedItemsController extends Controller
             }])->get();
         }
 
-
-        // dd($users);
     }
 
     /**
@@ -458,10 +397,6 @@ class SelectedItemsController extends Controller
         $specificDate = Carbon::create(2024, 6, 26);
 
         $morning = SelectedItems::whereDate('created_at', $specificDate)->get();
-
-        // return response()->json([
-        //     'data' => $morning
-        // ]);      
 
         dd($morning);
     }
@@ -496,8 +431,6 @@ class SelectedItemsController extends Controller
     {
         $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
 
-        $forSchedule = $request->input('courier_id') != null && $request->input('delivery_schedule') != null;
-
         foreach ($selectedItems as $item) {
             if ($item->status == 'forPackage') {
 
@@ -505,86 +438,88 @@ class SelectedItemsController extends Controller
                 $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
 
-                if ($item->order_retrieval == 'delivery' && $forSchedule) {
+                if ($request->has('payment_condition')) {
 
-                    $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
-
-                    if (!$scheduleOfDelivery) {
-                        return redirect()->back()->with('error', 'Schedule does not exists');
-                    }
-                    $numericValues = [
-                        'Sunday' => 1,
-                        'Monday' => 2,
-                        'Tuesday' => 3,
-                        'Wednesday' => 4,
-                        'Thursday' => 5,
-                        'Friday' => 6,
-                        'Saturday' => 7
-                    ];
-
-                    $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
-                    $today = Carbon::now()->format('l');
-                    $currentDay = $numericValues[$today];
-
-                    $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) < strtotime($scheduleOfDelivery->start_time);
-                    $forNextWeek = $selectedSchedule < $currentDay;
-
-                    $offset = '';
-
-                    if ($forNextWeek || $didNotMakeIt) {
-                        $less = count($numericValues) - $currentDay;
-                        $offset = $selectedSchedule + $less;
-                    } else {
-                        $offset = $selectedSchedule - $currentDay;
-                    }
-
-                    $deliveryDate = Carbon::now()->addDays($offset);
-
-                    $startTime = $scheduleOfDelivery->start_time;
-                    list($startHour, $startMinute) = explode(':', $startTime);
-
-                    $deliveryDate->setHour($startHour)
-                        ->setMinute($startMinute)
-                        ->setSecond(0);
-                    $item->delivery_date = $deliveryDate;
-
-                    
-                } elseif ($item->order_retrieval == 'delivery' && $request->hasFile('proof_of_delivery') && !$forSchedule) {
-                        $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
-                        $item->proof_of_delivery = $avatarPath;
-                        $item->status = 'delivered';
-
-                        if ($item->payment_type == 'G-cash') {
-
-                            $item->payment_condition = 'paid';
-                        } else {
-
-                            $item->payment_condition = $request->input('payment_condition');
-                        }
-                    } elseif ($item->order_retrieval == 'pickup') {
-
-                    $item->status = 'pickedUp';
-
-                    if ($item->payment_type == 'G-cash') {
-
-                        $item->payment_condition = 'paid';
-                    } else {
-
-                        $item->payment_condition = $request->input('payment_condition');
-                    }
+                    $item->payment_condition = $request->input('payment_condition');
                 }
-            }
 
-            if ($request->has('courier_id')) {
+                if ($request->has('payment_type')) {
 
-                $item->courier_id = $request->courier_id;
+                    $item->payment_type = $request->input('payment_type');
+                }
+
+                if ($request->has('order_retrieval')) {
+
+                    if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
+                        $item->order_retrieval = Null;
+                        $item->delivery_date = Null;
+                    }
+
+                    if ($request->has('delivery_schedule') && $request->input('order_retrieval') != 'pickup') {
+
+                        $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
+
+                        if (!$scheduleOfDelivery) {
+                            return redirect()->back()->with('error', 'Schedule does not exists');
+                        }
+                        $numericValues = [
+                            'Sunday' => 1,
+                            'Monday' => 2,
+                            'Tuesday' => 3,
+                            'Wednesday' => 4,
+                            'Thursday' => 5,
+                            'Friday' => 6,
+                            'Saturday' => 7
+                        ];
+
+                        $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
+                        $today = Carbon::now()->format('l');
+                        $currentDay = $numericValues[$today];
+
+                        $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) < strtotime($scheduleOfDelivery->start_time);
+                        $forNextWeek = $selectedSchedule < $currentDay;
+
+                        $offset = '';
+
+                        if ($forNextWeek || $didNotMakeIt) {
+                            $less = count($numericValues) - $currentDay;
+                            $offset = $selectedSchedule + $less;
+                        } else {
+                            $offset = $selectedSchedule - $currentDay;
+                        }
+
+                        $deliveryDate = Carbon::now()->addDays($offset);
+
+                        $startTime = $scheduleOfDelivery->start_time;
+                        list($startHour, $startMinute) = explode(':', $startTime);
+
+                        $deliveryDate->setHour($startHour)
+                            ->setMinute($startMinute)
+                            ->setSecond(0);
+                        $item->delivery_date = $deliveryDate;
+                    }
+
+                    if ($request->has('courier_id') && $request->input('order_retrieval') != 'pickup') {
+
+                        $item->courier_id = $request->input('courier_id');
+                    }
+
+                    $item->order_retrieval = $request->input('order_retrieval');
+                }
+
+
+
+                if ($request->hasFile('proof_of_delivery')) {
+                    $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
+                    $item->proof_of_delivery = $avatarPath;
+                    $item->status = 'delivered';
+                }
             }
 
             $item->save();
         }
 
         return redirect()->back()->with('success', 'Order updated.');
-        // dd($forSchedule);
     }
 
     public function updatePaymentCondition(Request $request, string $referenceNo)

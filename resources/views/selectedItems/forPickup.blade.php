@@ -51,6 +51,28 @@
 
 @section('customScript')
 <script>
+    function hideOptions(orderRetrieval) {
+        var options = document.querySelectorAll('.payment_type');
+
+        options.forEach(function(option) {
+            if (orderRetrieval == 'delivery') {
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'none';
+                }
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'block';
+                }
+            } else if (orderRetrieval == 'pickup') {
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'none';
+                }
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'block';
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
 
         var subTotalField = document.querySelectorAll('.item-sub-total');
@@ -84,6 +106,19 @@
             total.value = totalContainer[totalId].toLocaleString('en-PH', {
                 style: 'currency',
                 currency: 'PHP'
+            });
+        });
+
+        var orderRetrievals = document.querySelectorAll('.order_retrieval');
+
+        orderRetrievals.forEach(function(orderRetrieval) {
+
+            hideOptions(orderRetrieval.value);
+
+            orderRetrieval.addEventListener('change', function() {
+
+                hideOptions(orderRetrieval.value);
+                console.log(options);
             });
         });
     });
