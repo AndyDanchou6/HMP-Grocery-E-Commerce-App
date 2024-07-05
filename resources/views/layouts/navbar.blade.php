@@ -30,10 +30,9 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
         <li class="dropdown-header">Notifications</li>
-        <li id="notificationListItem"></li>
+        <ul id="notificationList" class="list-unstyled mb-0"></ul> <!-- Changed to ul with id notificationList -->
       </ul>
     </li>
-
 
 
     @endif
@@ -106,90 +105,297 @@
     </li>
   </ul>
 </nav>
-<!-- Bootstrap Modal for Notification -->
-<div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="notificationModalLabel">New Products Purchased!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p id="notificationModalBody">Loading...</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', function() {
-    let timeoutId;
-    let currentNotificationMessage = '';
-    let currentCount = 0;
+    const notificationIcon = document.getElementById('notificationIcon');
+    const notificationList = document.getElementById('notificationList'); // Assuming this is where notifications will be displayed
+    const notificationCountElement = document.getElementById('notificationCount'); // Element to display notification count
 
-    function fetchNotifications() {
+    // Initialize sessionStorage variables if they don't already exist
+    if (!sessionStorage.getItem('notificationCount')) {
+      sessionStorage.setItem('notificationCount', 0);
+    }
+    if (!sessionStorage.getItem('notificationBellState')) {
+      sessionStorage.setItem('notificationBellState', 'inactive');
+    }
+    if (!sessionStorage.getItem('previousNotificationMessage')) {
+      sessionStorage.setItem('previousNotificationMessage', '');
+    }
+
+    // Function to handle initial state setup
+    function initializeNotificationState() {
+      const notificationBellState = sessionStorage.getItem('notificationBellState');
+      const notificationCount = sessionStorage.getItem('notificationCount');
+      if (notificationBellState === 'active') {
+        notificationIcon.classList.add('bx-tada');
+        notificationIcon.classList.add('text-danger'); // Apply red color or any style for active state
+      } else {
+        notificationIcon.classList.remove('bx-tada');
+        notificationIcon.classList.remove('text-danger'); // Remove red color or any style for inactive state
+      }
+      if (notificationCountElement) {
+        notificationCountElement.textContent = notificationCount;
+        if (parseInt(notificationCount) > 0) {
+          notificationCountElement.classList.remove('d-none'); // Show count if there are notifications
+        } else {
+          notificationCountElement.classList.add('d-none'); // Hide count if there are no notifications
+        }
+      }
+    }
+
+    function triggerPopupAnimation() {
+
+    }
+
+    // Function to display notifications in the dropdown menu
+    function showNotifications() {
+      const previousNotificationMessage = sessionStorage.getItem('previousNotificationMessage');
+      if (notificationList) {
+        const html = previousNotificationMessage.split('.').filter(msg => msg.trim() !== '')
+          .map(msg => `<li><a class="dropdown-item" href="#">${msg}</a></li>`).join('');
+        notificationList.innerHTML = html;
+      } else {
+        console.error('Error: notificationList element not found.');
+      }
+    }
+
+    // Initialize notification state and show previous notifications on page load
+    initializeNotificationState();
+    showNotifications();
+
+    // Variable to track whether the bell icon has been animated or turned red
+    let hasAnimated = false;
+
+    // Function to fetch latest notifications and update sessionStorage
+    function fetchAndDisplayNotifications() {
       fetch('{{ route("selectedItems.notification") }}')
         .then(response => response.json())
         .then(data => {
-          if (data.notification_message) {
-            showNotifications(data.notification_message);
-            if (data.notification_message !== currentNotificationMessage) {
-              triggerPopupAnimation(data.notification_message);
-              currentNotificationMessage = data.notification_message;
-              if (currentCount !== data.count) {
-                updateNotificationCount(data.count); // Update notification count only if it has changed
+          console.log('Received notifications:', data);
+
+          const previousNotificationMessage = sessionStorage.getItem('previousNotificationMessage');
+          const currentNotificationMessage = data.notification_message;
+
+          // Check if there are new notifications
+          if (currentNotificationMessage && currentNotificationMessage.trim() !== '' && currentNotificationMessage !== previousNotificationMessage) {
+            const messages = currentNotificationMessage.split('.').filter(msg => msg.trim() !== '');
+            sessionStorage.setItem('previousNotificationMessage', currentNotificationMessage); // Update previous notification message
+            showNotifications(); // Update displayed notifications
+            triggerPopupAnimation(currentNotificationMessage);
+
+            // Update the notification count to 1 (since we're counting new notifications as 1 each)
+            const newCount = 1;
+            sessionStorage.setItem('notificationCount', newCount);
+            if (notificationCountElement) {
+              notificationCountElement.textContent = newCount;
+              notificationCountElement.classList.remove('d-none'); // Show count if there are notifications
+            }
+
+            // Toggle bell icon to active state only if not already animated
+            if (!hasAnimated) {
+              sessionStorage.setItem('notificationBellState', 'active');
+              notificationIcon.classList.add('bx-tada');
+              notificationIcon.classList.add('text-danger'); // Apply red color and animation
+              hasAnimated = true; // Set flag to true after first animation
+            }
+
+            // Reset inactive state and count after 5 seconds
+            setTimeout(() => {
+              sessionStorage.setItem('notificationBellState', 'inactive');
+              notificationIcon.classList.remove('bx-tada');
+              notificationIcon.classList.remove('text-danger'); // Remove red color and animation
+              hasAnimated = false; // Reset animation flag
+
+              // Reset notification count to 0 when no new notifications
+              sessionStorage.setItem('notificationCount', 0);
+              if (notificationCountElement) {
+                notificationCountElement.textContent = 0;
+                notificationCountElement.classList.add('d-none'); // Hide count when reset to 0
               }
+            }, 5000);
+
+          } else {
+            // No new notifications, toggle to inactive state
+            sessionStorage.setItem('notificationBellState', 'inactive');
+            notificationIcon.classList.remove('bx-tada');
+            notificationIcon.classList.remove('text-danger'); // Remove red color and animation
+            hasAnimated = false; // Reset animation flag
+
+            // Reset notification count to 0 when no new notifications
+            sessionStorage.setItem('notificationCount', 0);
+            if (notificationCountElement) {
+              notificationCountElement.textContent = 0;
+              notificationCountElement.classList.add('d-none'); // Hide count when reset to 0
             }
           }
         })
         .catch(error => {
-          console.error('Error fetching notifications:', error);
-        })
-        .finally(() => {
-          // Set timeout for next poll
-          timeoutId = setTimeout(fetchNotifications, 5000); // Poll every 5 seconds
+          console.error('Error fetching latest notifications:', error);
         });
     }
 
-    function showNotifications(message) {
-      const notificationListItem = document.getElementById('notificationListItem');
-      const messages = message.split('.').filter(msg => msg.trim() !== ''); // Filter out empty lines
-      const html = messages.map(msg => `<a class="dropdown-item" href="#">${msg.trim()}</a>`).join('');
-      notificationListItem.innerHTML = html;
+    // Initialize notification state and fetch latest notifications on page load
+    initializeNotificationState();
+    showNotifications();
+    fetchAndDisplayNotifications();
+
+    // Set a setInterval to periodically fetch and display notifications
+    setInterval(fetchAndDisplayNotifications, 5000);
+  });
+</script> -->
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const notificationIcon = document.getElementById('notificationIcon');
+    const notificationList = document.getElementById('notificationList'); // Assuming this is where notifications will be displayed
+    const notificationCountElement = document.getElementById('notificationCount'); // Element to display notification count
+
+    // Initialize sessionStorage variables if they don't already exist
+    if (!sessionStorage.getItem('notificationCount')) {
+      sessionStorage.setItem('notificationCount', 0);
+    }
+    if (!sessionStorage.getItem('notificationBellState')) {
+      sessionStorage.setItem('notificationBellState', 'inactive');
+    }
+    if (!sessionStorage.getItem('previousNotificationMessages')) {
+      sessionStorage.setItem('previousNotificationMessages', JSON.stringify([])); // Initialize as an empty array
     }
 
-    function triggerPopupAnimation(message) {
-      // const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-      // document.getElementById('notificationModalBody').textContent = 'New User Puchased New Product';
-      // modal.show();
-    }
-
-    function updateNotificationCount(count) {
-      const notificationCountElement = document.getElementById('notificationCount');
-      notificationCountElement.textContent = count;
-      if (count > 0) {
-        notificationCountElement.classList.remove('d-none'); // Show notification count badge
-        document.getElementById('notificationIcon').classList.add('bx-tada');
+    // Function to handle initial state setup
+    function initializeNotificationState() {
+      const notificationBellState = sessionStorage.getItem('notificationBellState');
+      const notificationCount = sessionStorage.getItem('notificationCount');
+      if (notificationBellState === 'active') {
+        notificationIcon.classList.add('bx-tada');
+        notificationIcon.classList.add('text-danger'); // Apply red color or any style for active state
       } else {
-        notificationCountElement.classList.add('d-none'); // Hide notification count badge if count is 0
-        document.getElementById('notificationIcon').classList.remove('bx-tada');
+        notificationIcon.classList.remove('bx-tada');
+        notificationIcon.classList.remove('text-danger'); // Remove red color or any style for inactive state
       }
-      currentCount = count; // Update the current count
+      if (notificationCountElement) {
+        notificationCountElement.textContent = notificationCount;
+        if (parseInt(notificationCount) > 0) {
+          notificationCountElement.classList.remove('d-none'); // Show count if there are notifications
+        } else {
+          notificationCountElement.classList.add('d-none'); // Hide count if there are no notifications
+        }
+      }
     }
 
-    // Handle click event on the bell icon to update notifications and reset count
-    const notificationDropdown = document.getElementById('notificationDropdown');
-    notificationDropdown.addEventListener('click', function(event) {
-      event.preventDefault(); // Prevent default link behavior
+    // Function to display notifications in the dropdown menu
+    function showNotifications() {
+      const previousNotificationMessages = JSON.parse(sessionStorage.getItem('previousNotificationMessages')) || [];
+      if (notificationList) {
+        const html = previousNotificationMessages.map(msg => `<li><a class="dropdown-item" href="#">${msg}</a></li>`).join('');
+        notificationList.innerHTML = html;
+      } else {
+        console.error('Error: notificationList element not found.');
+      }
+    }
 
-      // Reset notification count to 0 when bell icon is clicked
-      updateNotificationCount(0);
-    });
+    // Initialize notification state and show previous notifications on page load
+    initializeNotificationState();
+    showNotifications();
 
-    // Start fetching notifications
-    fetchNotifications();
+    // Variable to track whether the bell icon has been animated or turned red
+    let hasAnimated = false;
+
+    function triggerPopupAnimation() {}
+
+    // Function to fetch latest notifications and update sessionStorage
+    function fetchAndDisplayNotifications() {
+      fetch('{{ route("selectedItems.notification") }}')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Received notifications:', data);
+
+          const previousNotificationMessages = JSON.parse(sessionStorage.getItem('previousNotificationMessages')) || [];
+          const currentNotificationMessages = data.notification_message.split('.').filter(msg => msg.trim() !== '');
+
+          // Check if there are new notifications
+          if (currentNotificationMessages.length > 0 && JSON.stringify(currentNotificationMessages) !== JSON.stringify(previousNotificationMessages)) {
+            sessionStorage.setItem('previousNotificationMessages', JSON.stringify(currentNotificationMessages)); // Update previous notification messages
+            showNotifications(); // Update displayed notifications
+            triggerPopupAnimation(); // Implement your animation logic here
+
+            // Update the notification count to 1 (since we're counting new notifications as 1 each)
+            const newCount = 1;
+            sessionStorage.setItem('notificationCount', newCount);
+            if (notificationCountElement) {
+              notificationCountElement.textContent = newCount;
+              notificationCountElement.classList.remove('d-none'); // Show count if there are notifications
+            }
+
+            // Toggle bell icon to active state only if not already animated
+            if (!hasAnimated) {
+              sessionStorage.setItem('notificationBellState', 'active');
+              notificationIcon.classList.add('bx-tada');
+              notificationIcon.classList.add('text-danger'); // Apply red color and animation
+              hasAnimated = true; // Set flag to true after first animation
+            }
+
+            // Reset inactive state and count after 5 seconds
+            setTimeout(() => {
+              sessionStorage.setItem('notificationBellState', 'inactive');
+              notificationIcon.classList.remove('bx-tada');
+              notificationIcon.classList.remove('text-danger'); // Remove red color and animation
+              hasAnimated = false; // Reset animation flag
+
+              // Reset notification count to 0 when no new notifications
+              sessionStorage.setItem('notificationCount', 0);
+              if (notificationCountElement) {
+                notificationCountElement.textContent = 0;
+                notificationCountElement.classList.add('d-none'); // Hide count when reset to 0
+              }
+            }, 5000);
+
+          } else {
+            // No new notifications, toggle to inactive state
+            sessionStorage.setItem('notificationBellState', 'inactive');
+            notificationIcon.classList.remove('bx-tada');
+            notificationIcon.classList.remove('text-danger'); // Remove red color and animation
+            hasAnimated = false; // Reset animation flag
+
+            // Reset notification count to 0 when no new notifications
+            sessionStorage.setItem('notificationCount', 0);
+            if (notificationCountElement) {
+              notificationCountElement.textContent = 0;
+              notificationCountElement.classList.add('d-none'); // Hide count when reset to 0
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching latest notifications:', error);
+        });
+    }
+
+    // Initialize notification state and fetch latest notifications on page load
+    initializeNotificationState();
+    showNotifications();
+    fetchAndDisplayNotifications();
+
+    // Set a setInterval to periodically fetch and display notifications
+    setInterval(fetchAndDisplayNotifications, 5000);
   });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @include('profile.edit')
 @include('profile.editUser')
 @include('layouts.modal._logoutModal')
