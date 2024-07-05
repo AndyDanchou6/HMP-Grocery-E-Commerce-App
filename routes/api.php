@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/selectedItems/count', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.count');
-Route::get('/selectedItems/notify', [SelectedItemsController::class, 'notification'])->name('selectedItems.notification');
+Route::get('/selectedItems/notify', [SelectedItemsController::class, 'notification'])->name('selectedItems.notification')->middleware('web');
 Route::get('/test', [ShopController::class, 'test']);
 // Route::controller(AdminController::class)->group(function () {
 //     Route::post('/login', 'login');
