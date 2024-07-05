@@ -77,23 +77,24 @@
                         </div>
                     </div>
 
+
                     <div style="position: relative; width: 100%;">
                         <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3" enctype="multipart/form-data">
                             @csrf
                             @method('POST')
                             <div class="row align-items-center">
-                                <div class="col-sm-6 col-lg-4 mb-3">
-                                    <label for="courier_id" class="col-form-label">Courier name:</label>
-                                    <input type="text" class="form-control" value="{{ $courierName }}" readonly>
-                                    <input type="hidden" name="courier_id" value="{{ $courier->id }}">
+
+                                <div class="col-sm-6">
+                                    <label for="" class="col-form-label">Delivery Schedule:</label>
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}" readonly>
                                 </div>
 
-                                <div class="col-sm-6 col-lg-4 mb-3">
+                                <div class="col-sm-6 mb-3">
                                     <label for="courier_id" class="col-form-label">Payment Type:</label>
                                     <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
                                 </div>
 
-                                <div class="col-lg-4 mb-3">
+                                <div class="col-12 mb-3">
                                     <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
                                     <input type="file" class="form-control" name="proof_of_delivery" id="proof_of_delivery" required>
                                 </div>

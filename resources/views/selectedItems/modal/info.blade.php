@@ -56,23 +56,26 @@
                     </div>
                     @if($user['order_retrieval'] == 'delivery')
                     <div class="row align-items-center mb-3">
-                        <div class="col-sm-3">
-                            <label for="courier_id" class="col-form-label">Courier Name:</label>
+
+                        <div class="col-md-6">
+                            <label for="" class="col-form-label">Delivery Schedule:</label>
+                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->format('l, F j, Y g:i A') }}" readonly>
                         </div>
-                        <div class="col-sm-9">
+
+                        <div class="col-md-6">
+                            <label for="" class="col-form-label">Courier Name:</label>
                             <input type="text" class="form-control" value="{{ $user['courier_id'] }}" readonly>
                         </div>
-                        <div class="row mb-3" style="margin-top: 10px;">
-                            <div class="col-sm-3">
-                                <label for="payment_type" class="col-form-label">Payment Type:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" value="{{ $user['payment_type'] }}" style="margin-left: 7px;" readonly>
-                            </div>
+
+                        <div class="col-md-6">
+                            <label for="" class="col-form-label">Payment Type:</label>
+                            <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                         </div>
+
+                        
                     </div>
                     @elseif($user['order_retrieval'] == 'pickup')
-                    <div class="row mb-3">
+                    <div class="row mb-3 p-0">
                         <div class="col-sm-3">
                             <label for="payment_type" class="col-form-label" style="margin-right: 40px;">Payment Type:</label>
                         </div>

@@ -5,7 +5,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Selected Items</h4>
+            <h4 style="margin: auto 0;">For Delivery Orders</h4>
         </div>
 
         <div class="table-responsive text-nowrap">
@@ -55,6 +55,28 @@
 
 @section('customScript')
 <script>
+    function hideOptions(orderRetrieval) {
+        var options = document.querySelectorAll('.payment_type');
+
+        options.forEach(function(option) {
+            if (orderRetrieval == 'delivery') {
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'none';
+                }
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'block';
+                }
+            } else if (orderRetrieval == 'pickup') {
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'none';
+                }
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'block';
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
 
         var subTotalField = document.querySelectorAll('.item-sub-total');
@@ -90,6 +112,20 @@
                 currency: 'PHP'
             });
         });
+
+        var orderRetrievals = document.querySelectorAll('.order_retrieval');
+
+        orderRetrievals.forEach(function(orderRetrieval) {
+
+            hideOptions(orderRetrieval.value);
+
+            orderRetrieval.addEventListener('change', function() {
+
+                hideOptions(orderRetrieval.value);
+                console.log(options);
+            });
+        });
+
     });
 </script>
 @endsection
