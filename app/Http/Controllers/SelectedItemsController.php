@@ -20,102 +20,141 @@ class SelectedItemsController extends Controller
 
     public function forPackaging()
     {
-        if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
-            return redirect()->route('error404');
-        } else {
-            // Fetch users and their selected items
-            $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'forPackage');
-            })->with(['selectedItems' => function ($query) {
-                $query->where('selected_items.status', 'forPackage')
-                    ->select('inventories.*', 'selected_items.*');
-            }])->orderBy('created_at', 'desc')->get();
+        $selectedItems = SelectedItems::where('status', 'forPackage')
+            ->with('user')
+            ->with('inventory')
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-            $userByReference = [];
+        $forPackage = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'order_retrieval' => $item->order_retrieval,
-                            'payment_type' => $item->payment_type,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
-                            'items' => []
-                        ];
-                    }
-                    $userByReference[$item->referenceNo]['items'][] = $item;
-                }
+        foreach ($selectedItems as $item) {
+            if (!isset($forPackage[$item->referenceNo])) {
+                $forPackage[$item->referenceNo] = [
+                    'id' => $item->id,
+                    'user_id' => $item->user->id,
+                    'referenceNo' => $item->referenceNo,
+                    'name' => $item->user->name,
+                    'email' => $item->user->email,
+                    'phone' => $item->phone,
+                    'fb_link' => $item->fb_link,
+                    'address' => $item->address,
+                    'order_retrieval' => $item->order_retrieval,
+                    'quantity' => $item->quantity,
+                    'courier_id' => $item->courier_id,
+                    'payment_type' => $item->payment_type,
+                    'payment_condition' => $item->payment_condition,
+                    'proof_of_delivery' => $item->proof_of_delivery,
+                    'delivery_date' => $item->delivery_date,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                    'items' => []
+                ];
             }
 
-            // Sort the items array by created_at in ascending order
-            foreach ($userByReference as &$reference) {
-                usort($reference['items'], function ($a, $b) {
-                    return strtotime($a->created_at) - strtotime($b->created_at);
-                });
-            }
-
-            return view('selectedItems.forPackaging', compact('userByReference'));
+            $forPackage[$item->referenceNo]['items'][] = $item->inventory;
         }
+
+        return view('selectedItems.forPackaging', compact('forPackage'));
+        // dd($forPackage);
     }
+
+    // public function forPackaging()
+    // {
+    //     if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
+    //         return redirect()->route('error404');
+    //     } else {
+    //         // Fetch users and their selected items
+    //         $users = User::whereHas('selectedItems', function ($query) {
+    //             $query->where('selected_items.status', 'forPackage')
+    //                 ->orderBy('selected_items.created_at', 'desc'); 
+    //         })->with(['selectedItems' => function ($query) {
+    //             $query->where('selected_items.status', 'forPackage')
+    //                 ->select('inventories.*', 'selected_items.*')
+    //                 ->orderBy('selected_items.created_at', 'desc'); 
+    //         }])->orderBy('created_at', 'asc')->get();
+
+    //         $userByReference = [];
+
+    //         foreach ($users as $user) {
+    //             foreach ($user->selectedItems as $item) {
+    //                 if (!isset($userByReference[$item->referenceNo])) {
+    //                     $userByReference[$item->referenceNo] = [
+    //                         'id' => $user->id,
+    //                         'referenceNo' => $item->referenceNo,
+    //                         'name' => $user->name,
+    //                         'email' => $user->email,
+    //                         'phone' => $item->phone,
+    //                         'fb_link' => $item->fb_link,
+    //                         'address' => $item->address,
+    //                         'order_retrieval' => $item->order_retrieval,
+    //                         'payment_type' => $item->payment_type,
+    //                         'created_at' => $user->created_at,
+    //                         'updated_at' => $user->updated_at,
+    //                         'items' => []
+    //                     ];
+    //                 }
+    //                 $userByReference[$item->referenceNo]['items'][] = $item;
+    //             }
+    //         }
+
+    //         // Sort the items array by created_at in ascending order
+    //         foreach ($userByReference as &$reference) {
+    //             usort($reference['items'], function ($a, $b) {
+    //                 return strtotime($a->created_at) - strtotime($b->created_at);
+    //             });
+    //         }
+
+    //         return view('selectedItems.forPackaging', compact('userByReference'));
+    //     }
+    // }
 
     public function forDelivery()
     {
         if (!Auth::check() || !(Auth::user()->role == 'Admin')) {
             return redirect()->route('error404');
         } else {
-            $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery');
-            })->with(['selectedItems' => function ($query) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery')
-                    ->select('inventories.*', 'selected_items.*')
-                    ->orderBy('delivery_date', 'asc');
-            }])->get();
+            $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
+                ->where('order_retrieval', 'delivery')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('delivery_date', 'asc')
+                ->get();
 
-            $userByReference = [];
+            $forDelivery = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $courier = User::find($item->courier_id);
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'courier_id' => $courier ? $courier->name : 'Unknown',
-                            'payment_type' => $item->payment_type,
-                            'delivery_date' => $item->delivery_date,
-                            'order_retrieval' => $item->order_retrieval,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
-                        ];
-
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    } else {
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    }
+            foreach ($selectedItems as $item) {
+                if (!isset($forDelivery[$item->referenceNo])) {
+                    $forDelivery[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'courier_id' => $item->courier_id,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
                 }
+
+                $forDelivery[$item->referenceNo]['items'][] = $item->inventory;
             }
 
             //Delivery Schedules
             $schedules = deliverySchedule::where('status', 'Active')->get();
             $couriers = User::where('role', 'Courier')->get();
 
-            return view('selectedItems.forDelivery', compact('userByReference', 'couriers', 'schedules'));
+            return view('selectedItems.forDelivery', compact('forDelivery', 'couriers', 'schedules'));
         }
     }
 
@@ -124,43 +163,43 @@ class SelectedItemsController extends Controller
         if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
             return redirect()->route('error404');
         } else {
-            $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'pickup');
-            })->with(['selectedItems' => function ($query) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'pickup')
-                    ->select('inventories.*', 'selected_items.*');
-            }])->orderBy('created_at', 'desc')->get();
+            $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
+                ->where('order_retrieval', 'pickup')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'asc')
+                ->get();
 
-            $userByReference = [];
+            $forPickup = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'order_retrieval' => $item->order_retrieval,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
-                            'payment_type' => $item->payment_type,
-                        ];
-
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    } else {
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    }
+            foreach ($selectedItems as $item) {
+                if (!isset($forPickup[$item->referenceNo])) {
+                    $forPickup[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'courier_id' => $item->courier_id,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
                 }
+
+                $forPickup[$item->referenceNo]['items'][] = $item->inventory;
             }
 
-            return view('selectedItems.forPickup', compact('userByReference'));
+            return view('selectedItems.forPickup', compact('forPickup'));
         }
     }
 
@@ -381,7 +420,6 @@ class SelectedItemsController extends Controller
                     ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
             }])->get();
         }
-
     }
 
     /**

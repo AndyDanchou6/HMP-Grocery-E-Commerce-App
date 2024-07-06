@@ -43,7 +43,7 @@
 
                     <div class="col-6 col-sm-3 col-md-3 mb-3">
                         <label for="quantity" class="col-6 col-sm-3 col-md-3 col-form-label">Quantity</label>
-                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
+                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $user['quantity'] }}" readonly>
                     </div>
                     <div class="col-12 col-sm-4 col-md-3 mb-3">
                         <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
@@ -69,11 +69,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
-                        <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
+                        <input type="text" class="form-control" value="{{ ucwords($user['order_retrieval']) }}" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="order_date" class="col-form-label">Date</label>
-                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
+                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>
 
@@ -84,18 +84,19 @@
 
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
 
-                            
-                            
+
+
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
-                                <input type="text" class="form-control" value="{{ $item->payment_type }}" readonly>
+                                <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Status</label>
                                 @if($item->payment_condition == NULL)
                                 <select name="payment_condition" id="payment_condition" class="form-select">
-                                    <option value="">Unpaid</option>
-                                    <option value="paid">Paid</option>
+                                    <option value="" selected disabled>Choose Payment Type</option>
+                                    <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
+                                    <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
                                 </select>
                                 @else
                                 <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>

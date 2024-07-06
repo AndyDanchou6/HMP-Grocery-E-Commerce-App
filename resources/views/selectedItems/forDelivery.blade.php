@@ -21,8 +21,8 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
-                    @if(count($userByReference) > 0)
-                    @foreach ($userByReference as $user)
+                    @if(count($forDelivery) > 0)
+                    @foreach ($forDelivery as $user)
                     <tr>
                         <td style="display: none;" class="id-field">{{ $user['id'] }}</td>
                         <td>{{ $loop->iteration }}</td>

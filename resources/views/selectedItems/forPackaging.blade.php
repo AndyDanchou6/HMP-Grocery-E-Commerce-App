@@ -21,8 +21,8 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
-                    @if(count($userByReference) > 0)
-                    @foreach ($userByReference as $user)
+                    @if(count($forPackage) > 0)
+                    @foreach ($forPackage as $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user['referenceNo'] }}</td>
