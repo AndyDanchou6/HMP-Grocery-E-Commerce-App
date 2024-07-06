@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/icon.css') }}" />
 
     <!-- Vendors CSS -->
@@ -85,6 +86,7 @@
 
     <!-- Main JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/custom.js') }}"></script> -->
 
     <!-- Custom JS -->
     @yield('customScript')
