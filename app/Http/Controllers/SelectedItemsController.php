@@ -381,7 +381,6 @@ class SelectedItemsController extends Controller
                     ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
             }])->get();
         }
-
     }
 
     /**
@@ -581,84 +580,43 @@ class SelectedItemsController extends Controller
         return response()->json(['deliveryRequest' => $deliveryRequest, 'delivered' => $delivered]);
     }
 
-    // public function notification()
-    // {
-    //     try {
-    //         // Fetch the latest 15 reference numbers that are ready for packaging
-    //         $latestReferenceNos = SelectedItems::where('status', 'forPackage')
-    //             ->orderBy('created_at', 'desc')
-    //             ->take(15)
-    //             ->pluck('referenceNo')
-    //             ->unique();
-
-    //         if ($latestReferenceNos->isEmpty()) {
-    //             return response()->json(['notification_message' => '']);
-    //         }
-
-    //         // Retrieve users who have selected items with the latest reference numbers
-    //         $users = User::whereHas('selectedItems', function ($query) use ($latestReferenceNos) {
-    //             $query->whereIn('referenceNo', $latestReferenceNos);
-    //         })->get();
-
-    //         // Build notification messages for each user based on their purchased items
-    //         $userNotifications = [];
-    //         foreach ($users as $user) {
-    //             foreach ($latestReferenceNos as $referenceNo) {
-    //                 $itemCount = $user->selectedItems()->where('referenceNo', $referenceNo)->count();
-    //                 if ($itemCount > 0) {
-    //                     $userNotifications[] = "{$user->name} bought {$itemCount} products.";
-    //                 }
-    //             }
-    //         }
-
-    //         // Limit to the latest 15 notifications
-    //         $latestNotifications = array_slice($userNotifications, 0, 15);
-
-    //         // Return JSON response with notification messages
-    //         return response()->json(['notification_message' => implode('. ', $latestNotifications)]);
-    //     } catch (\Exception $e) {
-    //         // Handle exceptions if any
-    //         return response()->json(['error' => 'Error fetching notifications.', 'message' => $e->getMessage()], 500);
-    //     }
-    // }
-
     public function notification()
     {
         try {
-            // Fetch the latest 15 reference numbers that are ready for packaging
-            $latestReferenceNos = SelectedItems::where('status', 'forPackage')
-                ->orderBy('created_at', 'desc') // Order by created_at in descending order
-                ->take(15)
-                ->pluck('referenceNo')
+            $latestItemIds = SelectedItems::where('status', 'forPackage')
+                ->orderBy('created_at', 'desc')
+                ->take(30)
+                ->pluck('id')
                 ->unique();
 
-            if ($latestReferenceNos->isEmpty()) {
+            if ($latestItemIds->isEmpty()) {
                 return response()->json(['notification_message' => '']);
             }
 
-            // Retrieve users who have selected items with the latest reference numbers
-            $users = User::whereHas('selectedItems', function ($query) use ($latestReferenceNos) {
-                $query->whereIn('referenceNo', $latestReferenceNos);
-            })->orderBy('created_at', 'desc')->get();
+            $latestReferenceNos = SelectedItems::whereIn('id', $latestItemIds)
+                ->pluck('referenceNo')
+                ->unique();
 
-            // Build notification messages for each user based on their purchased items
             $userNotifications = [];
-            foreach ($users as $user) {
-                foreach ($latestReferenceNos as $referenceNo) {
-                    $itemCount = $user->selectedItems()->where('referenceNo', $referenceNo)->count();
-                    if ($itemCount > 0) {
-                        $userNotifications[] = "{$user->name} bought {$itemCount} products.";
-                    }
+            foreach ($latestReferenceNos as $referenceNo) {
+                $selectedItems = SelectedItems::with('user')
+                    ->where('referenceNo', $referenceNo)
+                    ->get();
+
+                $itemCount = $selectedItems->count();
+                $userName = $selectedItems->first()->user->name ?? 'Customer';
+
+                if ($itemCount > 0) {
+                    $userNotifications[] = "$userName just bought {$itemCount} products.";
                 }
             }
 
-            // Limit to the latest 15 notifications
+            $userNotifications = array_reverse($userNotifications);
+
             $latestNotifications = array_slice($userNotifications, 0, 15);
 
-            // Return JSON response with notification messages
             return response()->json(['notification_message' => implode('. ', $latestNotifications)]);
         } catch (\Exception $e) {
-            // Handle exceptions if any
             return response()->json(['error' => 'Error fetching notifications.', 'message' => $e->getMessage()], 500);
         }
     }
