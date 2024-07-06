@@ -5,15 +5,21 @@
 <section class="checkout spad">
     <div class="container">
         <div class="checkout__form">
+            @if($orderType == 'delivery')
             <h4>Delivery Details</h4>
+            @else
+            <h4>Order Details</h4>
+            @endif
             <form action="{{ route('shop.placeOrder') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
+                        @if($orderType != 'pickup')
                         <div class="checkout__input">
                             <p>Address<span></span></p>
                             <textarea name="address" id="address" class="form-control" required></textarea>
                         </div>
+                        @endif
                         <div class="checkout__input">
                             <p>Phone<span></span></p>
                             <input type="text" name="phone" required>
