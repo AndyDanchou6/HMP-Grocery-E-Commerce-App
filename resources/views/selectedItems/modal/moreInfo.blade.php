@@ -38,7 +38,7 @@
 
                     <div class="col-6 col-sm-3 col-md-2 mb-3">
                         <label for="quantity" class="col-6 col-sm-3 col-md-2 col-form-label">Quantity</label>
-                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
+                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $user['quantity'] }}" readonly>
                     </div>
 
                     <div class="col-6 col-sm-3 col-md-3 ">
@@ -70,7 +70,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label for="order_date" class="col-form-label">Date</label>
-                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
+                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                         </div>
 
                     </div>
@@ -96,8 +96,8 @@
                                         <label for="" class="col-form-label">Order Retrieval:</label>
                                         <select class="form-select order_retrieval" name="order_retrieval" id="order_retrieval">
                                             <option value="" selected disabled>Choose Order Retrieval</option>
-                                            <option value="pickup" {{ $item->order_retrieval == 'pickup' ? 'selected' : ''}}>Pick Up</option>
-                                            <option value="delivery" {{ $item->order_retrieval == 'delivery' ? 'selected' : ''}}>Delivery</option>
+                                            <option value="pickup" {{ $user['order_retrieval'] == 'pickup' ? 'selected' : ''}}>Pick Up</option>
+                                            <option value="delivery" {{ $user['order_retrieval'] == 'delivery' ? 'selected' : ''}}>Delivery</option>
                                         </select>
                                     </div>
 
@@ -106,9 +106,9 @@
                                         <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
                                         <select class="form-select" name="payment_type" id="payment_type">
                                             <option value="" disabled>Choose Payment Type</option>
-                                            <option class="payment_type" id="gcash" value="G-Cash" {{ $item->payment_type == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
-                                            <option  class="payment_type cod" value="COD" {{ $item->payment_type == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
-                                            <option  class="payment_type instore" value="In-store" {{ $item->payment_type == 'In-store' ? 'selected' : ''}}>In-store</option>
+                                            <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
+                                            <option  class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
+                                            <option  class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
                                         </select>
                                     </div>
 
@@ -122,15 +122,17 @@
                                     </div>
 
                                     <!-- For Delivery -->
-                                    @if($item->order_retrieval == 'delivery')
+                                    @if($user['order_retrieval'] == 'delivery')
                                     @if($user['courier_id'] != 'Unknown')
                                     <div class="col-12 mb-3">
                                         <label for="" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery" id="proof_of_delivery">
                                     </div>
                                     @endif
+                                    @endif
                                 </div>
 
+                                @if($user['order_retrieval'] == 'delivery')
                                 <div class="row row-cols-md-2 mb-3 item-row">
                                     <div class="mb-3">
                                         <label for="" class="col-form-label">Courier</label>
@@ -138,7 +140,7 @@
                                             <select class="form-select" name="courier_id" id="courier_id">
                                                 <option value="" selected disabled>Choose Courier</option>
                                                 @foreach($couriers as $courier)
-                                                <option value="{{ $courier->id }}" {{ $user['courier_id'] == $courier->name  ? 'selected' : ''}}>{{ $courier->name }}</option>
+                                                <option value="{{ $courier->id }}" {{ $user['courier_id'] == $courier->id  ? 'selected' : ''}}>{{ $courier->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
