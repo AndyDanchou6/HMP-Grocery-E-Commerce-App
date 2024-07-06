@@ -94,8 +94,15 @@ class ShopController extends Controller
             ->where('status', 'forCheckout')
             ->get();
 
+
         if ($selectedItems->isEmpty()) {
             abort(404);
+        }
+
+        $orderType = '';
+
+        foreach ($selectedItems as $orderTypes) {
+            $orderType = $orderTypes->order_retrieval;
         }
 
         $subtotal = $selectedItems->sum(function ($item) {
@@ -104,7 +111,7 @@ class ShopController extends Controller
 
         $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user'));
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType'));
     }
 
     public function placeOrder(Request $request)
