@@ -81,8 +81,8 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
-                    <a href="{{ route('shop.products') }}" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn">
+                    <a href="{{ route('shop.products') }}" class="primary-btn cart-btn" style="background-color: #696cff; color: white;">CONTINUE SHOPPING</a>
+                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn" data-item-id="{{ $item->inventory->id }}">
                         <span class="icon_loading"></span> Update Cart
                     </button>
                 </div>
@@ -205,6 +205,13 @@
                     icon: "error",
                     button: "Ok",
                 });
+                let swalContainer = document.querySelector('.swal-modal');
+                if (swalContainer) {
+                    let swalText = swalContainer.querySelector('.swal-text');
+                    if (swalText) {
+                        swalText.style.textAlign = 'center';
+                    }
+                }
                 return;
             }
 
@@ -239,6 +246,13 @@
                 });
             } else {
                 proceedToCheckout(orderRetrievalType);
+            }
+            let swalContainer = document.querySelector('.swal-modal');
+            if (swalContainer) {
+                let swalText = swalContainer.querySelector('.swal-text');
+                if (swalText) {
+                    swalText.style.textAlign = 'center';
+                }
             }
         });
 
@@ -301,18 +315,36 @@
             let idNumber = cartItemId.substring(5);
 
             qtyBtn2.forEach(function(qtyBtn1) {
+
+                var originalNumber = document.querySelector('#cartQuantity' + idNumber).value;
+
                 qtyBtn1.addEventListener('click', function() {
 
                     var inputField = document.querySelector('#cartQuantity' + idNumber)
                     var availableStock = inputField.getAttribute('data-quantity')
 
+                    var currentValue;
 
                     if (qtyBtn1.classList.contains('inc')) {
                         if (parseFloat(inputField.value) >= parseFloat(availableStock) - 1) {
 
                             inputField.value = availableStock - 1
+
                         }
+                        currentValue = parseFloat(inputField.value) + 1;
+                    } else {
+                        currentValue = parseFloat(inputField.value) - 1;
                     }
+
+                    if (currentValue == originalNumber) {
+                        let buttonUpdate = document.querySelector('.updateCartBtn');
+                        buttonUpdate.removeAttribute('style');
+                    } else {
+                        let buttonUpdate = document.querySelector('.updateCartBtn');
+                        buttonUpdate.style.color = 'white';
+                        buttonUpdate.style.backgroundColor = '#696cff';
+                    }
+
                 })
 
             })

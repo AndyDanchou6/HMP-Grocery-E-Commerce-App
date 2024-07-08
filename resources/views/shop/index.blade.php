@@ -59,18 +59,13 @@
             </div>
         </div>
         <div class="row featured__filter" id="featuredFilter">
-            @foreach(App\Models\Inventory::inRandomOrder()->take(12)->get() as $item)
+            @foreach(App\Models\Inventory::inRandomOrder()->take(20)->get() as $item)
             <div class="col-lg-3 col-md-4 col-sm-6 mix-categories {{ $item->category->slug }}" data-category-id="{{ $item->category_id }}" data-filter=".{{ $item->category->slug }}">
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg d-flex justify-content-center align-items-center product_onDisplay" data-item-id="{{ $item->id }}" data-price="{{ $item->price }}" data-quantity="{{ $item->quantity }}">
                         <p class="rounded p-2 text-light bg-success onCartBanner" style="position: absolute; top: 0; left: 0; border-radius: 5px; display: none;" data-item-id="{{ $item->id }}">On Cart</p>
                         <p class="rounded p-2 text-light bg-danger outOfStockBanner" style="width: 100%; position: absolute; top: 50%; left: 0; border-radius: 5px; text-align: center; display: none;" data-quantity="{{ $item->quantity }}" data-item-id="{{ $item->id }}">Out of Stock</p>
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
-                        <!-- <ul class="featured__item__pic__hover">
-                            <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
-                            <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li>
-                        </ul> -->
                     </div>
                     <div class="featured__item__text text-center mt-3">
                         <h6><a href="#">{{ $item->product_name }}</a></h6>
@@ -112,7 +107,7 @@
 <!-- Banner End -->
 
 <!-- Latest Product Section Begin -->
-<section class="latest-product spad">
+<!-- <section class="latest-product spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6">
@@ -231,7 +226,7 @@
 
         </div>
     </div>
-</section>
+</section> -->
 <!-- Latest Product Section End -->
 
 <!-- Blog Section Begin -->

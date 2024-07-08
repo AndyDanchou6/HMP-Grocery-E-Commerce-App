@@ -14,8 +14,6 @@
 <input type="hidden" id="sessionMessage" value="{{ session('error') }}">
 @endif
 
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let sessionTypeInput = document.getElementById('sessionType');
@@ -51,7 +49,6 @@
                         className: 'swal-button--dashboard'
                     }
                 },
-                className: 'swal-wide'
             }).then((value) => {
                 if (value === "continueShopping") {
                     window.history.forward();
