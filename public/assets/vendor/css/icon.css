@@ -32,3 +32,19 @@
         margin-right: 0.5rem;
     }
 }
+
+@media (max-width: 768px) {
+    .input-group {
+        margin-left: 10px;
+    }
+
+    .my-auto {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary.my-auto.ms-2 {
+        height: auto;
+        padding: 5px 10px;
+    }
+}

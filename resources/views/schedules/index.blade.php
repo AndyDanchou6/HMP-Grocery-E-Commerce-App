@@ -15,11 +15,10 @@
                 </div>
             </form>
             @if(Auth::user()->role == 'Admin')
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Add Schedule</a>
+            <a href="#" class="btn btn-primary my-auto ms-2 ml-2s" data-bs-toggle="modal" data-bs-target="#createModal">Add Schedule</a>
             @endif
             @include('schedules.modal.create')
         </div>
-
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>

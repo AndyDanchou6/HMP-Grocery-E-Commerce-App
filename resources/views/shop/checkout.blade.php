@@ -1,7 +1,6 @@
 @extends('shop.layouts.layout')
 
 @section('content')
-
 <section class="checkout spad">
     <div class="container">
         <div class="checkout__form">
@@ -27,6 +26,10 @@
                         <div class="checkout__input">
                             <p>Fb Link<span></span></p>
                             <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
+                        </div>
+                        <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
+                            <label>For Gcash</label>
+                            <p style="margin: auto 0;">Send your payment in this number <strong style="color:red; font-size: 24px;">+{{ $phone->phone }}</strong></p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
@@ -55,17 +58,17 @@
                             <p>Choose your payment</p>
                             @if($selectedItems->first()->order_retrieval == 'delivery')
                             <div class="checkout__input__radio">
-                                <input type="radio" name="payment_type" id="payment_cod" value="COD" required>
-                                <span class="checkmark"></span>
-                                <label for="payment_cod">
-                                    Cash on delivery (COD)
-                                </label>
-                            </div>
-                            <div class="checkout__input__radio">
                                 <input type="radio" name="payment_type" id="payment_gcash" value="G-cash" required>
                                 <span class="checkmark"></span>
                                 <label for="payment_gcash">
                                     G-cash
+                                </label>
+                            </div>
+                            <div class="checkout__input__radio">
+                                <input type="radio" name="payment_type" id="payment_cod" value="COD" required>
+                                <span class="checkmark"></span>
+                                <label for="payment_cod">
+                                    Cash on delivery (COD)
                                 </label>
                             </div>
                             @else
@@ -98,16 +101,39 @@
 </section>
 
 <script>
-    const placeOrderBtn = document.querySelector('.placeOrderBtn')
+    document.addEventListener('DOMContentLoaded', function() {
+        const placeOrderBtn = document.querySelector('.placeOrderBtn');
 
-    placeOrderBtn.addEventListener('click', function(event) {
+        placeOrderBtn.addEventListener('click', function(event) {
+            var sessionStoredItems2 = sessionStorage.getItem('selectedItems');
+            if (sessionStoredItems2) {
+                sessionStorage.removeItem('selectedItems');
+            }
+        });
 
-        var sessionStoredItems2 = sessionStorage.getItem('selectedItems');
+        const gcashPopup = document.getElementById('payment_gcash');
+        const storePopup = document.getElementById('payment_instore');
+        const paymentPopup = document.getElementById('payment_cod');
+        const gcashReminder = document.getElementById('gcash_reminder');
 
-        if (sessionStoredItems2) {
-
-            sessionStorage.removeItem('selectedItems');
+        if (gcashPopup) {
+            gcashPopup.addEventListener('click', function(event) {
+                gcashReminder.classList.remove('d-none');
+            });
         }
+
+        if (storePopup) {
+            storePopup.addEventListener('click', function(event) {
+                gcashReminder.classList.add('d-none');
+            });
+        }
+
+        if (paymentPopup) {
+            paymentPopup.addEventListener('click', function(event) {
+                gcashReminder.classList.add('d-none');
+            });
+        }
+
     })
 </script>
 @endsection

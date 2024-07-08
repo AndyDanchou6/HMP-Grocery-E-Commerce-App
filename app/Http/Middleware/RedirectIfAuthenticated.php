@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
                 if ($user->role == 'Admin') {
                     return redirect()->route('admin.home');
                 } elseif ($user->role == 'Customer') {
-                    return redirect()->route('customer.home');
+                    return redirect()->route('shop.index');
                 } elseif ($user->role == 'Courier') {
                     return redirect()->route('courier.home');
                 }

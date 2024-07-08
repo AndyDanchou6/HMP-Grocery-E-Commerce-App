@@ -102,13 +102,15 @@ class ShopController extends Controller
         $orderType = $selectedItems->first();
         $orderType = $orderType->order_retrieval;
 
+        $phone = User::where('role', 'Admin')->first();
+
         $subtotal = $selectedItems->sum(function ($item) {
             return $item->inventory->price * $item->quantity;
         });
 
         $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType'));
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'phone'));
     }
 
     public function placeOrder(Request $request)

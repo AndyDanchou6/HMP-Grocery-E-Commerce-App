@@ -265,7 +265,7 @@ class SelectedItemsController extends Controller
                 });
             }
 
-            $perPage = 5;
+            $perPage = 8;
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
             $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [

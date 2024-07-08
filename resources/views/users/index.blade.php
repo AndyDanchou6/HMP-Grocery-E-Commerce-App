@@ -5,8 +5,8 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Users</h4>
-            <form action="{{ route('users.index') }}" method="GET" class="d-flex">
+            <h4 class="my-auto">Users</h4>
+            <form action="{{ route('users.index') }}" method="GET" class="d-flex my-auto">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search users..." value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">
@@ -14,7 +14,7 @@
                     </button>
                 </div>
             </form>
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Add New</a>
+            <a href="#" class="btn btn-primary my-auto ms-2" data-bs-toggle="modal" data-bs-target="#createModal">Add New</a>
         </div>
         @include('layouts.sweetalert')
         <div class="table-responsive text-nowrap">
@@ -76,10 +76,9 @@
                     @endif
                 </tbody>
             </table>
-
-            <!-- Pagination and Results Display -->
-            @include('users.pagination')
         </div>
+        <!-- Pagination and Results Display -->
+        @include('users.pagination')
     </div>
 </div>
 
