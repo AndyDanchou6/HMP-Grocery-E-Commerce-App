@@ -77,7 +77,37 @@
         });
     }
 
+    function toggleReceiptSubmission(itemId, paymentCondition) {
+        var proofForm = document.querySelector('#proof-of-delivery' + itemId);
+
+        if (proofForm) {
+            if (paymentCondition == 'paid') {
+                proofForm.style.display = 'block';
+                proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+            } else {
+                proofForm.style.display = 'none';
+                proofForm.querySelector('input[type="file"]').removeAttribute('required')
+            }
+        }
+    }
+
+    function toggleDeliveryOptions(itemId, retrieval) {
+        let courierOptions = document.querySelector('#courier' + itemId);
+        let deliveryOptions = document.querySelector('#delivery' + itemId);
+
+        if (retrieval == 'delivery') {
+            courierOptions.style.display = 'block';
+            deliveryOptions.style.display = 'block';
+        } else if (retrieval == 'pickup') {
+            courierOptions.style.display = 'none';
+            deliveryOptions.style.display = 'none';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+
+        // toggle proof of delivery
+        // toggleReceiptSubmission(false);
 
         var subTotalField = document.querySelectorAll('.item-sub-total');
         var totalContainer = {};
@@ -113,19 +143,48 @@
             });
         });
 
+        // Hide delivery options if retrieval is pickup
+
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
+        var orderRetrievalValue = '';
 
         orderRetrievals.forEach(function(orderRetrieval) {
 
+            orderRetrievalValue = orderRetrieval.value;
             hideOptions(orderRetrieval.value);
+
+            let itemId = orderRetrieval.getAttribute('data-item-id');
+            // console.log(itemId);
+
+            toggleDeliveryOptions(itemId, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
+                orderRetrievalValue = orderRetrieval.value;
                 hideOptions(orderRetrieval.value);
-                console.log(options);
+                toggleDeliveryOptions(itemId, orderRetrieval.value);
+
             });
         });
 
+
+        // toggle proof of delivery form
+        // var paymentConditions = document.querySelectorAll('.payment-condition');
+
+        // paymentConditions.forEach(function(paymentCondition) {
+
+        //     let itemId = paymentCondition.getAttribute('data-item-id');
+
+        //     if (orderRetrievalValue == 'delivery') {
+        //         toggleReceiptSubmission(itemId, paymentCondition.value);
+        //     }
+
+        //     paymentCondition.addEventListener('change', function() {
+        //         if (orderRetrievalValue == 'delivery') {
+        //             toggleReceiptSubmission(itemId, paymentCondition.value);
+        //         }
+        //     });
+        // });
     });
 </script>
 @endsection

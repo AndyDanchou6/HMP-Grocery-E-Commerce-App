@@ -118,9 +118,9 @@
             orderRetrieval.addEventListener('change', function() {
 
                 hideOptions(orderRetrieval.value);
-                console.log(options);
             });
         });
+
     });
 </script>
 @endsection
