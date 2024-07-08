@@ -485,7 +485,7 @@
             }
         });
     </script>
-
+    <script src="{{ asset('index/sweetalert.min.js') }}"></script>
 </body>
 
 </html>
