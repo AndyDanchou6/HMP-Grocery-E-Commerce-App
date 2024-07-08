@@ -72,5 +72,22 @@
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var orderRetrievals = document.querySelectorAll('.order_retrieval');
+
+        orderRetrievals.forEach(function(orderRetrieval) {
+
+            hideOptions(orderRetrieval.value);
+
+            orderRetrieval.addEventListener('change', function() {
+
+                hideOptions(orderRetrieval.value);
+            });
+        });
+
+    });
+
 </script>
 @endsection

@@ -72,7 +72,7 @@
                             <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                         </div>
 
-                        
+
                     </div>
                     @elseif($user['order_retrieval'] == 'pickup')
                     <div class="row mb-3 p-0">

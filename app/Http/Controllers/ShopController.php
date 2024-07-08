@@ -99,13 +99,10 @@ class ShopController extends Controller
             abort(404);
         }
 
-        $orderType = '';
+        $orderType = $selectedItems->first();
+        $orderType = $orderType->order_retrieval;
 
         $phone = User::where('role', 'Admin')->first();
-
-        foreach ($selectedItems as $orderTypes) {
-            $orderType = $orderTypes->order_retrieval;
-        }
 
         $subtotal = $selectedItems->sum(function ($item) {
             return $item->inventory->price * $item->quantity;
