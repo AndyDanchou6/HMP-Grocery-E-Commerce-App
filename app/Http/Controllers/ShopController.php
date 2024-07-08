@@ -101,6 +101,8 @@ class ShopController extends Controller
 
         $orderType = '';
 
+        $phone = User::where('role', 'Admin')->first();
+
         foreach ($selectedItems as $orderTypes) {
             $orderType = $orderTypes->order_retrieval;
         }
@@ -111,7 +113,7 @@ class ShopController extends Controller
 
         $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType'));
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'phone'));
     }
 
     public function placeOrder(Request $request)

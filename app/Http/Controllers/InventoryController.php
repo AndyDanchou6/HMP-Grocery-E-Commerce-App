@@ -30,7 +30,7 @@ class InventoryController extends Controller
             }
 
             $categories = Category::pluck('category_name', 'id');
-            $inventories = $inventoryQuery->paginate(4);
+            $inventories = $inventoryQuery->paginate(10);
 
             return view('inventories.index', compact('inventories', 'categories'));
         } elseif (Auth::check()) {

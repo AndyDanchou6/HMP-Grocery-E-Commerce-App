@@ -15,7 +15,7 @@
                 </div>
             </form>
             @if(Auth::user()->role == 'Admin')
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Add Product</a>
+            <a href="#" class="btn btn-primary my-auto ms-2" data-bs-toggle="modal" data-bs-target="#createModal">Add Product</a>
             @endif
         </div>
 
@@ -84,8 +84,8 @@
                     @endif
                 </tbody>
             </table>
-            @include('inventories.pagination')
         </div>
+        @include('inventories.pagination')
     </div>
 </div>
 

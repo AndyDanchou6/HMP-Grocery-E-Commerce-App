@@ -14,7 +14,7 @@
                 </div>
             </form>
             @if(Auth::user()->role == 'Admin')
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Add Category</a>
+            <a href="#" class="btn btn-primary my-auto ms-2" data-bs-toggle="modal" data-bs-target="#createModal">Add Category</a>
             @endif
             @include('categories.modal.create')
         </div>
@@ -70,11 +70,11 @@
                     @endif
                 </tbody>
             </table>
-
-            <!-- Pagination -->
-            @include('categories.pagination')
         </div>
+        <!-- Pagination -->
+        @include('categories.pagination')
     </div>
+</div>
 </div>
 @include('layouts.sweetalert')
 
