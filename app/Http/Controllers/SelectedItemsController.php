@@ -243,14 +243,15 @@ class SelectedItemsController extends Controller
                             'phone' => $item->phone,
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
+                            'delivery_date' => $item->delivery_date,
                             'order_retrieval' => $item->order_retrieval,
                             'status' => $item->status,
                             'courier_id' => $courier ? $courier->name : 'Unknown',
                             'payment_type' => $item->payment_type,
                             'payment_condition' => $item->payment_condition,
                             'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
+                            'created_at' => $item->created_at,
+                            'updated_at' => $item->updated_at,
                             'items' => []
                         ];
                     }
@@ -317,8 +318,9 @@ class SelectedItemsController extends Controller
                             'payment_type' => $item->payment_type,
                             'payment_condition' => $item->payment_condition,
                             'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
+                            'delivery_date' => $item->delivery_date,
+                            'created_at' => $item->created_at,
+                            'updated_at' => $item->updated_at,
                             'items' => []
                         ];
                     }
@@ -354,7 +356,7 @@ class SelectedItemsController extends Controller
                 $query->where('selected_items.status', 'readyForRetrieval')
                     ->where('selected_items.order_retrieval', 'delivery')
                     ->where('selected_items.courier_id', $courier->id)
-                    ->select('selected_items.*', 'inventories.*');
+                    ->select('selected_items.*', 'inventories.*', 'selected_items.quantity');
             }])->orderBy('created_at', 'desc')->get();
 
 
@@ -372,8 +374,9 @@ class SelectedItemsController extends Controller
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
                             'delivery_date' => $item->delivery_date,
-                            'created_at' => $user->created_at,
-                            'updated_at' => $user->updated_at,
+                            'quantity' => $item->quantity,
+                            'created_at' => $item->created_at,
+                            'updated_at' => $item->updated_at,
                         ];
 
                         $userByReference[$item->referenceNo]['items'][] = $item;

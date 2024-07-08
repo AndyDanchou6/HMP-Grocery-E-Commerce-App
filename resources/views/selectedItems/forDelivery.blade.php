@@ -77,16 +77,16 @@
         });
     }
 
-    function toggleReceiptSubmission(itemId, paymentCondition) {
+    function toggleReceiptSubmission(itemId, retrieval) {
         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
 
         if (proofForm) {
-            if (paymentCondition == 'paid') {
+            if (retrieval == 'delivery') {
                 proofForm.style.display = 'block';
-                proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+                // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
             } else {
                 proofForm.style.display = 'none';
-                proofForm.querySelector('input[type="file"]').removeAttribute('required')
+                // proofForm.querySelector('input[type="file"]').removeAttribute('required')
             }
         }
     }
@@ -113,19 +113,22 @@
 
         orderRetrievals.forEach(function(orderRetrieval) {
 
-            orderRetrievalValue = orderRetrieval.value;
-            hideOptions(orderRetrieval.value);
-
             let itemId = orderRetrieval.getAttribute('data-item-id');
+
+            // orderRetrievalValue = orderRetrieval.value;
+            hideOptions(orderRetrieval.value);
+            toggleReceiptSubmission(itemId, orderRetrieval.value);
+
             // console.log(itemId);
 
             toggleDeliveryOptions(itemId, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
-                orderRetrievalValue = orderRetrieval.value;
+                // orderRetrievalValue = orderRetrieval.value;
                 hideOptions(orderRetrieval.value);
                 toggleDeliveryOptions(itemId, orderRetrieval.value);
+                toggleReceiptSubmission(itemId, orderRetrieval.value);
 
             });
         });

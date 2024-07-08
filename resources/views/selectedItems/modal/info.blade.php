@@ -57,10 +57,17 @@
                     @if($user['order_retrieval'] == 'delivery')
                     <div class="row align-items-center mb-3">
 
+                        @if($user['delivery_date'])
                         <div class="col-md-6">
                             <label for="" class="col-form-label">Delivery Schedule:</label>
-                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->format('l, F j, Y g:i A') }}" readonly>
+                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}" readonly>
                         </div>
+                        @else
+                        <div class="col-md-6">
+                            <label for="" class="col-form-label">Delivery Schedule:</label>
+                            <input type="text" class="form-control" value="Not Schedule Yet" readonly>
+                        </div>
+                        @endif
 
                         <div class="col-md-6">
                             <label for="" class="col-form-label">Courier Name:</label>
