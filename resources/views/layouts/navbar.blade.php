@@ -166,7 +166,6 @@
       }
     }
 
-
     function fetchAndDisplayNotifications() {
       fetch('{{ route("selectedItems.notification") }}')
         .then(response => response.json())
@@ -213,10 +212,15 @@
     fetchAndDisplayNotifications();
 
     setInterval(fetchAndDisplayNotifications, 5000);
+
+    // Event listener for bell icon click to reset notifications
+    notificationIcon.addEventListener('click', function() {
+      sessionStorage.setItem('notificationBellState', 'inactive');
+      sessionStorage.setItem('notificationCount', 0);
+      initializeNotificationState();
+    });
   });
 </script>
-
-
 
 
 @include('profile.edit')

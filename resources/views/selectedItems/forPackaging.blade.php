@@ -25,10 +25,26 @@
                     @foreach ($forPackage as $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user['referenceNo'] }}</td>
+                        <td>
+                            <span class="badge bg-label-primary me-1">{{ $user['referenceNo'] }}</span>
+                        </td>
                         <td>{{ $user['name'] }}</td>
-                        <td>{{ $user['order_retrieval'] }}</td>
-                        <td>{{ $user['payment_type'] }}</td>
+                        <td>
+                            @if($user['order_retrieval'] == 'delivery')
+                            <span class="badge bg-label-info me-1">{{ $user['order_retrieval'] }}</span>
+                            @else
+                            <span class="badge bg-label-primary me-1">{{ $user['order_retrieval'] }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($user['payment_type'] == 'COD')
+                            <span class="badge bg-label-warning me-1">{{ $user['payment_type'] }}</span>
+                            @elseif($user['payment_type'] == 'G-cash')
+                            <span class="badge bg-label-danger me-1">{{ $user['payment_type'] }}</span>
+                            @else
+                            <span class="badge bg-label-secondary me-1">{{ $user['payment_type'] }}</span>
+                            @endif
+                        </td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
                             @include('selectedItems.modal.readyPackage')
@@ -50,41 +66,41 @@
 
 @section('customScript')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // document.addEventListener('DOMContentLoaded', function() {
 
-        var subTotalField = document.querySelectorAll('.item-sub-total');
-        var totalContainer = {};
+    //     var subTotalField = document.querySelectorAll('.item-sub-total');
+    //     var totalContainer = {};
 
-        subTotalField.forEach(function(subtotal) {
-            var itemReferenceNo = subtotal.getAttribute('data-item-id');
-            var [referenceNo, itemId] = itemReferenceNo.split('_');
+    //     subTotalField.forEach(function(subtotal) {
+    //         var itemReferenceNo = subtotal.getAttribute('data-item-id');
+    //         var [referenceNo, itemId] = itemReferenceNo.split('_');
 
-            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
-            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
-            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
+    //         var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+    //         var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+    //         var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
 
-            var tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
-                style: 'currency',
-                currency: 'PHP'
-            });
+    //         var tempSubTotal = price * quantity;
+    //         userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+    //             style: 'currency',
+    //             currency: 'PHP'
+    //         });
 
-            if (!totalContainer[referenceNo]) {
-                totalContainer[referenceNo] = tempSubTotal;
-            } else {
-                totalContainer[referenceNo] += tempSubTotal;
-            }
-        });
+    //         if (!totalContainer[referenceNo]) {
+    //             totalContainer[referenceNo] = tempSubTotal;
+    //         } else {
+    //             totalContainer[referenceNo] += tempSubTotal;
+    //         }
+    //     });
 
-        var totals = document.querySelectorAll('.purchase-total');
+    //     var totals = document.querySelectorAll('.purchase-total');
 
-        totals.forEach(function(total) {
-            var totalId = total.getAttribute('data-total-id');
-            total.value = totalContainer[totalId].toLocaleString('en-PH', {
-                style: 'currency',
-                currency: 'PHP'
-            });
-        });
-    });
+    //     totals.forEach(function(total) {
+    //         var totalId = total.getAttribute('data-total-id');
+    //         total.value = totalContainer[totalId].toLocaleString('en-PH', {
+    //             style: 'currency',
+    //             currency: 'PHP'
+    //         });
+    //     });
+    // });
 </script>
 @endsection
