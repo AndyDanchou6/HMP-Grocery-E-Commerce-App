@@ -51,29 +51,28 @@
 
 @section('customScript')
 <script>
-    function hideOptions(orderRetrieval) {
-        var options = document.querySelectorAll('.payment_type');
-
-        options.forEach(function(option) {
-            if (orderRetrieval == 'delivery') {
-                if (option.classList.contains('instore')) {
-                    option.style.display = 'none';
-                }
-                if (option.classList.contains('cod')) {
-                    option.style.display = 'block';
-                }
-            } else if (orderRetrieval == 'pickup') {
-                if (option.classList.contains('cod')) {
-                    option.style.display = 'none';
-                }
-                if (option.classList.contains('instore')) {
-                    option.style.display = 'block';
-                }
-            }
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
+        function hideOptions(orderRetrieval) {
+            var options = document.querySelectorAll('.payment_type');
+
+            options.forEach(function(option) {
+                if (orderRetrieval == 'delivery') {
+                    if (option.classList.contains('instore')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'block';
+                    }
+                } else if (orderRetrieval == 'pickup') {
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('instore')) {
+                        option.style.display = 'block';
+                    }
+                }
+            });
+        }
 
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
