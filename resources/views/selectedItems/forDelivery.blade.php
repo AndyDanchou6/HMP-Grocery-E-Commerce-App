@@ -54,56 +54,56 @@
 
 @section('customScript')
 <script>
-    function hideOptions(orderRetrieval) {
-        var options = document.querySelectorAll('.payment_type');
-
-        options.forEach(function(option) {
-            if (orderRetrieval == 'delivery') {
-                if (option.classList.contains('instore')) {
-                    option.style.display = 'none';
-                }
-                if (option.classList.contains('cod')) {
-                    option.style.display = 'block';
-                }
-            } else if (orderRetrieval == 'pickup') {
-                if (option.classList.contains('cod')) {
-                    option.style.display = 'none';
-                }
-                if (option.classList.contains('instore')) {
-                    option.style.display = 'block';
-                }
-            }
-        });
-    }
-
-    function toggleReceiptSubmission(itemId, retrieval) {
-        var proofForm = document.querySelector('#proof-of-delivery' + itemId);
-
-        if (proofForm) {
-            if (retrieval == 'delivery') {
-                proofForm.style.display = 'block';
-                // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
-            } else {
-                proofForm.style.display = 'none';
-                // proofForm.querySelector('input[type="file"]').removeAttribute('required')
-            }
-        }
-    }
-
-    function toggleDeliveryOptions(itemId, retrieval) {
-        let courierOptions = document.querySelector('#courier' + itemId);
-        let deliveryOptions = document.querySelector('#delivery' + itemId);
-
-        if (retrieval == 'delivery') {
-            courierOptions.style.display = 'block';
-            deliveryOptions.style.display = 'block';
-        } else if (retrieval == 'pickup') {
-            courierOptions.style.display = 'none';
-            deliveryOptions.style.display = 'none';
-        }
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
+        function hideOptions(orderRetrieval) {
+            var options = document.querySelectorAll('.payment_type');
+
+            options.forEach(function(option) {
+                if (orderRetrieval == 'delivery') {
+                    if (option.classList.contains('instore')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'block';
+                    }
+                } else if (orderRetrieval == 'pickup') {
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('instore')) {
+                        option.style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        function toggleReceiptSubmission(itemId, retrieval) {
+            var proofForm = document.querySelector('#proof-of-delivery' + itemId);
+
+            if (proofForm) {
+                if (retrieval == 'delivery') {
+                    proofForm.style.display = 'block';
+                    // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+                } else {
+                    proofForm.style.display = 'none';
+                    // proofForm.querySelector('input[type="file"]').removeAttribute('required')
+                }
+            }
+        }
+
+        function toggleDeliveryOptions(itemId, retrieval) {
+            let courierOptions = document.querySelector('#courier' + itemId);
+            let deliveryOptions = document.querySelector('#delivery' + itemId);
+
+            if (retrieval == 'delivery') {
+                courierOptions.style.display = 'block';
+                deliveryOptions.style.display = 'block';
+            } else if (retrieval == 'pickup') {
+                courierOptions.style.display = 'none';
+                deliveryOptions.style.display = 'none';
+            }
+        }
+
 
         // Hide delivery options if retrieval is pickup
 
