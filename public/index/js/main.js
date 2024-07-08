@@ -366,6 +366,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function maintenance() {
-    alert("UNDER MAINTENANCE, sorry :{");
+function MAINTENANCE() {
+    swal({
+        title: "Maintenance Mode",
+        text: "This feature is currently under maintenance. We apologize for the inconvenience.",
+        icon: "error",
+        button: "Ok",
+        content: {
+            element: "div",
+            attributes: {
+                style: "text-align: center; justify-content: center;",
+            },
+        },
+    }).then(() => {
+        location.reload();
+    });
+    let swalContainer = document.querySelector(".swal-modal");
+    if (swalContainer) {
+        let swalText = swalContainer.querySelector(".swal-text");
+        if (swalText) {
+            swalText.style.textAlign = "center";
+        }
+    }
 }
