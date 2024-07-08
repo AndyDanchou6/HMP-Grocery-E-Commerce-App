@@ -188,6 +188,12 @@
             });
         });
 
+        // Store initial quantities
+        const initialQuantities = {};
+        document.querySelectorAll('.item-quantity').forEach(function(input) {
+            initialQuantities[input.name] = input.value;
+        });
+
         document.getElementById('checkoutButton').addEventListener('click', function() {
             let orderRetrievalType = document.getElementById('orderRetrievalType').value;
             let cartItemsCount = document.querySelectorAll('.shoping__cart__item').length;
@@ -212,6 +218,31 @@
                 return;
             }
 
+            let quantitiesChanged = false;
+            document.querySelectorAll('.item-quantity').forEach(function(input) {
+                if (initialQuantities[input.name] != input.value) {
+                    quantitiesChanged = true;
+                }
+            });
+
+            if (quantitiesChanged) {
+                swal({
+                    title: "Are you sure?",
+                    text: "You have changed the quantities but have not updated the cart. Do you want to proceed without updating the cart?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willProceed) => {
+                    if (willProceed) {
+                        proceedToCheckout(orderRetrievalType);
+                    }
+                });
+            } else {
+                proceedToCheckout(orderRetrievalType);
+            }
+        });
+
+        function proceedToCheckout(orderRetrievalType) {
             fetch('{{ route("carts.checkout") }}', {
                 method: 'POST',
                 headers: {
@@ -234,7 +265,7 @@
                     button: "Ok",
                 });
             });
-        });
+        }
 
         var updateCartButton = document.querySelector('.updateCartBtn');
         const quantityButtons = document.querySelectorAll('.cartAdjustButton');
