@@ -483,6 +483,9 @@ class SelectedItemsController extends Controller
                 if ($request->input('payment_condition') == 'paid') {
 
                     $item->payment_condition = $request->input('payment_condition');
+                    if ($item->order_retrieval == 'delivery' && $request->input('order_retrieval') == 'pickup') {
+                        $item->status = 'pickedUp';
+                    }
                 }
 
                 if ($request->hasFile('proof_of_delivery')) {

@@ -51,7 +51,6 @@
                         className: 'swal-button--dashboard'
                     }
                 },
-                className: 'swal-wide'
             }).then((value) => {
                 if (value === "continueShopping") {
                     window.history.forward();
