@@ -21,13 +21,13 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
-                    @if(count($orderByReference) > 0)
-                    @foreach ($orderByReference as $user)
+                    @if(count($userByReference) > 0)
+                    @foreach ($userByReference as $referenceNo => $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td><span class="badge bg-label-primary me-1">{{ $user['referenceNo'] }}</span></td>
+                        <td><span class="badge bg-label-primary me-1">{{ $referenceNo }}</span></td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $user['referenceNo'] }}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.info', ['user' => $user])
                         </td>
                         <td>

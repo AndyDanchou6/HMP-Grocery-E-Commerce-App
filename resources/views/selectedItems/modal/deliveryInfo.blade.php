@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook Link</label>
+                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
@@ -38,7 +38,7 @@
 
                     <div class="col-6 col-sm-3 col-md-2 mb-3">
                         <label for="quantity" class="col-6 col-sm-3 col-md-2 col-form-label">Quantity</label>
-                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
+                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $user['quantity'] }}" readonly>
                     </div>
 
                     <div class="col-6 col-sm-3 col-md-3 mb-3">
@@ -84,7 +84,7 @@
                             @method('POST')
                             <div class="row align-items-center">
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 mb-3">
                                     <label for="" class="col-form-label">Delivery Schedule:</label>
                                     <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}" readonly>
                                 </div>
