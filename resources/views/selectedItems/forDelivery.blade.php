@@ -35,7 +35,6 @@
                         @endif
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.moreInfo')
                         </td>
                     </tr>
                     @endforeach
