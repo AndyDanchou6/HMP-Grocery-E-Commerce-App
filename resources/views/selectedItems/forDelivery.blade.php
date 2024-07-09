@@ -34,20 +34,19 @@
                             <td>Not Scheduled Yet</td>
                             @endif
                             <td>
-                                <a href="#" class="btn btn-primary my-auto ms-2" data-bs-toggle="modal" data-bs-target="#createModal">Add New</a>
-                                @include('users.modal.create')
+                                <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                                @include('selectedItems.modal.readyPackage')
                             </td>
                         </tr>
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="7" class="text-center">No Selected Items found1.</td>
+                            <td colspan="7" class="text-center">No Selected Items found.</td>
                         </tr>
                         @endif
                     </tbody>
                 </table>
+            </div>
         </div>
     </div>
-</div>
-@endsection
-
+    @endsection
