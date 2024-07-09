@@ -84,8 +84,6 @@
 
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
 
-
-
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
@@ -108,10 +106,8 @@
                             <button type="submit" class="btn btn-outline-primary me-2">Finished</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
-
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
