@@ -165,7 +165,7 @@
                                 </script> e-Mart Grocery | All Rights Reserved
                             </p>
                         </div>
-                        <div class="footer__copyright__payment"><img src="img/payment-item.png" alt=""></div>
+                        <div class="footer__copyright__payment"><img src="img/payment-item.png" alt="meow"></div>
                     </div>
                 </div>
             </div>
