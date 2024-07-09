@@ -34,8 +34,8 @@
                             <td>Not Scheduled Yet</td>
                             @endif
                             <td>
-                                <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                                @include('selectedItems.modal.readyPackage')
+                                <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forDelivery{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                                @include('selectedItems.modal.forDelivery')
                             </td>
                         </tr>
                         @endforeach
