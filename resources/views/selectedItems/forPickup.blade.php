@@ -30,8 +30,8 @@
                         <td>{{ $user['fb_link'] }}</td>
                         <td>{{ $user['phone'] }}</td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickup{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.forPickup')
+                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickUp{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            @include('selectedItems.modal.forPickUp')
                         </td>
                     </tr>
                     @endforeach
