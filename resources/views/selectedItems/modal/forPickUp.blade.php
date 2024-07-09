@@ -130,95 +130,95 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function hideOptions(orderRetrieval) {
-            var options = document.querySelectorAll('.payment_type');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     function hideOptions(orderRetrieval) {
+    //         var options = document.querySelectorAll('.payment_type');
 
-            options.forEach(function(option) {
-                if (orderRetrieval == 'delivery') {
-                    if (option.classList.contains('instore')) {
-                        option.style.display = 'none';
-                    }
-                    if (option.classList.contains('cod')) {
-                        option.style.display = 'block';
-                    }
-                } else if (orderRetrieval == 'pickup') {
-                    if (option.classList.contains('cod')) {
-                        option.style.display = 'none';
-                    }
-                    if (option.classList.contains('instore')) {
-                        option.style.display = 'block';
-                    }
-                }
-            });
-        }
+    //         options.forEach(function(option) {
+    //             if (orderRetrieval == 'delivery') {
+    //                 if (option.classList.contains('instore')) {
+    //                     option.style.display = 'none';
+    //                 }
+    //                 if (option.classList.contains('cod')) {
+    //                     option.style.display = 'block';
+    //                 }
+    //             } else if (orderRetrieval == 'pickup') {
+    //                 if (option.classList.contains('cod')) {
+    //                     option.style.display = 'none';
+    //                 }
+    //                 if (option.classList.contains('instore')) {
+    //                     option.style.display = 'block';
+    //                 }
+    //             }
+    //         });
+    //     }
 
-        var subTotalField = document.querySelectorAll(".item-sub-total");
-        var totalContainer = {};
+    //     var subTotalField = document.querySelectorAll(".item-sub-total");
+    //     var totalContainer = {};
 
-        subTotalField.forEach(function(subtotal) {
-            var itemReferenceNo = subtotal.getAttribute("data-item-id");
-            var [referenceNo, itemId] = itemReferenceNo.split("_");
+    //     subTotalField.forEach(function(subtotal) {
+    //         var itemReferenceNo = subtotal.getAttribute("data-item-id");
+    //         var [referenceNo, itemId] = itemReferenceNo.split("_");
 
-            var price = parseFloat(
-                document
-                .querySelector(
-                    '.item-price[data-item-id="' + itemReferenceNo + '"]'
-                )
-                .value.replace(/[^0-9.-]+/g, "")
-            );
-            var quantity = parseInt(
-                document.querySelector(
-                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-                ).value
-            );
+    //         var price = parseFloat(
+    //             document
+    //             .querySelector(
+    //                 '.item-price[data-item-id="' + itemReferenceNo + '"]'
+    //             )
+    //             .value.replace(/[^0-9.-]+/g, "")
+    //         );
+    //         var quantity = parseInt(
+    //             document.querySelector(
+    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+    //             ).value
+    //         );
 
-            if (quantity < 0) {
-                alert("Quantity cannot be negative.");
-                quantity = 0;
-                document.querySelector(
-                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-                ).value = 0;
-            }
+    //         if (quantity < 0) {
+    //             alert("Quantity cannot be negative.");
+    //             quantity = 0;
+    //             document.querySelector(
+    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+    //             ).value = 0;
+    //         }
 
-            var userSubTotalField = document.querySelector(
-                '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
-            );
+    //         var userSubTotalField = document.querySelector(
+    //             '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
+    //         );
 
-            var tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-            });
+    //         var tempSubTotal = price * quantity;
+    //         userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
+    //             style: "currency",
+    //             currency: "PHP",
+    //         });
 
-            if (!totalContainer[referenceNo]) {
-                totalContainer[referenceNo] = tempSubTotal;
-            } else {
-                totalContainer[referenceNo] += tempSubTotal;
-            }
-        });
+    //         if (!totalContainer[referenceNo]) {
+    //             totalContainer[referenceNo] = tempSubTotal;
+    //         } else {
+    //             totalContainer[referenceNo] += tempSubTotal;
+    //         }
+    //     });
 
-        var totals = document.querySelectorAll(".purchase-total");
+    //     var totals = document.querySelectorAll(".purchase-total");
 
-        totals.forEach(function(total) {
-            var totalId = total.getAttribute("data-total-id");
-            total.value = totalContainer[totalId].toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-            });
-        });
+    //     totals.forEach(function(total) {
+    //         var totalId = total.getAttribute("data-total-id");
+    //         total.value = totalContainer[totalId].toLocaleString("en-PH", {
+    //             style: "currency",
+    //             currency: "PHP",
+    //         });
+    //     });
 
-        var orderRetrievals = document.querySelectorAll('.order_retrieval');
+    //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
-        orderRetrievals.forEach(function(orderRetrieval) {
+    //     orderRetrievals.forEach(function(orderRetrieval) {
 
-            hideOptions(orderRetrieval.value);
+    //         hideOptions(orderRetrieval.value);
 
-            orderRetrieval.addEventListener('change', function() {
+    //         orderRetrieval.addEventListener('change', function() {
 
-                hideOptions(orderRetrieval.value);
-            });
-        });
+    //             hideOptions(orderRetrieval.value);
+    //         });
+    //     });
 
-    });
+    // });
 </script>
