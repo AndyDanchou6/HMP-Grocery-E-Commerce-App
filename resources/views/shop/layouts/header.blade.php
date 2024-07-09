@@ -18,7 +18,7 @@
                         <a href="#"><i class="fa fa-pinterest-p"></i></a>
                     </div>
                     @if(Auth::user()->role == 'Admin')
-                    <div class="header__top__right__auth">
+                    <div class="header__top__right__auth" style="margin-right: 10px;">
                         <a href="{{ route('admin.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
                     @elseif(Auth::user()->role == 'Customer')
@@ -26,6 +26,10 @@
                         <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
                     @endif
+                    <div class="header__top__right__auth">
+                        <a data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fa fa-sign-out"></i>Logout</a>
+                        @include('shop.layouts.logoutModal')
+                    </div>
                 </div>
             </div>
         </div>

@@ -162,6 +162,12 @@
       }
     }
 
+    function removeNotificationByReference(referenceNo) {
+      let previousNotificationMessages = JSON.parse(sessionStorage.getItem('previousNotificationMessages')) || [];
+      previousNotificationMessages = previousNotificationMessages.filter(msg => !msg.includes(referenceNo));
+      sessionStorage.setItem('previousNotificationMessages', JSON.stringify(previousNotificationMessages));
+    }
+
     function fetchAndDisplayNotifications() {
       fetch('{{ route("selectedItems.notification") }}')
         .then(response => response.json())

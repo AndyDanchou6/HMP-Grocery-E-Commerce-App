@@ -25,6 +25,22 @@
         <div data-i18n="Analytics">Dashboard</div>
       </a>
     </li>
+    @elseif(Auth::user()->role == 'Courier')
+    <li id="dashboard" class="menu-item">
+      <a href="{{ route('courier.home') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+        <div data-i18n="Analytics">Dashboard</div>
+      </a>
+    </li>
+    @else
+    <li id="dashboard" class="menu-item">
+      <a href="{{ route('customer.home') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+        <div data-i18n="Analytics">Dashboard</div>
+      </a>
+    </li>
+    @endif
+    @if(Auth::user()->role == 'Admin')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Admin Section</span></li>
     <li id="tables" class="menu-item">
       <a href="{{ route('users.index') }}" class="menu-link">
