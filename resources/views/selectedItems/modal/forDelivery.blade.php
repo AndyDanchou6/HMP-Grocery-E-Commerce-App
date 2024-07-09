@@ -75,7 +75,7 @@
                 </div>
 
                 <div style="position: relative; width: 90%; margin: auto;">
-                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" style="position: relative; width: 100%">
+                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" enctype="multipart/form-data" style="position: relative; width: 100%">
                         @csrf
                         @method('POST')
 
@@ -130,6 +130,13 @@
                                     </select>
                                 </div>
                             </div>
+
+                            @if($user['delivery_date'] && $user['courier_id'])
+                            <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
+                                <label for="" class="col-form-label">Proof of Delivery:</label>
+                                <input type="file" class="form-control" name="proofOfDelivery">
+                            </div>
+                            @endif
                         </div>
 
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
@@ -137,10 +144,10 @@
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <div>
                                     <select class="form-select payment_type" name="payment_type" data-item-id="{{ $item->id }}">
-                                        <option value="" selected disabled>Choose Order Retrieval</option>
+                                        <option value="" selected disabled>Choose Payment</option>
                                         <option value="G-cash" {{ $user['payment_type'] == 'G-cash'  ? 'selected' : ''}}>G-Cash</option>
                                         <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD'  ? 'selected' : ''}}>Cash On Delivery</option>
-                                        <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store'  ? 'selected' : ''}}>In-store</option>
+                                        <option class="payment_type in-store" value="In-store" {{ $user['payment_type'] == 'In-store'  ? 'selected' : ''}}>In-store</option>
                                     </select>
                                 </div>
                             </div>
@@ -151,7 +158,7 @@
                                     <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
                                     <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
                                 </select>
-                               
+
                             </div>
                         </div>
 
@@ -183,36 +190,38 @@
 
             options.forEach(function(option) {
                 if (orderRetrieval == 'delivery') {
-                    if (option.classList.contains('instore')) {
-                        option.style.display = 'none';
-                    }
                     if (option.classList.contains('cod')) {
                         option.style.display = 'block';
                     }
-                } else if (orderRetrieval == 'pickup') {
+                    if (option.classList.contains('in-store')) {
+                        option.style.display = 'none';
+                    }
+                }
+
+                if (orderRetrieval == 'pickup') {
                     if (option.classList.contains('cod')) {
                         option.style.display = 'none';
                     }
-                    if (option.classList.contains('instore')) {
+                    if (option.classList.contains('in-store')) {
                         option.style.display = 'block';
                     }
                 }
             });
         }
 
-        //     function toggleReceiptSubmission(itemId, retrieval) {
-        //         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
+        function toggleReceiptSubmission(itemId, retrieval) {
+            var proofForm = document.querySelector('#proof-of-delivery' + itemId);
 
-        //         if (proofForm) {
-        //             if (retrieval == 'delivery') {
-        //                 proofForm.style.display = 'block';
-        //                 // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
-        //             } else {
-        //                 proofForm.style.display = 'none';
-        //                 // proofForm.querySelector('input[type="file"]').removeAttribute('required')
-        //             }
-        //         }
-        //     }
+            if (proofForm) {
+                if (retrieval == 'delivery') {
+                    proofForm.style.display = 'block';
+                    // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+                } else {
+                    proofForm.style.display = 'none';
+                    // proofForm.querySelector('input[type="file"]').removeAttribute('required')
+                }
+            }
+        }
 
         function toggleDeliveryOptions(itemId, retrieval) {
             let courierOptions = document.querySelector('#courier' + itemId);
@@ -227,9 +236,7 @@
             }
         }
 
-
         //     // Hide delivery options if retrieval is pickup
-
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
         var orderRetrievalValue = '';
 
@@ -237,20 +244,20 @@
 
             let itemId = orderRetrieval.getAttribute('data-item-id');
 
-            // orderRetrievalValue = orderRetrieval.value;
+            console.log(orderRetrieval.value);
+
             hideOptions(orderRetrieval.value);
-            // toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-            // console.log(itemId);
-
+            toggleReceiptSubmission(itemId, orderRetrieval.value);
             toggleDeliveryOptions(itemId, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
-                // orderRetrievalValue = orderRetrieval.value;
                 hideOptions(orderRetrieval.value);
                 toggleDeliveryOptions(itemId, orderRetrieval.value);
-                // toggleReceiptSubmission(itemId, orderRetrieval.value);
+                toggleReceiptSubmission(itemId, orderRetrieval.value);
+
+                console.log(orderRetrieval.value);
+
 
             });
         });
