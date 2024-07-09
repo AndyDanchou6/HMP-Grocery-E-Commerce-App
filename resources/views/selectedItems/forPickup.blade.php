@@ -48,6 +48,7 @@
 </div>
 
 @if(count($forPickup) > 0)
+@foreach ($forPickup as $user)
 <div class="modal fade" id="messages{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -176,6 +177,7 @@
         </div>
     </div>
 </div>
+@endforeach
 @endif
 
 @endsection
