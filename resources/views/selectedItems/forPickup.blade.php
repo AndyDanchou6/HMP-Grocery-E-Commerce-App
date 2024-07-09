@@ -4,7 +4,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Selected Items</h4>
+            <h4 style="margin: auto 0;">For Pickup Orders</h4>
         </div>
 
         <div class="table-responsive text-nowrap">
