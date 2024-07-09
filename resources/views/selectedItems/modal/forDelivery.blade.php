@@ -85,6 +85,37 @@
 
                             <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
 
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="col-form-label">Order Retrieval:</label>
+                                    <select class="form-select order_retrieval" name="order_retrieval" id="order_retrieval" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Order Retrieval</option>
+                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup' ? 'selected' : ''}}>Pick Up</option>
+                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery' ? 'selected' : ''}}>Delivery</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="payment_type" class="col-form-label">Payment Type</label>
+                                    <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
+                                    <select class="form-select" name="payment_type" id="payment_type">
+                                        <option value="" disabled>Choose Payment Type</option>
+                                        <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
+                                        <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
+                                        <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="col-form-label">Payment Condition:</label>
+                                    <select class="form-select payment-condition" name="payment_condition" id="payment-condition{{ $item->id }}" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Payment Type</option>
+                                        <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
+                                        <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
+                                    </select>
+                                </div>
+
+
+
                             </div>
 
                             <div class="row row-cols-md-2 mb-3 item-row">
