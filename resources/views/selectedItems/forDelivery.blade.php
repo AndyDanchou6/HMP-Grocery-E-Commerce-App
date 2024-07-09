@@ -38,6 +38,7 @@
                             @include('selectedItems.modal.forDelivery')
                         </td>
                     </tr>
+                    @include('selectedItems.modal.moreinfo')
                     @endforeach
                     @else
                     <tr>
@@ -49,11 +50,11 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('customScript')
 <script>
+
     function hideOptions(orderRetrieval) {
         var options = document.querySelectorAll('.payment_type');
 
