@@ -30,7 +30,7 @@
                         <td>{{ $user['fb_link'] }}</td>
                         <td>{{ $user['phone'] }}</td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickUp{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickUp{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}" data-item-id="{{ $user['id'] }}"></a>
                             @include('selectedItems.modal.forPickUp')
                         </td>
                     </tr>
@@ -45,5 +45,4 @@
         </div>
     </div>
 </div>
-
 @endsection

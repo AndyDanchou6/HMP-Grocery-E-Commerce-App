@@ -78,28 +78,40 @@
 
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
 
-
+                            <div class="mb-3">
+                                <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
+                                <div>
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Order Retrieval</option>
+                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
+                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
-                                <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
+                                <div>
+                                    <select class="form-select payment_type" name="payment_type" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Payment</option>
+                                        <option value="G-cash" {{ $user['payment_type'] == 'G-cash'  ? 'selected' : ''}}>G-Cash</option>
+                                        <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD'  ? 'selected' : ''}}>Cash On Delivery</option>
+                                        <option class="payment_type in-store" value="In-store" {{ $user['payment_type'] == 'In-store'  ? 'selected' : ''}}>In-store</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Status</label>
-                                @if($item->payment_condition == NULL)
-                                <select name="payment_condition" id="payment_condition" class="form-select">
+                                <select name="payment_condition" id="payment_condition" class="form-select payment_condition" data-item-id="{{ $item->id }}">
                                     <option value="" selected disabled>Choose Payment Type</option>
                                     <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
                                     <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
                                 </select>
-                                @else
-                                <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>
-                                @endif
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-outline-primary me-2">Finished</button>
+                            <button type="submit" class="btn btn-outline-success me-2">Update</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -112,40 +124,43 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        //     function hideOptions(orderRetrieval) {
-        //         var options = document.querySelectorAll('.payment_type');
+        function hideOptions(orderRetrieval) {
+            var options = document.querySelectorAll('.payment_type');
 
-        //         options.forEach(function(option) {
-        //             if (orderRetrieval == 'delivery') {
-        //                 if (option.classList.contains('instore')) {
-        //                     option.style.display = 'none';
-        //                 }
-        //                 if (option.classList.contains('cod')) {
-        //                     option.style.display = 'block';
-        //                 }
-        //             } else if (orderRetrieval == 'pickup') {
-        //                 if (option.classList.contains('cod')) {
-        //                     option.style.display = 'none';
-        //                 }
-        //                 if (option.classList.contains('instore')) {
-        //                     option.style.display = 'block';
-        //                 }
-        //             }
-        //         });
-        //     }
+            options.forEach(function(option) {
+                if (orderRetrieval == 'delivery') {
+                    if (option.classList.contains('in-store')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'block';
+                    }
+                } else if (orderRetrieval == 'pickup') {
+                    if (option.classList.contains('cod')) {
+                        option.style.display = 'none';
+                    }
+                    if (option.classList.contains('in-store')) {
+                        option.style.display = 'block';
+                    }
+                }
+            });
+        }
 
 
-        //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
+        var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
-        //     orderRetrievals.forEach(function(orderRetrieval) {
+        orderRetrievals.forEach(function(orderRetrieval) {
 
-        //         hideOptions(orderRetrieval.value);
+            hideOptions(orderRetrieval.value);
 
-        //         orderRetrieval.addEventListener('change', function() {
+            orderRetrieval.addEventListener('change', function() {
 
-        //             hideOptions(orderRetrieval.value);
-        //         });
-        //     });
+                hideOptions(orderRetrieval.value);
+
+            });
+        });
+
+       
 
         var subTotalField = document.querySelectorAll(".item-sub-total");
         var totalContainer = {};

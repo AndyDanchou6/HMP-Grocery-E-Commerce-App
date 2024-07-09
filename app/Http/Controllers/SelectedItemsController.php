@@ -480,28 +480,26 @@ class SelectedItemsController extends Controller
                 $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
 
-                if ($request->input('payment_condition') == 'paid') {
-
-                    $item->payment_condition = $request->input('payment_condition');
-                    if ($item->order_retrieval == 'delivery' && $request->input('order_retrieval') == 'pickup') {
+                if ($item->order_retrieval == 'pickup' && $request->input('order_retrieval') == 'pickup') {
+                   
+                    $pickedUp = $item->payment_type == $request->input('payment_type') && $item->payment_condition == $request->input('payment_condition');
+                    
+                    if ($pickedUp) {
                         $item->status = 'pickedUp';
                     }
                 }
 
-                if ($request->hasFile('proof_of_delivery')) {
-                    $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
+                if ($request->input('order_retrieval') == 'pickup')
+
+                    if ($request->input('payment_condition') == 'paid') {
+
+                        $item->payment_condition = $request->input('payment_condition');
+                    }
+
+                if ($request->hasFile('proofOfDelivery') && $request->input('order_retrieval') == 'delivery') {
+                    $avatarPath = $request->file('proofOfDelivery')->store('delivery', 'public');
                     $item->proof_of_delivery = $avatarPath;
                     $item->status = 'delivered';
-
-                    if ($item->order_retrieval == 'pickup') {
-
-                        $item->status = 'pickedUp';
-                    }
-
-                    if ($item->order_retrieval == 'delivery' && $item->proof_of_delivery != null) {
-
-                        $item->status = 'delivered';
-                    }
                 }
 
                 if ($request->has('payment_type')) {
@@ -509,70 +507,68 @@ class SelectedItemsController extends Controller
                     $item->payment_type = $request->input('payment_type');
                 }
 
-                if ($request->has('order_retrieval')) {
-
-                    if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
-                        $item->courier_id = Null;
-                        $item->delivery_date = Null;
-                    }
-
-                    if ($request->has('delivery_schedule') && $request->input('order_retrieval') != 'pickup') {
-
-                        $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
-
-                        if (!$scheduleOfDelivery) {
-                            return redirect()->back()->with('error', 'Schedule does not exists');
-                        }
-                        $numericValues = [
-                            'Sunday' => 1,
-                            'Monday' => 2,
-                            'Tuesday' => 3,
-                            'Wednesday' => 4,
-                            'Thursday' => 5,
-                            'Friday' => 6,
-                            'Saturday' => 7
-                        ];
-
-                        $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
-                        $today = Carbon::now()->format('l');
-                        $currentDay = $numericValues[$today];
-
-                        $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) < strtotime($scheduleOfDelivery->start_time);
-                        $forNextWeek = $selectedSchedule < $currentDay;
-
-                        $offset = '';
-
-                        if ($forNextWeek || $didNotMakeIt) {
-                            $less = count($numericValues) - $currentDay;
-                            $offset = $selectedSchedule + $less;
-                        } else {
-                            $offset = $selectedSchedule - $currentDay;
-                        }
-
-                        $deliveryDate = Carbon::now()->addDays($offset);
-
-                        $startTime = $scheduleOfDelivery->start_time;
-                        list($startHour, $startMinute) = explode(':', $startTime);
-
-                        $deliveryDate->setHour($startHour)
-                            ->setMinute($startMinute)
-                            ->setSecond(0);
-                        $item->delivery_date = $deliveryDate;
-                    }
-
-                    if ($request->has('courier_id') && $request->input('order_retrieval') != 'pickup') {
-
-                        $item->courier_id = $request->input('courier_id');
-                    }
-
-                    $item->order_retrieval = $request->input('order_retrieval');
+                if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
+                    $item->courier_id = Null;
+                    $item->delivery_date = Null;
                 }
+
+                if ($request->has('delivery_schedule') && $request->input('order_retrieval') == 'delivery') {
+
+                    $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
+
+                    if (!$scheduleOfDelivery) {
+                        return redirect()->back()->with('error', 'Schedule does not exists');
+                    }
+                    $numericValues = [
+                        'Sunday' => 1,
+                        'Monday' => 2,
+                        'Tuesday' => 3,
+                        'Wednesday' => 4,
+                        'Thursday' => 5,
+                        'Friday' => 6,
+                        'Saturday' => 7
+                    ];
+
+                    $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
+                    $today = Carbon::now()->format('l');
+                    $currentDay = $numericValues[$today];
+
+                    $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) > strtotime($scheduleOfDelivery->start_time);
+                    $forNextWeek = $selectedSchedule < $currentDay;
+
+                    $offset = '';
+
+                    if ($forNextWeek || $didNotMakeIt) {
+                        $less = count($numericValues) - $currentDay;
+                        $offset = $selectedSchedule + $less;
+                    } else {
+                        $offset = $selectedSchedule - $currentDay;
+                    }
+
+                    $deliveryDate = Carbon::now()->addDays($offset);
+
+                    $startTime = $scheduleOfDelivery->start_time;
+                    list($startHour, $startMinute) = explode(':', $startTime);
+
+                    $deliveryDate->setHour($startHour)
+                        ->setMinute($startMinute)
+                        ->setSecond(0);
+                    $item->delivery_date = $deliveryDate;
+                }
+
+                if ($request->has('courier_id') && $request->input('order_retrieval') == 'delivery') {
+
+                    $item->courier_id = $request->input('courier_id');
+                }
+
+                $item->order_retrieval = $request->input('order_retrieval');
             }
 
             $item->save();
         }
 
         return redirect()->back()->with('success', 'Order updated.');
+        // dd($request);
     }
 
     public function updatePaymentCondition(Request $request, string $referenceNo)
