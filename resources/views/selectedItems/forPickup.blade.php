@@ -35,6 +35,7 @@
 
                         </td>
                     </tr>
+                    @include('selectedItems.modal.forPickUp')
                     @endforeach
                     @else
                     <tr>
@@ -46,9 +47,6 @@
         </div>
     </div>
 </div>
-@foreach ($forPickup as $user)
-@include('selectedItems.modal.forPickUp')
-@endforeach
 
 
 @endsection
