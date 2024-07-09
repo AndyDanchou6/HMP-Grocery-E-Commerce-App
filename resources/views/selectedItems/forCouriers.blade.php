@@ -1,7 +1,6 @@
 @extends('app')
 
 @section('content')
-@include('layouts.sweetalert')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
@@ -32,7 +31,6 @@
                         <td>{{ $user['address'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#deliverInfo{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.deliveryInfo')
                         </td>
                     </tr>
                     @endforeach
