@@ -32,6 +32,8 @@
                         <td>{{ $user['address'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            @include('selectedItems.modal.forPickUp')
+
                         </td>
                     </tr>
                     @include('selectedItems.modal.moreInfo')
@@ -73,18 +75,6 @@
                 }
             });
         }
-
-        var orderRetrievals = document.querySelectorAll('.order_retrieval');
-
-        orderRetrievals.forEach(function(orderRetrieval) {
-
-            hideOptions(orderRetrieval.value);
-
-            orderRetrieval.addEventListener('change', function() {
-
-                hideOptions(orderRetrieval.value);
-            });
-        });
 
         var subTotalField = document.querySelectorAll(".item-sub-total");
         var totalContainer = {};
@@ -140,6 +130,20 @@
                 currency: "PHP",
             });
         });
+
+        var orderRetrievals = document.querySelectorAll('.order_retrieval');
+
+        orderRetrievals.forEach(function(orderRetrieval) {
+
+            hideOptions(orderRetrieval.value);
+
+            orderRetrieval.addEventListener('change', function() {
+
+                hideOptions(orderRetrieval.value);
+            });
+        });
+
     });
+
 </script>
 @endsection

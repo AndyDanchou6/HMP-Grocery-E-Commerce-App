@@ -35,6 +35,7 @@
                         @endif
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            @include('selectedItems.modal.forDelivery')
                         </td>
                     </tr>
                     @include('selectedItems.modal.moreinfo')
@@ -53,56 +54,57 @@
 
 @section('customScript')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function hideOptions(orderRetrieval) {
-            var options = document.querySelectorAll('.payment_type');
 
-            options.forEach(function(option) {
-                if (orderRetrieval == 'delivery') {
-                    if (option.classList.contains('instore')) {
-                        option.style.display = 'none';
-                    }
-                    if (option.classList.contains('cod')) {
-                        option.style.display = 'block';
-                    }
-                } else if (orderRetrieval == 'pickup') {
-                    if (option.classList.contains('cod')) {
-                        option.style.display = 'none';
-                    }
-                    if (option.classList.contains('instore')) {
-                        option.style.display = 'block';
-                    }
+    function hideOptions(orderRetrieval) {
+        var options = document.querySelectorAll('.payment_type');
+
+        options.forEach(function(option) {
+            if (orderRetrieval == 'delivery') {
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'none';
                 }
-            });
-        }
-
-        function toggleReceiptSubmission(itemId, retrieval) {
-            var proofForm = document.querySelector('#proof-of-delivery' + itemId);
-
-            if (proofForm) {
-                if (retrieval == 'delivery') {
-                    proofForm.style.display = 'block';
-                    // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
-                } else {
-                    proofForm.style.display = 'none';
-                    // proofForm.querySelector('input[type="file"]').removeAttribute('required')
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'block';
+                }
+            } else if (orderRetrieval == 'pickup') {
+                if (option.classList.contains('cod')) {
+                    option.style.display = 'none';
+                }
+                if (option.classList.contains('instore')) {
+                    option.style.display = 'block';
                 }
             }
-        }
+        });
+    }
 
-        function toggleDeliveryOptions(itemId, retrieval) {
-            let courierOptions = document.querySelector('#courier' + itemId);
-            let deliveryOptions = document.querySelector('#delivery' + itemId);
+    function toggleReceiptSubmission(itemId, retrieval) {
+        var proofForm = document.querySelector('#proof-of-delivery' + itemId);
 
+        if (proofForm) {
             if (retrieval == 'delivery') {
-                courierOptions.style.display = 'block';
-                deliveryOptions.style.display = 'block';
-            } else if (retrieval == 'pickup') {
-                courierOptions.style.display = 'none';
-                deliveryOptions.style.display = 'none';
+                proofForm.style.display = 'block';
+                // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+            } else {
+                proofForm.style.display = 'none';
+                // proofForm.querySelector('input[type="file"]').removeAttribute('required')
             }
         }
+    }
 
+    function toggleDeliveryOptions(itemId, retrieval) {
+        let courierOptions = document.querySelector('#courier' + itemId);
+        let deliveryOptions = document.querySelector('#delivery' + itemId);
+
+        if (retrieval == 'delivery') {
+            courierOptions.style.display = 'block';
+            deliveryOptions.style.display = 'block';
+        } else if (retrieval == 'pickup') {
+            courierOptions.style.display = 'none';
+            deliveryOptions.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
 
         // Hide delivery options if retrieval is pickup
 
