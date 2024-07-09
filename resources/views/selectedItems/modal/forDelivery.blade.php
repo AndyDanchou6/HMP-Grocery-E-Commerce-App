@@ -7,7 +7,6 @@
             </div>
             <div class="modal-body">
 
-                @if($user['order_retrieval'] == 'delivery')
                 <div class="row mb-3">
                     <label for="phone" class="col-sm-2 col-form-label">Phone</label>
                     <div class="col-sm-10">
@@ -29,7 +28,6 @@
                 <div>
                     <h5>Purchased Item</h5>
                 </div>
-                @endif
 
                 @foreach($user['items'] as $item)
                 <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
@@ -60,6 +58,7 @@
 
                 </div>
                 @endforeach
+
                 <div class="modal-footer">
                     <div class="row align-items-center">
                         <div class="col-md-6 mb-3">
@@ -87,11 +86,6 @@
                             @csrf
                             @method('POST')
                             <div class="column align-items-center">
-
-
-                                <!-- Display Only  -->
-
-                                <!-- End -->
 
                                 <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
 
@@ -125,18 +119,15 @@
                                     </div>
 
                                     <!-- For Delivery -->
-                                    @if($user['order_retrieval'] == 'delivery')
                                     @if($user['delivery_date'] && $user['courier_id'])
                                     <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
                                         <label for="" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery">
                                     </div>
                                     @endif
-                                    @endif
 
                                 </div>
 
-                                @if($user['order_retrieval'] == 'delivery')
                                 <div class="row row-cols-md-2 mb-3 item-row">
                                     <div class="mb-3" id="courier{{ $item->id }}" data-item-id="{{ $item->id }}">
                                         <label for="" class="col-form-label">Courier</label>
@@ -177,7 +168,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                @endif
 
                             </div>
 
