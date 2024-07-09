@@ -100,7 +100,7 @@
                                         <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
                                         <select class="form-select" name="payment_type" id="payment_type">
                                             <option value="" disabled>Choose Payment Type</option>
-                                            <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
+                                            <option class="payment_type" id="gcash" value="G-cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
                                             <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
                                             <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
                                         </select>
