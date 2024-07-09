@@ -19,12 +19,6 @@
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <label for="address" class="col-sm-2 col-form-label">Address</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows="3" readonly>{{ $user['address'] }}</textarea>
-                    </div>
-                </div>
                 <div>
                     <h5>Purchased Items</h5>
                 </div>
