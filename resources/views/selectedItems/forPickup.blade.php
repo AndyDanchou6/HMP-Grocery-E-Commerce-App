@@ -32,11 +32,9 @@
                         <td>{{ $user['address'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.forPickUp')
 
                         </td>
                     </tr>
-                    @include('selectedItems.modal.moreInfo')
                     @endforeach
                     @else
                     <tr>
@@ -48,6 +46,10 @@
         </div>
     </div>
 </div>
+@foreach ($forPickup as $user)
+@include('selectedItems.modal.forPickUp')
+@endforeach
+
 
 @endsection
 
@@ -144,6 +146,5 @@
         });
 
     });
-
 </script>
 @endsection
