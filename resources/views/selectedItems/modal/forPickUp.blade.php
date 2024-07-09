@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook Link</label>
+                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
