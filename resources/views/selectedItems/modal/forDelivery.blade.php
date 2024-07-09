@@ -77,236 +77,196 @@
                     </div>
                 </div>
 
-                <div style="position: relative; width: 100%;">
-                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3" enctype="multipart/form-data">
+                <div style="position: relative; width: 90%; margin: auto;">
+                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" style="position: relative; width: 100%">
                         @csrf
                         @method('POST')
-                        <div class="column align-items-center">
 
-                            <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="" class="col-form-label">Order Retrieval:</label>
-                                    <select class="form-select order_retrieval" name="order_retrieval" id="order_retrieval" data-item-id="{{ $item->id }}">
-                                        <option value="" selected disabled>Choose Order Retrieval</option>
-                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup' ? 'selected' : ''}}>Pick Up</option>
-                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery' ? 'selected' : ''}}>Delivery</option>
-                                    </select>
-                                </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="payment_type" class="col-form-label">Payment Type</label>
-                                    <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
-                                    <select class="form-select" name="payment_type" id="payment_type">
-                                        <option value="" disabled>Choose Payment Type</option>
-                                        <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
-                                        <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
-                                        <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
-                                    </select>
-                                </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="" class="col-form-label">Payment Condition:</label>
-                                    <select class="form-select payment-condition" name="payment_condition" id="payment-condition{{ $item->id }}" data-item-id="{{ $item->id }}">
-                                        <option value="" selected disabled>Choose Payment Type</option>
-                                        <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
-                                        <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
-                                    </select>
-                                </div>
-
-                                <!-- For Delivery -->
-                                @if($user['delivery_date'] && $user['courier_id'])
-                                <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
-                                    <label for="" class="col-form-label">Proof of Delivery:</label>
-                                    <input type="file" class="form-control" name="proof_of_delivery">
-                                </div>
+                            <div class="mb-3">
+                                <label for="" class="col-form-label">Payment Type</label>
+                                <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="" class="col-form-label">Payment Status</label>
+                                @if($item->payment_condition == NULL)
+                                <select name="payment_condition" id="payment_condition" class="form-select">
+                                    <option value="" selected disabled>Choose Payment Type</option>
+                                    <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
+                                    <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
+                                </select>
+                                @else
+                                <input type="text" class="form-control" value="{{ $item->payment_condition }}" id="payment_condition" name="payment_condition" readonly>
                                 @endif
-
                             </div>
-
-                            <div class="row row-cols-md-2 mb-3 item-row">
-                                <div class="mb-3" id="courier{{ $item->id }}" data-item-id="{{ $item->id }}">
-                                    <label for="" class="col-form-label">Courier</label>
-                                    <div>
-                                        <select class="form-select" name="courier_id">
-                                            <option value="" selected disabled>Choose Courier</option>
-                                            @foreach($couriers as $courier)
-                                            <option value="{{ $courier->id }}" {{ $user['courier_id'] == $courier->id  ? 'selected' : ''}}>{{ $courier->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
                         </div>
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-outline-primary me-2">Finished</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
+
                     </form>
                 </div>
 
-
             </div>
-
         </div>
     </div>
 </div>
-</div>
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     function hideOptions(orderRetrieval) {
-    //         var options = document.querySelectorAll('.payment_type');
+    document.addEventListener('DOMContentLoaded', function() {
+        //     function hideOptions(orderRetrieval) {
+        //         var options = document.querySelectorAll('.payment_type');
 
-    //         options.forEach(function(option) {
-    //             if (orderRetrieval == 'delivery') {
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             } else if (orderRetrieval == 'pickup') {
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             }
-    //         });
-    //     }
+        //         options.forEach(function(option) {
+        //             if (orderRetrieval == 'delivery') {
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             } else if (orderRetrieval == 'pickup') {
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             }
+        //         });
+        //     }
 
-    //     function toggleReceiptSubmission(itemId, retrieval) {
-    //         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
+        //     function toggleReceiptSubmission(itemId, retrieval) {
+        //         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
 
-    //         if (proofForm) {
-    //             if (retrieval == 'delivery') {
-    //                 proofForm.style.display = 'block';
-    //                 // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
-    //             } else {
-    //                 proofForm.style.display = 'none';
-    //                 // proofForm.querySelector('input[type="file"]').removeAttribute('required')
-    //             }
-    //         }
-    //     }
+        //         if (proofForm) {
+        //             if (retrieval == 'delivery') {
+        //                 proofForm.style.display = 'block';
+        //                 // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+        //             } else {
+        //                 proofForm.style.display = 'none';
+        //                 // proofForm.querySelector('input[type="file"]').removeAttribute('required')
+        //             }
+        //         }
+        //     }
 
-    //     function toggleDeliveryOptions(itemId, retrieval) {
-    //         let courierOptions = document.querySelector('#courier' + itemId);
-    //         let deliveryOptions = document.querySelector('#delivery' + itemId);
+        //     function toggleDeliveryOptions(itemId, retrieval) {
+        //         let courierOptions = document.querySelector('#courier' + itemId);
+        //         let deliveryOptions = document.querySelector('#delivery' + itemId);
 
-    //         if (retrieval == 'delivery') {
-    //             courierOptions.style.display = 'block';
-    //             deliveryOptions.style.display = 'block';
-    //         } else if (retrieval == 'pickup') {
-    //             courierOptions.style.display = 'none';
-    //             deliveryOptions.style.display = 'none';
-    //         }
-    //     }
-
-
-    //     // Hide delivery options if retrieval is pickup
-
-    //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
-    //     var orderRetrievalValue = '';
-
-    //     orderRetrievals.forEach(function(orderRetrieval) {
-
-    //         let itemId = orderRetrieval.getAttribute('data-item-id');
-
-    //         // orderRetrievalValue = orderRetrieval.value;
-    //         hideOptions(orderRetrieval.value);
-    //         toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-    //         // console.log(itemId);
-
-    //         toggleDeliveryOptions(itemId, orderRetrieval.value);
-
-    //         orderRetrieval.addEventListener('change', function() {
-
-    //             // orderRetrievalValue = orderRetrieval.value;
-    //             hideOptions(orderRetrieval.value);
-    //             toggleDeliveryOptions(itemId, orderRetrieval.value);
-    //             toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-    //         });
-    //     });
+        //         if (retrieval == 'delivery') {
+        //             courierOptions.style.display = 'block';
+        //             deliveryOptions.style.display = 'block';
+        //         } else if (retrieval == 'pickup') {
+        //             courierOptions.style.display = 'none';
+        //             deliveryOptions.style.display = 'none';
+        //         }
+        //     }
 
 
-    //     // toggle proof of delivery form
-    //     // var paymentConditions = document.querySelectorAll('.payment-condition');
+        //     // Hide delivery options if retrieval is pickup
 
-    //     // paymentConditions.forEach(function(paymentCondition) {
+        //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
+        //     var orderRetrievalValue = '';
 
-    //     //     let itemId = paymentCondition.getAttribute('data-item-id');
+        //     orderRetrievals.forEach(function(orderRetrieval) {
 
-    //     //     if (orderRetrievalValue == 'delivery') {
-    //     //         toggleReceiptSubmission(itemId, paymentCondition.value);
-    //     //     }
+        //         let itemId = orderRetrieval.getAttribute('data-item-id');
 
-    //     //     paymentCondition.addEventListener('change', function() {
-    //     //         if (orderRetrievalValue == 'delivery') {
-    //     //             toggleReceiptSubmission(itemId, paymentCondition.value);
-    //     //         }
-    //     //     });
-    //     // });
+        //         // orderRetrievalValue = orderRetrieval.value;
+        //         hideOptions(orderRetrieval.value);
+        //         toggleReceiptSubmission(itemId, orderRetrieval.value);
 
-    //     var subTotalField = document.querySelectorAll(".item-sub-total");
-    //     var totalContainer = {};
+        //         // console.log(itemId);
 
-    //     subTotalField.forEach(function(subtotal) {
-    //         var itemReferenceNo = subtotal.getAttribute("data-item-id");
-    //         var [referenceNo, itemId] = itemReferenceNo.split("_");
+        //         toggleDeliveryOptions(itemId, orderRetrieval.value);
 
-    //         var price = parseFloat(
-    //             document
-    //             .querySelector(
-    //                 '.item-price[data-item-id="' + itemReferenceNo + '"]'
-    //             )
-    //             .value.replace(/[^0-9.-]+/g, "")
-    //         );
-    //         var quantity = parseInt(
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value
-    //         );
+        //         orderRetrieval.addEventListener('change', function() {
 
-    //         if (quantity < 0) {
-    //             alert("Quantity cannot be negative.");
-    //             quantity = 0;
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value = 0;
-    //         }
+        //             // orderRetrievalValue = orderRetrieval.value;
+        //             hideOptions(orderRetrieval.value);
+        //             toggleDeliveryOptions(itemId, orderRetrieval.value);
+        //             toggleReceiptSubmission(itemId, orderRetrieval.value);
 
-    //         var userSubTotalField = document.querySelector(
-    //             '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
-    //         );
+        //         });
+        //     });
 
-    //         var tempSubTotal = price * quantity;
-    //         userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
 
-    //         if (!totalContainer[referenceNo]) {
-    //             totalContainer[referenceNo] = tempSubTotal;
-    //         } else {
-    //             totalContainer[referenceNo] += tempSubTotal;
-    //         }
-    //     });
+        //     // toggle proof of delivery form
+        //     // var paymentConditions = document.querySelectorAll('.payment-condition');
 
-    //     var totals = document.querySelectorAll(".purchase-total");
+        //     // paymentConditions.forEach(function(paymentCondition) {
 
-    //     totals.forEach(function(total) {
-    //         var totalId = total.getAttribute("data-total-id");
-    //         total.value = totalContainer[totalId].toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
-    //     });
-    // });
+        //     //     let itemId = paymentCondition.getAttribute('data-item-id');
+
+        //     //     if (orderRetrievalValue == 'delivery') {
+        //     //         toggleReceiptSubmission(itemId, paymentCondition.value);
+        //     //     }
+
+        //     //     paymentCondition.addEventListener('change', function() {
+        //     //         if (orderRetrievalValue == 'delivery') {
+        //     //             toggleReceiptSubmission(itemId, paymentCondition.value);
+        //     //         }
+        //     //     });
+        //     // });
+
+        var subTotalField = document.querySelectorAll(".item-sub-total");
+        var totalContainer = {};
+
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute("data-item-id");
+            var [referenceNo, itemId] = itemReferenceNo.split("_");
+
+            var price = parseFloat(
+                document
+                .querySelector(
+                    '.item-price[data-item-id="' + itemReferenceNo + '"]'
+                )
+                .value.replace(/[^0-9.-]+/g, "")
+            );
+            var quantity = parseInt(
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value
+            );
+
+            if (quantity < 0) {
+                alert("Quantity cannot be negative.");
+                quantity = 0;
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value = 0;
+            }
+
+            var userSubTotalField = document.querySelector(
+                '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
+            );
+
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll(".purchase-total");
+
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute("data-total-id");
+            total.value = totalContainer[totalId].toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
+        });
+    });
 </script>
