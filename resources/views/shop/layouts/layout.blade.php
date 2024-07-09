@@ -37,18 +37,16 @@
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
-            <a href="#"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
+            <a href="{{ route('shop.index') }}"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
         </div>
         <div class="humberger__menu__cart">
             <ul>
                 <li><a href="{{ route('selectedItems.orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
                 <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
         </div>
         <div class="humberger__menu__widget">
-            <div class="header__top__right__language">
-            </div>
             @if(Auth::check())
             @if(Auth::user()->role == 'Admin')
             <div class="header__top__right__auth">
@@ -70,12 +68,12 @@
                         <li><a href="{{ route('shop.carts') }}">Shopping Cart</a></li>
                     </ul>
                 </li>
-                <li><a href="./blog.html">Blog</a></li>
-                <li><a href="./contact.html">Contact</a></li>
+                <li><a onclick="ERROR()">Blog</a></li>
+                <li><a onclick="ERROR()">Contact</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social">
+        <div class="header__top__right__social" onclick="MAINTENANCE()">
             <a href="#"><i class="fa fa-facebook"></i></a>
             <a href="#"><i class="fa fa-twitter"></i></a>
             <a href="#"><i class="fa fa-linkedin"></i></a>
@@ -120,7 +118,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-                    <div class="footer__widget">
+                    <div class="footer__widget" onclick="MAINTENANCE()">
                         <h6>Useful Links</h6>
                         <ul>
                             <li><a href="#">About Us</a></li>
@@ -146,9 +144,9 @@
                         <p>Get E-mail updates about our latest shop and special offers.</p>
                         <form action="#">
                             <input type="text" placeholder="Enter your mail">
-                            <button type="submit" class="site-btn" style="background-color: #696cff;">Subscribe</button>
+                            <button type="submit" class="site-btn" style="background-color: #696cff;" onclick="MAINTENANCE()">Subscribe</button>
                         </form>
-                        <div class="footer__widget__social">
+                        <div class="footer__widget__social" onclick="MAINTENANCE()">
                             <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-instagram"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>

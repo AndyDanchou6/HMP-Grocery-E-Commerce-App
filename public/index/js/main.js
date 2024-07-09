@@ -368,6 +368,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function MAINTENANCE() {
     swal({
+        title: "Coming Soon",
+        text: "This feature is currently coming soon. We apologize for the inconvenience.",
+        icon: "info",
+        button: "Ok",
+        content: {
+            element: "div",
+            attributes: {
+                style: "text-align: center; justify-content: center;",
+            },
+        },
+    }).then(() => {
+        window.history.forward();
+    });
+    let swalContainer = document.querySelector(".swal-modal");
+    if (swalContainer) {
+        let swalText = swalContainer.querySelector(".swal-text");
+        if (swalText) {
+            swalText.style.textAlign = "center";
+        }
+    }
+}
+
+function ERROR() {
+    swal({
         title: "Maintenance Mode",
         text: "This feature is currently under maintenance. We apologize for the inconvenience.",
         icon: "error",

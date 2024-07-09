@@ -70,8 +70,7 @@
                         </div>
                         <div class="col-lg-4 col-md-3">
                             <div class="filter__option">
-                                <span class="icon_grid-2x2"></span>
-                                <span class="icon_ul"></span>
+                                <h6 style="color: #696cff;"><strong>Page {{ $inventory->currentPage() }} of {{ $inventory->lastPage() }}</strong></h6>
                             </div>
                         </div>
                     </div>
