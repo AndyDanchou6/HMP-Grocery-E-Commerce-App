@@ -77,56 +77,55 @@
                     </div>
                 </div>
 
-                <div style="position: relative; width: 90%; margin: auto;">
+                <div style="position: relative; width: 100%;">
                     <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" class="mb-3" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
                         <div class="column align-items-center">
 
+                            <div class="row mb-3 item-row" data-item-id="{{ $item->id }}">
 
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="col-form-label">Order Retrieval:</label>
+                                    <select class="form-select order_retrieval" name="order_retrieval" id="order_retrieval" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Order Retrieval</option>
+                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup' ? 'selected' : ''}}>Pick Up</option>
+                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery' ? 'selected' : ''}}>Delivery</option>
+                                    </select>
+                                </div>
 
+                                <div class="col-md-4 mb-3">
+                                    <label for="payment_type" class="col-form-label">Payment Type</label>
+                                    <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
+                                    <select class="form-select" name="payment_type" id="payment_type">
+                                        <option value="" disabled>Choose Payment Type</option>
+                                        <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
+                                        <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
+                                        <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
+                                    </select>
+                                </div>
 
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="col-form-label">Payment Condition:</label>
+                                    <select class="form-select payment-condition" name="payment_condition" id="payment-condition{{ $item->id }}" data-item-id="{{ $item->id }}">
+                                        <option value="" selected disabled>Choose Payment Type</option>
+                                        <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
+                                        <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
+                                    </select>
+                                </div>
+
+                                <!-- For Delivery -->
+                                @if($user['delivery_date'] && $user['courier_id'])
+                                <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
+                                    <label for="" class="col-form-label">Proof of Delivery:</label>
+                                    <input type="file" class="form-control" name="proof_of_delivery">
+                                </div>
+                                @endif
+
+                            </div>
 
                             <div class="row row-cols-md-2 mb-3 item-row">
                                 <div class="mb-3" id="courier{{ $item->id }}" data-item-id="{{ $item->id }}">
-
-                                    <div class="col-md-4 mb-3">
-                                        <label for="" class="col-form-label">Order Retrieval:</label>
-                                        <select class="form-select order_retrieval" name="order_retrieval" id="order_retrieval" data-item-id="{{ $item->id }}">
-                                            <option value="" selected disabled>Choose Order Retrieval</option>
-                                            <option value="pickup" {{ $user['order_retrieval'] == 'pickup' ? 'selected' : ''}}>Pick Up</option>
-                                            <option value="delivery" {{ $user['order_retrieval'] == 'delivery' ? 'selected' : ''}}>Delivery</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-4 mb-3">
-                                        <label for="payment_type" class="col-form-label">Payment Type</label>
-                                        <!-- <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly> -->
-                                        <select class="form-select" name="payment_type" id="payment_type">
-                                            <option value="" disabled>Choose Payment Type</option>
-                                            <option class="payment_type" id="gcash" value="G-Cash" {{ $user['payment_type'] == 'G-cash' ? 'selected' : ''}}>G-Cash</option>
-                                            <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD' ? 'selected' : ''}}>Cash On Delivery</option>
-                                            <option class="payment_type instore" value="In-store" {{ $user['payment_type'] == 'In-store' ? 'selected' : ''}}>In-store</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-4 mb-3">
-                                        <label for="" class="col-form-label">Payment Condition:</label>
-                                        <select class="form-select payment-condition" name="payment_condition" id="payment-condition{{ $item->id }}" data-item-id="{{ $item->id }}">
-                                            <option value="" selected disabled>Choose Payment Type</option>
-                                            <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
-                                            <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- For Delivery -->
-                                    @if($user['delivery_date'] && $user['courier_id'])
-                                    <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
-                                        <label for="" class="col-form-label">Proof of Delivery:</label>
-                                        <input type="file" class="form-control" name="proof_of_delivery">
-                                    </div>
-                                    @endif
-
                                     <label for="" class="col-form-label">Courier</label>
                                     <div>
                                         <select class="form-select" name="courier_id">
@@ -138,32 +137,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3" id="delivery{{ $item->id }}" data-item-id="{{ $item->id }}">
-                                    <label for="" class="col-form-label">Deliver On</label>
-                                    <div>
-                                        <select class="form-select" name="delivery_schedule">
 
-                                            @if($user['delivery_date'] == NULL)
-                                            <option value="" selected disabled>Choose Schedule</option>
-
-                                            @foreach($schedules as $schedule)
-                                            <option value="{{ $schedule->id }}">{{ $schedule->day }}
-                                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}-
-                                                {{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}
-                                            </option>
-                                            @endforeach
-
-                                            @else
-                                            @foreach($schedules as $schedule)
-                                            <option value="{{ $schedule->id }}" {{ \Carbon\Carbon::parse($user['delivery_date'])->format('l') === $schedule->day ? 'selected' : ''}}>{{ $schedule->day }}
-                                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}-
-                                                {{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}
-                                            </option>
-                                            @endforeach
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
@@ -173,12 +147,14 @@
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
-
                 </div>
 
+
             </div>
+
         </div>
     </div>
+</div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
