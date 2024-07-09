@@ -115,156 +115,156 @@
     </div>
 </div>
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     function hideOptions(orderRetrieval) {
-    //         var options = document.querySelectorAll('.payment_type');
+    document.addEventListener('DOMContentLoaded', function() {
+        //     function hideOptions(orderRetrieval) {
+        //         var options = document.querySelectorAll('.payment_type');
 
-    //         options.forEach(function(option) {
-    //             if (orderRetrieval == 'delivery') {
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             } else if (orderRetrieval == 'pickup') {
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             }
-    //         });
-    //     }
+        //         options.forEach(function(option) {
+        //             if (orderRetrieval == 'delivery') {
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             } else if (orderRetrieval == 'pickup') {
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             }
+        //         });
+        //     }
 
-    //     function toggleReceiptSubmission(itemId, retrieval) {
-    //         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
+        //     function toggleReceiptSubmission(itemId, retrieval) {
+        //         var proofForm = document.querySelector('#proof-of-delivery' + itemId);
 
-    //         if (proofForm) {
-    //             if (retrieval == 'delivery') {
-    //                 proofForm.style.display = 'block';
-    //                 // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
-    //             } else {
-    //                 proofForm.style.display = 'none';
-    //                 // proofForm.querySelector('input[type="file"]').removeAttribute('required')
-    //             }
-    //         }
-    //     }
+        //         if (proofForm) {
+        //             if (retrieval == 'delivery') {
+        //                 proofForm.style.display = 'block';
+        //                 // proofForm.querySelector('input[type="file"]').setAttribute('required', 'required');
+        //             } else {
+        //                 proofForm.style.display = 'none';
+        //                 // proofForm.querySelector('input[type="file"]').removeAttribute('required')
+        //             }
+        //         }
+        //     }
 
-    //     function toggleDeliveryOptions(itemId, retrieval) {
-    //         let courierOptions = document.querySelector('#courier' + itemId);
-    //         let deliveryOptions = document.querySelector('#delivery' + itemId);
+        //     function toggleDeliveryOptions(itemId, retrieval) {
+        //         let courierOptions = document.querySelector('#courier' + itemId);
+        //         let deliveryOptions = document.querySelector('#delivery' + itemId);
 
-    //         if (retrieval == 'delivery') {
-    //             courierOptions.style.display = 'block';
-    //             deliveryOptions.style.display = 'block';
-    //         } else if (retrieval == 'pickup') {
-    //             courierOptions.style.display = 'none';
-    //             deliveryOptions.style.display = 'none';
-    //         }
-    //     }
-
-
-    //     // Hide delivery options if retrieval is pickup
-
-    //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
-    //     var orderRetrievalValue = '';
-
-    //     orderRetrievals.forEach(function(orderRetrieval) {
-
-    //         let itemId = orderRetrieval.getAttribute('data-item-id');
-
-    //         // orderRetrievalValue = orderRetrieval.value;
-    //         hideOptions(orderRetrieval.value);
-    //         toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-    //         // console.log(itemId);
-
-    //         toggleDeliveryOptions(itemId, orderRetrieval.value);
-
-    //         orderRetrieval.addEventListener('change', function() {
-
-    //             // orderRetrievalValue = orderRetrieval.value;
-    //             hideOptions(orderRetrieval.value);
-    //             toggleDeliveryOptions(itemId, orderRetrieval.value);
-    //             toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-    //         });
-    //     });
+        //         if (retrieval == 'delivery') {
+        //             courierOptions.style.display = 'block';
+        //             deliveryOptions.style.display = 'block';
+        //         } else if (retrieval == 'pickup') {
+        //             courierOptions.style.display = 'none';
+        //             deliveryOptions.style.display = 'none';
+        //         }
+        //     }
 
 
-    //     // toggle proof of delivery form
-    //     // var paymentConditions = document.querySelectorAll('.payment-condition');
+        //     // Hide delivery options if retrieval is pickup
 
-    //     // paymentConditions.forEach(function(paymentCondition) {
+        //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
+        //     var orderRetrievalValue = '';
 
-    //     //     let itemId = paymentCondition.getAttribute('data-item-id');
+        //     orderRetrievals.forEach(function(orderRetrieval) {
 
-    //     //     if (orderRetrievalValue == 'delivery') {
-    //     //         toggleReceiptSubmission(itemId, paymentCondition.value);
-    //     //     }
+        //         let itemId = orderRetrieval.getAttribute('data-item-id');
 
-    //     //     paymentCondition.addEventListener('change', function() {
-    //     //         if (orderRetrievalValue == 'delivery') {
-    //     //             toggleReceiptSubmission(itemId, paymentCondition.value);
-    //     //         }
-    //     //     });
-    //     // });
+        //         // orderRetrievalValue = orderRetrieval.value;
+        //         hideOptions(orderRetrieval.value);
+        //         toggleReceiptSubmission(itemId, orderRetrieval.value);
 
-    //     var subTotalField = document.querySelectorAll(".item-sub-total");
-    //     var totalContainer = {};
+        //         // console.log(itemId);
 
-    //     subTotalField.forEach(function(subtotal) {
-    //         var itemReferenceNo = subtotal.getAttribute("data-item-id");
-    //         var [referenceNo, itemId] = itemReferenceNo.split("_");
+        //         toggleDeliveryOptions(itemId, orderRetrieval.value);
 
-    //         var price = parseFloat(
-    //             document
-    //             .querySelector(
-    //                 '.item-price[data-item-id="' + itemReferenceNo + '"]'
-    //             )
-    //             .value.replace(/[^0-9.-]+/g, "")
-    //         );
-    //         var quantity = parseInt(
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value
-    //         );
+        //         orderRetrieval.addEventListener('change', function() {
 
-    //         if (quantity < 0) {
-    //             alert("Quantity cannot be negative.");
-    //             quantity = 0;
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value = 0;
-    //         }
+        //             // orderRetrievalValue = orderRetrieval.value;
+        //             hideOptions(orderRetrieval.value);
+        //             toggleDeliveryOptions(itemId, orderRetrieval.value);
+        //             toggleReceiptSubmission(itemId, orderRetrieval.value);
 
-    //         var userSubTotalField = document.querySelector(
-    //             '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
-    //         );
+        //         });
+        //     });
 
-    //         var tempSubTotal = price * quantity;
-    //         userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
 
-    //         if (!totalContainer[referenceNo]) {
-    //             totalContainer[referenceNo] = tempSubTotal;
-    //         } else {
-    //             totalContainer[referenceNo] += tempSubTotal;
-    //         }
-    //     });
+        //     // toggle proof of delivery form
+        //     // var paymentConditions = document.querySelectorAll('.payment-condition');
 
-    //     var totals = document.querySelectorAll(".purchase-total");
+        //     // paymentConditions.forEach(function(paymentCondition) {
 
-    //     totals.forEach(function(total) {
-    //         var totalId = total.getAttribute("data-total-id");
-    //         total.value = totalContainer[totalId].toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
-    //     });
-    // });
+        //     //     let itemId = paymentCondition.getAttribute('data-item-id');
+
+        //     //     if (orderRetrievalValue == 'delivery') {
+        //     //         toggleReceiptSubmission(itemId, paymentCondition.value);
+        //     //     }
+
+        //     //     paymentCondition.addEventListener('change', function() {
+        //     //         if (orderRetrievalValue == 'delivery') {
+        //     //             toggleReceiptSubmission(itemId, paymentCondition.value);
+        //     //         }
+        //     //     });
+        //     // });
+
+        var subTotalField = document.querySelectorAll(".item-sub-total");
+        var totalContainer = {};
+
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute("data-item-id");
+            var [referenceNo, itemId] = itemReferenceNo.split("_");
+
+            var price = parseFloat(
+                document
+                .querySelector(
+                    '.item-price[data-item-id="' + itemReferenceNo + '"]'
+                )
+                .value.replace(/[^0-9.-]+/g, "")
+            );
+            var quantity = parseInt(
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value
+            );
+
+            if (quantity < 0) {
+                alert("Quantity cannot be negative.");
+                quantity = 0;
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value = 0;
+            }
+
+            var userSubTotalField = document.querySelector(
+                '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
+            );
+
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll(".purchase-total");
+
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute("data-total-id");
+            total.value = totalContainer[totalId].toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
+        });
+    });
 </script>

@@ -1,5 +1,5 @@
 <!-- Modal Content -->
-<div class="modal fade" id="forPickup{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="forPickUp{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,12 +17,6 @@
                     <label for="fb_link" class="col-sm-2 col-form-label">Facebook Link</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="address" class="col-sm-2 col-form-label">Address</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows="3" readonly>{{ $user['address'] }}</textarea>
                     </div>
                 </div>
                 <div>
@@ -117,95 +111,95 @@
     </div>
 </div>
 <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     function hideOptions(orderRetrieval) {
-    //         var options = document.querySelectorAll('.payment_type');
+    document.addEventListener('DOMContentLoaded', function() {
+        //     function hideOptions(orderRetrieval) {
+        //         var options = document.querySelectorAll('.payment_type');
 
-    //         options.forEach(function(option) {
-    //             if (orderRetrieval == 'delivery') {
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             } else if (orderRetrieval == 'pickup') {
-    //                 if (option.classList.contains('cod')) {
-    //                     option.style.display = 'none';
-    //                 }
-    //                 if (option.classList.contains('instore')) {
-    //                     option.style.display = 'block';
-    //                 }
-    //             }
-    //         });
-    //     }
+        //         options.forEach(function(option) {
+        //             if (orderRetrieval == 'delivery') {
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             } else if (orderRetrieval == 'pickup') {
+        //                 if (option.classList.contains('cod')) {
+        //                     option.style.display = 'none';
+        //                 }
+        //                 if (option.classList.contains('instore')) {
+        //                     option.style.display = 'block';
+        //                 }
+        //             }
+        //         });
+        //     }
 
-    //     var subTotalField = document.querySelectorAll(".item-sub-total");
-    //     var totalContainer = {};
 
-    //     subTotalField.forEach(function(subtotal) {
-    //         var itemReferenceNo = subtotal.getAttribute("data-item-id");
-    //         var [referenceNo, itemId] = itemReferenceNo.split("_");
+        //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
-    //         var price = parseFloat(
-    //             document
-    //             .querySelector(
-    //                 '.item-price[data-item-id="' + itemReferenceNo + '"]'
-    //             )
-    //             .value.replace(/[^0-9.-]+/g, "")
-    //         );
-    //         var quantity = parseInt(
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value
-    //         );
+        //     orderRetrievals.forEach(function(orderRetrieval) {
 
-    //         if (quantity < 0) {
-    //             alert("Quantity cannot be negative.");
-    //             quantity = 0;
-    //             document.querySelector(
-    //                 '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
-    //             ).value = 0;
-    //         }
+        //         hideOptions(orderRetrieval.value);
 
-    //         var userSubTotalField = document.querySelector(
-    //             '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
-    //         );
+        //         orderRetrieval.addEventListener('change', function() {
 
-    //         var tempSubTotal = price * quantity;
-    //         userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
+        //             hideOptions(orderRetrieval.value);
+        //         });
+        //     });
 
-    //         if (!totalContainer[referenceNo]) {
-    //             totalContainer[referenceNo] = tempSubTotal;
-    //         } else {
-    //             totalContainer[referenceNo] += tempSubTotal;
-    //         }
-    //     });
+        var subTotalField = document.querySelectorAll(".item-sub-total");
+        var totalContainer = {};
 
-    //     var totals = document.querySelectorAll(".purchase-total");
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute("data-item-id");
+            var [referenceNo, itemId] = itemReferenceNo.split("_");
 
-    //     totals.forEach(function(total) {
-    //         var totalId = total.getAttribute("data-total-id");
-    //         total.value = totalContainer[totalId].toLocaleString("en-PH", {
-    //             style: "currency",
-    //             currency: "PHP",
-    //         });
-    //     });
+            var price = parseFloat(
+                document
+                .querySelector(
+                    '.item-price[data-item-id="' + itemReferenceNo + '"]'
+                )
+                .value.replace(/[^0-9.-]+/g, "")
+            );
+            var quantity = parseInt(
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value
+            );
 
-    //     var orderRetrievals = document.querySelectorAll('.order_retrieval');
+            if (quantity < 0) {
+                alert("Quantity cannot be negative.");
+                quantity = 0;
+                document.querySelector(
+                    '.item-quantity[data-item-id="' + itemReferenceNo + '"]'
+                ).value = 0;
+            }
 
-    //     orderRetrievals.forEach(function(orderRetrieval) {
+            var userSubTotalField = document.querySelector(
+                '.item-sub-total[data-item-id="' + itemReferenceNo + '"]'
+            );
 
-    //         hideOptions(orderRetrieval.value);
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
 
-    //         orderRetrieval.addEventListener('change', function() {
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
 
-    //             hideOptions(orderRetrieval.value);
-    //         });
-    //     });
+        var totals = document.querySelectorAll(".purchase-total");
 
-    // });
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute("data-total-id");
+            total.value = totalContainer[totalId].toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+            });
+        });
+    });
 </script>
