@@ -15,7 +15,7 @@
                         <th>User Name</th>
                         <th>Reference No.</th>
                         <th>Facebook</th>
-                        <th>Address</th>
+                        <th>Phone</th>
                         <th>Items</th>
                     </tr>
                 </thead>
@@ -28,7 +28,7 @@
                         <td>{{ $user['name'] }}</td>
                         <td>{{ $user['referenceNo'] }}</td>
                         <td>{{ $user['fb_link'] }}</td>
-                        <td>{{ $user['address'] }}</td>
+                        <td>{{ $user['phone'] }}</td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickup{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
                             @include('selectedItems.modal.forPickup')
