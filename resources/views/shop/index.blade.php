@@ -106,129 +106,6 @@
 </div>
 <!-- Banner End -->
 
-<!-- Latest Product Section Begin -->
-<!-- <section class="latest-product spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="latest-product__text">
-                    <h4>Latest Products</h4>
-                    <div class="latest-product__slider owl-carousel">
-                        @php
-                        $chunkedProducts = $inventory->chunk(3);
-                        @endphp
-                        @foreach ($chunkedProducts as $chunk)
-                        <div class="latest-prdouct__slider__item">
-                            @foreach ($chunk as $product)
-                            <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
-                                </div>
-                                <div class=" latest-product__item__text">
-                                    <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ number_format($product->price, 2) }}</span>
-                                </div>
-                            </a>
-                            @endforeach
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="latest-product__text">
-                    <h4>Top Products</h4>
-                    <div class="latest-product__slider owl-carousel">
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="latest-prdouct__slider__item">
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-1.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-2.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                            <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="index/img/latest-product/lp-3.jpg" alt="">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>Crab Pool Security</h6>
-                                    <span>$30.00</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="latest-product__text">
-                    <h4>Top Rated Products</h4>
-                    <div class="latest-product__slider owl-carousel">
-                        @foreach ($inventory->chunk(3) as $chunk)
-                        <div class="latest-prdouct__slider__item">
-                            @foreach ($chunk as $product)
-                            <a href="{{ route('shop.details', ['id' => $product->id]) }}" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                    <img src="{{ asset('storage/' . $product->product_img) }}" alt="{{ $product->product_name }}" style="width: 110px; height: 110px;">
-                                </div>
-                                <div class="latest-product__item__text">
-                                    <h6>{{ $product->product_name }}</h6>
-                                    <span>₱{{ number_format($product->price, 2) }}</span>
-                                    <div style="color: #696cff;">Rating: {{ $product->reviews->avg('rating') ?: 'N/A' }}</div>
-                                </div>
-                            </a>
-                            @endforeach
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section> -->
-<!-- Latest Product Section End -->
-
 <!-- Blog Section Begin -->
 <section class="from-blog spad">
     <div class="container">
@@ -239,7 +116,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" onclick="MAINTENANCE()">
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="blog__item">
                     <div class="blog__item__pic">

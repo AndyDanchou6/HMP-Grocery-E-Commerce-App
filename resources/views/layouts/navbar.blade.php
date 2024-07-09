@@ -5,13 +5,9 @@
       <i class="bx bx-menu bx-sm"></i>
     </a>
   </div>
-
   <!-- ...Existing navbar code... -->
   <ul class="navbar-nav flex-row align-items-center ms-auto">
     @if(Auth::user()->role != 'Courier')
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('carts.index') }}">
-      <i class="bx bx-cart bx-sm bx-tada-hover"></i>
-    </a>
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
       <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
     </a>

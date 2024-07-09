@@ -11,7 +11,7 @@
             </div>
             <div class="col-lg-6 col-md-6">
                 <div class="header__top__right">
-                    <div class="header__top__right__social">
+                    <div class="header__top__right__social" onclick="MAINTENANCE()">
                         <a href="#"><i class="fa fa-facebook"></i></a>
                         <a href="#"><i class="fa fa-twitter"></i></a>
                         <a href="#"><i class="fa fa-linkedin"></i></a>
@@ -56,8 +56,8 @@
                             <!-- <li><a href="blog-details.html">Blog Details</a></li> -->
                         </ul>
                     </li>
-                    <li><a onclick="MAINTENANCE()">Blog</a></li>
-                    <li><a onclick="MAINTENANCE()">Contact</a></li>
+                    <li><a onclick="ERROR()">Blog</a></li>
+                    <li><a onclick="ERROR()">Contact</a></li>
                 </ul>
             </nav>
         </div>

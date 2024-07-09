@@ -82,7 +82,7 @@
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
                     <a href="{{ route('shop.products') }}" class="primary-btn cart-btn" style="background-color: #696cff; color: white;">CONTINUE SHOPPING</a>
-                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn" data-item-id="{{ $item->inventory->id }}">
+                    <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn">
                         <span class="icon_loading"></span> Update Cart
                     </button>
                 </div>
@@ -237,11 +237,27 @@
                     title: "Are you sure?",
                     text: "You have changed the quantities but have not updated the cart. Do you want to proceed without updating the cart?",
                     icon: "warning",
-                    buttons: true,
+                    buttons: {
+                        cancel: {
+                            text: "Cancel",
+                            value: null,
+                            visible: true,
+                            className: "",
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: "Proceed",
+                            value: true,
+                            visible: true,
+                            closeModal: true
+                        }
+                    },
                     dangerMode: true,
                 }).then((willProceed) => {
                     if (willProceed) {
                         proceedToCheckout(orderRetrievalType);
+                    } else {
+                        window.location.forward();
                     }
                 });
             } else {
