@@ -182,7 +182,7 @@ class SelectedItemsController extends Controller
                     'email' => $item->user->email,
                     'phone' => $item->phone,
                     'fb_link' => $item->fb_link,
-                   // 'address' => $item->address,
+                    'address' => $item->address,
                     'order_retrieval' => $item->order_retrieval,
                     'quantity' => $item->quantity,
                     'courier_id' => $item->courier_id,
