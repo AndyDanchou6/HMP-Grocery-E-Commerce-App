@@ -35,10 +35,8 @@
                         @endif
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.forDelivery')
                         </td>
                     </tr>
-                    @include('selectedItems.modal.moreinfo')
                     @endforeach
                     @else
                     <tr>
@@ -50,11 +48,16 @@
         </div>
     </div>
 </div>
+
+@foreach ($forDelivery as $user)
+@include('selectedItems.modal.forDelivery')
+@endforeach
+
+
 @endsection
 
 @section('customScript')
 <script>
-
     function hideOptions(orderRetrieval) {
         var options = document.querySelectorAll('.payment_type');
 
