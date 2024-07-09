@@ -26,12 +26,20 @@
                             <td style="display: none;" class="id-field">{{ $user['id'] }}</td>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $user['name'] }}</td>
-                            <td>{{ $user['referenceNo'] }}</td>
-                            <td>{{ $user['payment_type'] }}</td>
+                            <td><span class="badge bg-label-primary me-1">{{ $user['referenceNo'] }}</span></td>
+                            <td>
+                                @if($user['payment_type'] == 'COD')
+                                <span class="badge bg-label-primary me-1">{{ $user['payment_type'] }}</span>
+                                @elseif($user['payment_type'] == 'G-cash')
+                                <span class="badge bg-label-info me-1">{{ $user['payment_type'] }}</span>
+                                @else
+                                <span class="badge bg-label-secondary me-1">{{ $user['payment_type'] }}</span>
+                                @endif
+                            </td>
                             @if($user['delivery_date'])
-                            <td>{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}</td>
+                            <td> <span class="badge bg-label-success me-1">{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}</span></td>
                             @else
-                            <td>Not Scheduled Yet</td>
+                            <td> <span class="badge bg-label-danger me-1">Not Scheduled Yet</span></td>
                             @endif
                             <td>
                                 <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forDelivery{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>

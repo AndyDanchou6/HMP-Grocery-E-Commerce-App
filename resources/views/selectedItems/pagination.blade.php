@@ -5,7 +5,6 @@
                 <div class="text-muted" style="margin-left: 10px;">
                     Showing {{ $userByReference->firstItem() }} to {{ $userByReference->lastItem() }} of {{ $userByReference->total() }} Results
                 </div>
-
                 <!-- Pagination -->
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-end mb-0">
@@ -24,7 +23,6 @@
                             <a class="page-link" href="{{ $userByReference->previousPageUrl() }}"><i class="tf-icon bx bx-chevron-left"></i></a>
                         </li>
                         @endif
-
                         @php
                         $currentPage = $userByReference->currentPage();
                         $lastPage = $userByReference->lastPage();

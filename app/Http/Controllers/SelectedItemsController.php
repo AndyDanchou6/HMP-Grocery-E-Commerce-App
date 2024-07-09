@@ -335,8 +335,11 @@ class SelectedItemsController extends Controller
                 'path' => LengthAwarePaginator::resolveCurrentPath(),
             ]);
 
+            $admin = User::where('role', 'Admin')->first();
+
             return view('selectedItems.orders', [
                 'userByReference' => $paginatedItems,
+                'admin' => $admin
             ]);
         }
     }
@@ -668,6 +671,19 @@ class SelectedItemsController extends Controller
             return response()->json(['notification_message' => implode('. ', $latestNotifications)]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error fetching notifications.', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateNotification(Request $request)
+    {
+        try {
+            $referenceNo = $request->input('referenceNo');
+            SelectedItems::where('referenceNo', $referenceNo)
+                ->update(['status' => 'readyForRetrieval']);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating status.', 'message' => $e->getMessage()], 500);
         }
     }
 }

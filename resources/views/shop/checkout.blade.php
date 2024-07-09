@@ -28,8 +28,8 @@
                             <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
                         </div>
                         <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
-                            <label>For Gcash</label>
-                            <p style="margin: auto 0;">Send your payment in this number <strong style="color: #696cff; font-size: 24px;">+{{ $phone->phone }}</strong></p>
+                            <label>GCash Payment Reminder</label>
+                            <p style="margin: auto 0;">Please remit your payment to <strong style="color: #696cff; font-size: 20px;">{{ $phone->phone }}</strong> using GCash. Include your <strong style="color: #696cff; font-size: 20px;">order reference number</strong> in the message. Thank you!</p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">

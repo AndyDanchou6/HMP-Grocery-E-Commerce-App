@@ -13,3 +13,23 @@
         opacity: 1;
     }
 }
+@keyframes fadeEffect {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+        /* Optional: Slide up effect */
+    }
+
+    10%,
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+        /* Optional: Return to normal */
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+        /* Optional: Slide down effect */
+    }
+}

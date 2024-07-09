@@ -6,6 +6,10 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
             <h4 style="margin: auto 0;">Purchased</h4>
+            <div class="alert alert-primary alert-sm" role="alert" style="margin-left: 10px; width: 70%; text-align: justify; animation: fadeEffect 5s ease-in-out 10s infinite;" id="timer">
+                Reminder: For GCash payments, kindly remit your payment to <strong>{{ $admin->phone }}</strong>
+                and include your <strong>order reference number</strong> in the message. Please provide a screenshot or receipt of your payment. You can easily access this by clicking on the receipt icon. Thank you!
+            </div>
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
@@ -15,6 +19,7 @@
                         <th>Reference No.</th>
                         <th>Items</th>
                         <th>Order Type</th>
+                        <th>Payment Type</th>
                         <th>Payment Condition</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -38,6 +43,15 @@
                             @endif
                         </td>
                         <td>
+                            @if($user['payment_type'] == 'COD')
+                            <span class="badge bg-label-primary me-1">{{ $user['payment_type'] }}</span>
+                            @elseif($user['payment_type'] == 'G-cash')
+                            <span class="badge bg-label-info me-1">{{ $user['payment_type'] }}</span>
+                            @else
+                            <span class="badge bg-label-secondary me-1">{{ $user['payment_type'] }}</span>
+                            @endif
+                        </td>
+                        <td>
                             @if($user['payment_condition'] == 'paid')
                             <span class="badge bg-label-success me-1">Paid</span>
                             @else
@@ -58,6 +72,10 @@
                             @if($user['order_retrieval'] == 'delivery')
                             <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.proof')
+                            @endif
+                            @else
+                            @if($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
+                            <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @endif
                             @endif
                         </td>
@@ -114,6 +132,15 @@
                 currency: 'PHP'
             });
         });
+
+        // function updateAlertMessage() {
+        //     const timer = document.getElementById('timer');
+        //     timer.innerHTML = 'Reminder: For GCash payments, kindly send your payment to 0917-123-4567 and include your order reference number. Thank you!';
+
+        //     setTimeout(updateAlertMessage, 3000);
+        // }
+
+        // updateAlertMessage();
     });
 </script>
 @endsection
