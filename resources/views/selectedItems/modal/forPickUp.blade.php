@@ -1,4 +1,4 @@
-<div class="modal fade" id="forPickup{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="forPickUp{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
