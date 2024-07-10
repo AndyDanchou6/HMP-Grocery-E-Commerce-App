@@ -81,7 +81,7 @@
 
                         <!-- Courier and Delivery Date -->
                         <div class="row row-cols-md-2 mb-3 item-row">
-                            <div class="mb-3" id="courier{{ $item->id }}" data-item-id="{{ $item->id }}">
+                            <div class="mb-3" id="courier{{ $user['id'] }}" data-item-id="{{ $item->id }}">
                                 <label for="" class="col-form-label">Courier</label>
                                 <div>
                                     <select class="form-select" name="courier_id">
@@ -96,7 +96,7 @@
                             <div class="mb-3">
                                 <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
                                 <div>
-                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $item->id }}">
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}">
                                         <option value="" selected disabled>Choose Order Retrieval</option>
                                         <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
                                         <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="delivery{{ $item->id }}" data-item-id="{{ $item->id }}">
+                            <div class="mb-3" id="delivery{{ $user['id'] }}" data-item-id="{{ $item->id }}">
                                 <label for="" class="col-form-label">Deliver On</label>
                                 <div>
                                     <select class="form-select" name="delivery_schedule">
@@ -161,7 +161,7 @@
 
                             </div>
 
-                            <div class="mb-3 service-fee" data-item-id="{{ $item->id }}">
+                            <div class="mb-3 service-fee" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
                                 @if($user['service_fee'])
                                 <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" value="{{ $user['service_fee'] }}">

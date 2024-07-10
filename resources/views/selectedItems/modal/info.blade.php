@@ -78,6 +78,12 @@
                             <label for="" class="col-form-label">Payment Type:</label>
                             <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                         </div>
+                        <div class="col-md-6">
+                            <label for="" class="col-form-label">Service Fee:</label>
+                            <input type="text" class="form-control" value="{{ $user['service_fee'] }}" readonly>
+                        </div>
+
+                       
 
 
                     </div>

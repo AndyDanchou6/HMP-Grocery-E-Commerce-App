@@ -97,7 +97,7 @@
                             <div class="mb-3">
                                 <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
                                 <div>
-                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $item->id }}">
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}">
                                         <option value="" selected disabled>Choose Order Retrieval</option>
                                         <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
                                         <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
@@ -105,7 +105,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 service-fee" data-item-id="{{ $item->id }}">
+                            <div class="mb-3 service-fee" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
                                 <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
                             </div>
@@ -160,7 +160,9 @@
                 serviceFee.style.display = 'block';
 
                 serviceFeeInput.setAttribute('required', 'required');
-            } else if (retrievalValue == 'pickup') {
+            }
+
+            if (retrievalValue == 'pickup') {
 
                 serviceFee.style.display = 'none';
 
