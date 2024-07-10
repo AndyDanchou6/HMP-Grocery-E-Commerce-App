@@ -218,7 +218,8 @@ class SelectedItemsController extends Controller
                 $selectedItemsQuery->where(function ($query) use ($search) {
                     $query->whereHas('user', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
-                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%")
+                        ->orWhere('payment_condition', 'like', "%{$search}%");
                 });
             }
 
@@ -270,7 +271,7 @@ class SelectedItemsController extends Controller
     }
 
 
-       public function orders(Request $request)
+    public function orders(Request $request)
     {
         if (Auth::user()->role == 'Courier') {
             return redirect()->route('error404');
