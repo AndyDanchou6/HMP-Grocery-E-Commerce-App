@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalTitle">Edit Profile</h5>
+                <h5 class="modal-title" id="editModalTitle">{{Auth::user()->name }}'s profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -26,6 +26,7 @@
                             <input type="email" id="editEmail" name="email" class="form-control" value="{{ Auth::user()->email }}" placeholder="Enter Email">
                         </div>
                     </div>
+                    @if(Auth::check() && Auth::user()->phone && Auth::user()->address && Auth::user()->fblink)
                     <div class="row">
                         <div class="col mb-3">
                             <label for="editPhone" class="form-label">Phone</label>
@@ -40,10 +41,11 @@
                         <label for="editAddress" class="form-label">Address</label>
                         <textarea id="editAddress" name="address" class="form-control" rows="3" placeholder="Enter Address">{{ Auth::user()->address }}</textarea>
                     </div>
+                    @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
             </form>
         </div>
