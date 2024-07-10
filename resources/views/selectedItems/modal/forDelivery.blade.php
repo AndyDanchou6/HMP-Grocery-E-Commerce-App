@@ -160,6 +160,8 @@
                                 </select>
 
                             </div>
+                            
+
                         </div>
 
                         @if($user['delivery_date'] && $user['courier_id'])
@@ -244,8 +246,6 @@
 
             let itemId = orderRetrieval.getAttribute('data-item-id');
 
-            console.log(orderRetrieval.value);
-
             hideOptions(orderRetrieval.value);
             toggleReceiptSubmission(itemId, orderRetrieval.value);
             toggleDeliveryOptions(itemId, orderRetrieval.value);
@@ -255,9 +255,6 @@
                 hideOptions(orderRetrieval.value);
                 toggleDeliveryOptions(itemId, orderRetrieval.value);
                 toggleReceiptSubmission(itemId, orderRetrieval.value);
-
-                console.log(orderRetrieval.value);
-
 
             });
         });

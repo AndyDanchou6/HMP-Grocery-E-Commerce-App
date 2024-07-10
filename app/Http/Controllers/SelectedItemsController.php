@@ -476,14 +476,22 @@ class SelectedItemsController extends Controller
         foreach ($selectedItems as $item) {
             if ($item->status == 'forPackage') {
 
+                if ($request->has('order_retrieval')) {
+                    $item->order_retrieval = $request->input('order_retrieval');
+                }
+
+                if ($request->has('payment_type')) {
+                    $item->payment_type = $request->input('payment_type');
+                }
+
                 $item->status = 'readyForRetrieval';
                 $item->payment_condition = $request->input('payment_condition');
             } elseif ($item->status == 'readyForRetrieval') {
 
                 if ($item->order_retrieval == 'pickup' && $request->input('order_retrieval') == 'pickup') {
-                   
+
                     $pickedUp = $item->payment_type == $request->input('payment_type') && $item->payment_condition == $request->input('payment_condition');
-                    
+
                     if ($pickedUp) {
                         $item->status = 'pickedUp';
                     }
