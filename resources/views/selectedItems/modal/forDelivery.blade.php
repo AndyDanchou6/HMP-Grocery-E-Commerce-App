@@ -160,7 +160,15 @@
                                 </select>
 
                             </div>
-                            
+
+                            <div class="mb-3 service-fee" data-item-id="{{ $item->id }}">
+                                <label for="" class="col-form-label">Service Fee</label>
+                                @if($user['service_fee'])
+                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" value="{{ $user['service_fee'] }}">
+                                @else
+                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
+                                @endif
+                            </div>
 
                         </div>
 
@@ -238,6 +246,23 @@
             }
         }
 
+        function toggleServiceFee(itemId, retrievalValue) {
+            var serviceFee = document.querySelector('.service-fee[data-item-id="' + itemId + '"]');
+            var serviceFeeInput = serviceFee.querySelector('input');
+
+            if (retrievalValue == 'delivery') {
+
+                serviceFee.style.display = 'block';
+
+                serviceFeeInput.setAttribute('required', 'required');
+            } else if (retrievalValue == 'pickup') {
+
+                serviceFee.style.display = 'none';
+
+                serviceFeeInput.removeAttribute('required');
+            }
+        }
+
         //     // Hide delivery options if retrieval is pickup
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
         var orderRetrievalValue = '';
@@ -249,11 +274,13 @@
             hideOptions(orderRetrieval.value);
             toggleReceiptSubmission(itemId, orderRetrieval.value);
             toggleDeliveryOptions(itemId, orderRetrieval.value);
+            toggleServiceFee(itemId, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
                 hideOptions(orderRetrieval.value);
                 toggleDeliveryOptions(itemId, orderRetrieval.value);
+                toggleServiceFee(itemId, orderRetrieval.value);
                 toggleReceiptSubmission(itemId, orderRetrieval.value);
 
             });

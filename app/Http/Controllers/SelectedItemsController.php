@@ -137,6 +137,7 @@ class SelectedItemsController extends Controller
                     'order_retrieval' => $item->order_retrieval,
                     'quantity' => $item->quantity,
                     'courier_id' => $item->courier_id,
+                    'service_fee' => $item->service_fee,
                     'payment_type' => $item->payment_type,
                     'payment_condition' => $item->payment_condition,
                     'proof_of_delivery' => $item->proof_of_delivery,
@@ -565,6 +566,7 @@ class SelectedItemsController extends Controller
                 if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
                     $item->courier_id = Null;
                     $item->delivery_date = Null;
+                    $item->service_fee = 0;
                 }
 
                 if ($request->has('delivery_schedule') && $request->input('order_retrieval') == 'delivery') {
@@ -617,6 +619,12 @@ class SelectedItemsController extends Controller
                 }
 
                 $item->order_retrieval = $request->input('order_retrieval');
+            }
+
+            if ($request->has('service_fee')) {
+                if ($request->input('service_fee') != 0) {
+                    $item->service_fee = $request->input('service_fee');
+                }
             }
 
             $item->save();
