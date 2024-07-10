@@ -50,14 +50,18 @@
         <div class="humberger__menu__widget">
             @if(Auth::check())
             @if(Auth::user()->role == 'Admin')
-            <div class="header__top__right__auth">
+            <div class="header__top__right__auth" style="margin-right: 10px;">
                 <a href="{{ route('admin.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
             </div>
             @elseif(Auth::user()->role == 'Customer')
-            <div class="header__top__right__auth">
+            <div class="header__top__right__auth" style="margin-right: 10px;">
                 <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
             </div>
             @endif
+            <div class="header__top__right__auth">
+                <a onclick="Logout()"><i class="fa fa-sign-out"></i>Logout</a>
+                @include('shop.layouts.logoutAlert')
+            </div>
             @endif
         </div>
         <nav class="humberger__menu__nav mobile-menu">

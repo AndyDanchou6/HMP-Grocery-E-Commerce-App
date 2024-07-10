@@ -30,7 +30,6 @@
                 title: sessionMessage,
                 showConfirmButton: false,
                 timer: 1500,
-                className: 'swal-wide'
             });
         } else if (sessionTypeInputs && sessionMessageInputs) {
             let sessionType = sessionTypeInputs.value;

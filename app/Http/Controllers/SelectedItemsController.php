@@ -208,62 +208,48 @@ class SelectedItemsController extends Controller
         if (Auth::user()->role == 'Admin') {
             $search = $request->input('search');
 
-            $usersQuery = User::whereHas('selectedItems', function ($query) {
-                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
-                    ->where('status', '!=', 'forCheckout');
-            });
+            $selectedItemsQuery = SelectedItems::where('status', '!=', 'forCheckout')
+                ->whereIn('order_retrieval', ['delivery', 'pickup'])
+                ->with('user')
+                ->with('inventory');
 
             if ($search) {
-                $usersQuery->where(function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('selectedItems', function ($query) use ($search) {
-                            $query->where('referenceNo', 'like', "%{$search}%");
-                        });
+                $selectedItemsQuery->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
                 });
             }
 
-            $users = $usersQuery->with(['selectedItems' => function ($query) {
-                $query->whereIn('selected_items.order_retrieval', ['delivery', 'pickup'])
-                    ->where('status', '!=', 'forCheckout')
-                    ->select('inventories.*', 'selected_items.*');
-            }])->orderBy('created_at', 'desc')->get();
+            $selectedItems = $selectedItemsQuery->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $courier = User::find($item->courier_id);
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'item_id' => $item->item_id,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'delivery_date' => $item->delivery_date,
-                            'order_retrieval' => $item->order_retrieval,
-                            'status' => $item->status,
-                            'courier_id' => $courier ? $courier->name : 'Unknown',
-                            'payment_type' => $item->payment_type,
-                            'payment_condition' => $item->payment_condition,
-                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                            'created_at' => $item->created_at,
-                            'updated_at' => $item->updated_at,
-                            'items' => []
-                        ];
-                    }
-                    $userByReference[$item->referenceNo]['items'][] = $item;
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
                 }
-            }
-
-            if ($search) {
-                $userByReference = array_filter($userByReference, function ($user) use ($search) {
-                    return stripos($user['referenceNo'], $search) !== false ||
-                        stripos($user['name'], $search) !== false;
-                });
+                $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
             $perPage = 8;
@@ -281,6 +267,7 @@ class SelectedItemsController extends Controller
             return redirect()->route('error404');
         }
     }
+
 
     public function orders(Request $request)
     {
@@ -344,6 +331,63 @@ class SelectedItemsController extends Controller
         }
     }
 
+    // public function orders(Request $request)
+    // {
+    //     if (Auth::user()->role == 'Courier') {
+    //         return redirect()->route('error404');
+    //     }
+
+
+    //     $userId = Auth::id();
+
+    //     $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+    //     ->where('user_id', $userId)
+    //         ->with(['user', 'inventory'])
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     $userByReference = [];
+
+    //     foreach ($selectedItems as $item) {
+    //         if (!isset($userByReference[$item->referenceNo])) {
+    //             $courier = User::find($item->courier_id);
+    //             $userByReference[$item->referenceNo] = [
+    //                 'id' => $item->id,
+    //                 'referenceNo' => $item->referenceNo,
+    //                 'name' => $item->name,
+    //                 'email' => $item->email,
+    //                 'phone' => $item->phone,
+    //                 'fb_link' => $item->fb_link,
+    //                 'address' => $item->address,
+    //                 'order_retrieval' => $item->order_retrieval,
+    //                 'status' => $item->status,
+    //                 'courier_id' => $courier ? $courier->name : 'Unknown',
+    //                 'payment_type' => $item->payment_type,
+    //                 'payment_condition' => $item->payment_condition,
+    //                 'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+    //                 'delivery_date' => $item->delivery_date,
+    //                 'created_at' => $item->created_at,
+    //                 'updated_at' => $item->updated_at,
+    //                 'items' => []
+    //             ];
+    //         }
+    //         $userByReference[$item->referenceNo]['items'][] = $item;
+    //     }
+
+    //     $perPage = 7;
+    //     $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    //     $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+    //     $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+    //         'path' => LengthAwarePaginator::resolveCurrentPath(),
+    //     ]);
+
+    //     $admin = User::where('role', 'Admin')->first();
+
+    //     return view('selectedItems.orders', [
+    //         'userByReference' => $paginatedItems,
+    //         'admin' => $admin
+    //     ]);
+    // }
 
     public function courierDashboard()
     {
