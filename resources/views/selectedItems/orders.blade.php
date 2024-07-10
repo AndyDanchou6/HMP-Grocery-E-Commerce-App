@@ -8,7 +8,8 @@
             <h4 style="margin: auto 0;">Purchased</h4>
             <div class="alert alert-primary alert-sm" role="alert" style="margin-left: 10px; width: 70%; text-align: justify; animation: fadeEffect 5s ease-in-out 10s infinite;" id="timer">
                 Reminder: For GCash payments, kindly remit your payment to <strong>{{ $admin->phone }}</strong>
-                and include your <strong>order reference number</strong> in the message. Please provide a screenshot or receipt of your payment. You can easily access this by clicking on the receipt icon. Thank you!
+                and include your <strong>order reference number</strong> in the message. Please provide a screenshot
+                or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
         </div>
         <div class="table-responsive text-nowrap">

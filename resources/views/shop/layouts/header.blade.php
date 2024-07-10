@@ -22,7 +22,7 @@
                         <a href="{{ route('admin.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
                     @elseif(Auth::user()->role == 'Customer')
-                    <div class="header__top__right__auth">
+                    <div class="header__top__right__auth" style="margin-right: 10px;">
                         <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
                     @endif

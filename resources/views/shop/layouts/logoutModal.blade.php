@@ -1,7 +1,7 @@
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header primary text-white">
                 <h5 class="modal-title" id="exampleModalLabel">Confirm Logout</h5>
                 <!-- Remove the btn-close class from here -->
                 <button type="button" class="custom-close-btn" data-bs-dismiss="modal" aria-label="Close">
@@ -33,6 +33,10 @@
         padding: 0;
         cursor: pointer;
         outline: none;
+    }
+
+    .primary {
+        background-color: #696cff;
     }
 
     .custom-close-btn:hover {
