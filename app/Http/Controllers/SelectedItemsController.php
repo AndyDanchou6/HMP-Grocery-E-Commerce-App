@@ -269,50 +269,47 @@ class SelectedItemsController extends Controller
     }
 
 
-    public function orders(Request $request)
+       public function orders(Request $request)
     {
         if (Auth::user()->role == 'Courier') {
             return redirect()->route('error404');
         } else {
             $userId = Auth::id();
 
-            $users = User::whereHas('selectedItems', function ($query) use ($userId) {
-                $query->where('selected_items.status', '!=', 'forCheckout')
-                    ->where('selected_items.user_id', $userId);
-            })->with(['selectedItems' => function ($query) use ($userId) {
-                $query->where('selected_items.status', '!=', 'forCheckout')
-                    ->where('selected_items.user_id', $userId)
-                    ->select('selected_items.*', 'inventories.*', 'selected_items.quantity');
-            }])->orderBy('created_at', 'desc')->get();
+            $users = SelectedItems::where('selected_items.status', '!=', 'forCheckout')
+                ->where('selected_items.user_id', $userId)
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             $userByReference = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $courier = User::find($item->courier_id);
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'order_retrieval' => $item->order_retrieval,
-                            'status' => $item->status,
-                            'courier_id' => $courier ? $courier->name : 'Unknown',
-                            'payment_type' => $item->payment_type,
-                            'payment_condition' => $item->payment_condition,
-                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                            'delivery_date' => $item->delivery_date,
-                            'created_at' => $item->created_at,
-                            'updated_at' => $item->updated_at,
-                            'items' => []
-                        ];
-                    }
-                    $userByReference[$item->referenceNo]['items'][] = $item;
+            foreach ($users as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
                 }
+                $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
             $perPage = 7;
