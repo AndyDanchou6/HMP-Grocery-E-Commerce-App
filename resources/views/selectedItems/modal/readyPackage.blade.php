@@ -107,7 +107,7 @@
 
                             <div class="mb-3 service-fee" data-item-id="{{ $item->id }}">
                                 <label for="" class="col-form-label">Service Fee</label>
-                                <input type="decimal" class="form-control" name="service_fee" placeholder="0.00">
+                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
                             </div>
 
                         </div>
@@ -156,7 +156,7 @@
             var serviceFeeInput = serviceFee.querySelector('input');
 
             if (retrievalValue == 'delivery') {
-                
+
                 serviceFee.style.display = 'block';
 
                 serviceFeeInput.setAttribute('required', 'required');
