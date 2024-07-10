@@ -102,7 +102,6 @@ Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts
 Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
 Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
 
-
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/carts', [ShopController::class, 'carts'])->name('shop.carts');
 Route::get('/shop/products', [ShopController::class, 'shop'])->name('shop.products');
@@ -120,8 +119,6 @@ Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'f
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
 Route::post('/selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
 Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
-
-Route::get('/selected-items/show', [SelectedItemsController::class, 'show'])->name('selected-items.show');
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
 

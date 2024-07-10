@@ -18,19 +18,30 @@ class SelectedItemsController extends Controller
      * Display a listing of the resource.
      */
 
-    public function forPackaging()
+    public function forPackaging(Request $request)
     {
+        $search = $request->input('search');
+
         $selectedItems = SelectedItems::where('status', 'forPackage')
             ->with('user')
             ->with('inventory')
-            ->orderBy('created_at', 'asc')
-            ->get();
+            ->orderBy('created_at', 'asc');
 
-        $forPackage = [];
+        if ($search) {
+            $selectedItems->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })->orWhere('referenceNo', 'like', "%{$search}%");
+            });
+        }
+
+        $selectedItems = $selectedItems->get();
+
+        $userByReference = [];
 
         foreach ($selectedItems as $item) {
-            if (!isset($forPackage[$item->referenceNo])) {
-                $forPackage[$item->referenceNo] = [
+            if (!isset($userByReference[$item->referenceNo])) {
+                $userByReference[$item->referenceNo] = [
                     'id' => $item->id,
                     'user_id' => $item->user->id,
                     'referenceNo' => $item->referenceNo,
@@ -52,10 +63,22 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $forPackage[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
         }
 
-        return view('selectedItems.forPackaging', compact('forPackage'));
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return view('selectedItems.forPackaging', [
+            'forPackage' => $paginatedItems,
+            'search' => $search,
+        ]);
+
+        // return view('selectedItems.forPackaging', compact('forPackage'));
         // dd($forPackage);
     }
 
@@ -109,23 +132,34 @@ class SelectedItemsController extends Controller
     //     }
     // }
 
-    public function forDelivery()
+    public function forDelivery(Request $request)
     {
         // if (!Auth::check() || !(Auth::user()->role == 'Admin')) {
         //     return redirect()->route('error404');
         // } else {
+        $search = $request->input('search');
+
         $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'delivery')
             ->with('user')
             ->with('inventory')
-            ->orderBy('delivery_date', 'asc')
-            ->get();
+            ->orderBy('delivery_date', 'asc');
 
-        $forDelivery = [];
+        if ($search) {
+            $selectedItems->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })->orWhere('referenceNo', 'like', "%{$search}%");
+            });
+        }
+
+        $selectedItems = $selectedItems->get();
+
+        $userByReference = [];
 
         foreach ($selectedItems as $item) {
-            if (!isset($forDelivery[$item->referenceNo])) {
-                $forDelivery[$item->referenceNo] = [
+            if (!isset($userByReference[$item->referenceNo])) {
+                $userByReference[$item->referenceNo] = [
                     'id' => $item->id,
                     'user_id' => $item->user->id,
                     'referenceNo' => $item->referenceNo,
@@ -148,34 +182,56 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $forDelivery[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
         }
 
-        //Delivery Schedules
         $schedules = deliverySchedule::where('status', 'Active')->get();
         $couriers = User::where('role', 'Courier')->get();
 
-        return view('selectedItems.forDelivery', compact('forDelivery', 'couriers', 'schedules'));
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return view('selectedItems.forDelivery', [
+            'forDelivery' => $paginatedItems,
+            'search' => $search,
+            'couriers' => $couriers,
+            'schedules' => $schedules
+        ]);
+
         // }
     }
 
-    public function forPickup()
+    public function forPickup(Request $request)
     {
         // if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
         //     return redirect()->route('error404');
         // } else {
+        $search = $request->input('search');
+
         $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'pickup')
             ->with('user')
-            ->with('inventory')
-            ->orderBy('created_at', 'asc')
-            ->get();
+            ->with('inventory');
 
-        $forPickup = [];
+        if ($search) {
+            $selectedItems->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })->orWhere('referenceNo', 'like', "%{$search}%");
+            });
+        }
+
+        $selectedItems = $selectedItems->get();
+
+        $userByReference = [];
 
         foreach ($selectedItems as $item) {
-            if (!isset($forPickup[$item->referenceNo])) {
-                $forPickup[$item->referenceNo] = [
+            if (!isset($userByReference[$item->referenceNo])) {
+                $userByReference[$item->referenceNo] = [
                     'id' => $item->id,
                     'user_id' => $item->user->id,
                     'referenceNo' => $item->referenceNo,
@@ -197,13 +253,22 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $forPickup[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
         }
 
-        return view('selectedItems.forPickup', compact('forPickup'));
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return view('selectedItems.forPickup', [
+            'forPickup' => $paginatedItems,
+            'search' => $search,
+        ]);
         // }
     }
-
     public function show(Request $request)
     {
         if (Auth::user()->role == 'Admin') {
@@ -254,7 +319,7 @@ class SelectedItemsController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
-            $perPage = 8;
+            $perPage = 10;
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
             $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
@@ -276,18 +341,30 @@ class SelectedItemsController extends Controller
         if (Auth::user()->role == 'Courier') {
             return redirect()->route('error404');
         } else {
+            $search = $request->input('search');
+
             $userId = Auth::id();
 
-            $users = SelectedItems::where('selected_items.status', '!=', 'forCheckout')
+            $selectedItems = SelectedItems::where('selected_items.status', '!=', 'forCheckout')
                 ->where('selected_items.user_id', $userId)
                 ->with('user')
                 ->with('inventory')
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('created_at', 'desc');
+
+
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('referenceNo', 'like', "%{$search}%");
+                    });
+                });
+            }
+
+            $selectedItems = $selectedItems->get();
 
             $userByReference = [];
 
-            foreach ($users as $item) {
+            foreach ($selectedItems as $item) {
                 if (!isset($userByReference[$item->referenceNo])) {
                     $courier = User::find($item->courier_id);
                     $userByReference[$item->referenceNo] = [
@@ -314,7 +391,7 @@ class SelectedItemsController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
-            $perPage = 7;
+            $perPage = 10;
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
             $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
