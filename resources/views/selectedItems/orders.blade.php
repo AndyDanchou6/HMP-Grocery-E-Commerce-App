@@ -11,6 +11,14 @@
                 and include your <strong>order reference number</strong> in the message. Please provide a screenshot
                 or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
+            <!-- <form action="{{ route('selectedItems.orders') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-search-alt-2'></i>
+                    </button>
+                </div>
+            </form> -->
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">

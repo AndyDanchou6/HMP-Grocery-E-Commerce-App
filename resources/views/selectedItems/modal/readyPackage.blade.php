@@ -161,7 +161,6 @@
 
                 serviceFeeInput.setAttribute('required', 'required');
             }
-
             if (retrievalValue == 'pickup') {
 
                 serviceFee.style.display = 'none';
