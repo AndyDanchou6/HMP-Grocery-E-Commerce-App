@@ -6,7 +6,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
             <h4 style="margin: auto 0;">Package History</h4>
-            <form action="{{ route('selected-items.show') }}" method="GET" class="d-flex">
+            <form action="{{ route('selectedItems.history') }}" method="GET" class="d-flex">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">
