@@ -40,26 +40,6 @@ class ShopSeeder extends Seeder
                 'category_name' => 'Bakery and Snacks',
                 'description' => 'Description for Bakery and Snacks category',
             ],
-            // [
-            //     'category_img' => 'products/2.jpg',
-            //     'category_name' => 'Beverages',
-            //     'description' => 'Description for Meat category',
-            // ],
-            // [
-            //     'category_img' => 'products/1.png',
-            //     'category_name' => 'Frozen Foods',
-            //     'description' => 'Description for Dairy category',
-            // ],
-            // [
-            //     'category_img' => 'products/2.jpg',
-            //     'category_name' => 'Household Essentials',
-            //     'description' => 'Description for Meat category',
-            // ],
-            // [
-            //     'category_img' => 'products/2.jpg',
-            //     'category_name' => 'Health and Wellness',
-            //     'description' => 'Description for Meat category',
-            // ],
         ];
 
         foreach ($categories as $categoryData) {
@@ -71,11 +51,6 @@ class ShopSeeder extends Seeder
         $category3 = Category::where('category_name', 'Meat and Seafood')->first();
         $category4 = Category::where('category_name', 'Pantry Staples')->first();
         $category5 = Category::where('category_name', 'Bakery and Snacks')->first();
-        // $category6 = Category::where('category_name', 'Beverages')->first();
-        // $category7 = Category::where('category_name', 'Frozen Foods')->first();
-        // $category8 = Category::where('category_name', 'Household Essentials')->first();
-        // $category9 = Category::where('category_name', 'Health and Wellness')->first();
-
 
         $inventoryItems = [
             [
@@ -258,115 +233,6 @@ class ShopSeeder extends Seeder
                 'information' => 'Information for Products',
                 'description' => 'Description for Products',
             ],
-            // [
-            //     'category_id' => $category6->id,
-            //     'product_img' => 'product_name/product3-9.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category6->id,
-            //     'product_img' => 'product_name/product3-9.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category6->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category6->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category7->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category7->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category7->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category7->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category8->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category8->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category8->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // [
-            //     'category_id' => $category8->id,
-            //     'product_img' => 'products/2.jpg',
-            //     'product_name' => "Melchard's Juicy Meat",
-            //     'price' => rand(10, 100),
-            //     'quantity' => rand(15, 50),
-            //     'information' => 'Information for Juicy Meat',
-            //     'description' => 'Description for Juicy Meat',
-            // ],
-            // Add more inventory items as needed
         ];
 
         foreach ($inventoryItems as $inventoryData) {

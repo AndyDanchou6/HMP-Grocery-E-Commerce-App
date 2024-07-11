@@ -1,7 +1,6 @@
 @extends('app')
 
 @section('content')
-@include('layouts.sweetalert')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header row justify-content-between align-items-center">
