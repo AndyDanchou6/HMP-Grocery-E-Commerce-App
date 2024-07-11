@@ -140,15 +140,6 @@
                 currency: 'PHP'
             });
         });
-
-        // function updateAlertMessage() {
-        //     const timer = document.getElementById('timer');
-        //     timer.innerHTML = 'Reminder: For GCash payments, kindly send your payment to 0917-123-4567 and include your order reference number. Thank you!';
-
-        //     setTimeout(updateAlertMessage, 3000);
-        // }
-
-        // updateAlertMessage();
     });
 </script>
 @endsection
