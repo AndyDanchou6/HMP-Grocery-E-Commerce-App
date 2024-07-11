@@ -6,7 +6,7 @@
         <div class="card-header row justify-content-between align-items-center">
             <h4 class="col-md-3">Purchased</h4>
             <div class="col-md-8 alert alert-primary alert-sm" role="alert" style="margin-right: 20px; text-align: justify; animation: fadeEffect 5s ease-in-out 10s infinite;" id="timer">
-                Reminder: For GCash payments, kindly remit your payment to <strong></strong>
+                Reminder: For GCash payments, kindly remit your payment to <strong>{{ $admin->phone }}</strong>
                 and include your <strong>order reference number</strong> in the message. Please provide a screenshot
                 or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
