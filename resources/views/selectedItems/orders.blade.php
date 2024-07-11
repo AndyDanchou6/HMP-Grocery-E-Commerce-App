@@ -6,7 +6,7 @@
         <div class="card-header row justify-content-between align-items-center">
             <h4 class="col-md-3">Purchased</h4>
             <div class="col-md-8 alert alert-primary alert-sm" role="alert" style="margin-right: 20px; text-align: justify; animation: fadeEffect 5s ease-in-out 10s infinite;" id="timer">
-                Reminder: For GCash payments, kindly remit your payment to <strong>{{ $admin->phone }}</strong>
+                Reminder: For GCash payments, kindly remit your payment to <strong></strong>
                 and include your <strong>order reference number</strong> in the message. Please provide a screenshot
                 or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
@@ -84,7 +84,7 @@
                             @endif
                             @if($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
                             <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                     @include('selectedItems.modal.customerPaymentProof')
+                            @include('selectedItems.modal.customerPaymentProof')
                             @endif
                         </td>
                     </tr>
@@ -140,15 +140,6 @@
                 currency: 'PHP'
             });
         });
-
-        // function updateAlertMessage() {
-        //     const timer = document.getElementById('timer');
-        //     timer.innerHTML = 'Reminder: For GCash payments, kindly send your payment to 0917-123-4567 and include your order reference number. Thank you!';
-
-        //     setTimeout(updateAlertMessage, 3000);
-        // }
-
-        // updateAlertMessage();
     });
 </script>
 @endsection
