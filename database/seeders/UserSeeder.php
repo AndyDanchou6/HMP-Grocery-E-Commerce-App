@@ -23,9 +23,22 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'role' => 'Admin',
             'avatar' => $admin1,
+            'name' => 'Testing',
+            'email' => 'testing@admin.me',
+            'phone' => 123123123,
+            'fb_link' => 'https://www.facebook.com/',
+            'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'password' => Hash::make('12345678'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+         User::factory()->create([
+            'role' => 'Admin',
+            'avatar' => $admin1,
             'name' => 'E-Mart',
             'email' => 'e.mart@admin.me',
-            'phone' => 639638753244,
+            'phone' => 09638753244,
             'fb_link' => 'https://www.facebook.com/',
             'address' => 'Rizal Street, Sogod, Southern, Leyte',
             'password' => Hash::make('12345678'),
