@@ -134,7 +134,7 @@
                             @if($user['delivery_date'] && $user['courier_id'])
                             <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
                                 <label for="" class="col-form-label">Proof of Delivery:</label>
-                                <input type="file" class="form-control" name="proofOfDelivery">
+                                <input type="file" class="form-control" name="proof_of_delivery">
                             </div>
                             @endif
                         </div>

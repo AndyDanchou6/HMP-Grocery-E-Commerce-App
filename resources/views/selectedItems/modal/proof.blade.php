@@ -75,4 +75,9 @@
             </div>
         </div>
     </div>
+    @if($item['payment_proof'] != NULL)
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+    @endif
 </div>
