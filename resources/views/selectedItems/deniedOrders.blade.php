@@ -4,8 +4,8 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Selected Items</h4>
-            <form action="{{ route('selectedItems.forPackaging') }}" method="GET" class="d-flex">
+            <h4 style="margin: auto 0;">Denied Orders</h4>
+            <form action="{{ route('selectedItems.deniedOrders') }}" method="GET" class="d-flex">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">
@@ -28,8 +28,8 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="tableBody">
-                    @if(count($forPackage) > 0)
-                    @foreach ($forPackage as $user)
+                    @if(count($deniedOrders) > 0)
+                    @foreach ($deniedOrders as $user)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
@@ -54,7 +54,7 @@
                         </td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#readyMessages{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
-                            @include('selectedItems.modal.readyPackage')
+                            @include('selectedItems.modal.deniedOrders')
                         </td>
                     </tr>
                     @endforeach
@@ -71,12 +71,12 @@
                 <td colspan="4">
                     <div class="d-flex justify-content-between align-items-center mt-3" style="margin-bottom: 10px; margin-right: 10px;">
                         <div class="text-muted" style="margin-left: 10px;">
-                            Showing {{ $forPackage->firstItem() }} to {{ $forPackage->lastItem() }} of {{ $forPackage->total() }} Results
+                            Showing {{ $deniedOrders->firstItem() }} to {{ $deniedOrders->lastItem() }} of {{ $deniedOrders->total() }} Results
                         </div>
                         <!-- Pagination -->
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-end mb-0">
-                                @if ($forPackage->onFirstPage())
+                                @if ($deniedOrders->onFirstPage())
                                 <li class="page-item disabled">
                                     <span class="page-link"><i class="tf-icon bx bx-chevrons-left"></i></span>
                                 </li>
@@ -85,20 +85,20 @@
                                 </li>
                                 @else
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $forPackage->url(1) }}"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                                    <a class="page-link" href="{{ $deniedOrders->url(1) }}"><i class="tf-icon bx bx-chevrons-left"></i></a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $forPackage->previousPageUrl() }}"><i class="tf-icon bx bx-chevron-left"></i></a>
+                                    <a class="page-link" href="{{ $deniedOrders->previousPageUrl() }}"><i class="tf-icon bx bx-chevron-left"></i></a>
                                 </li>
                                 @endif
                                 @php
-                                $currentPage = $forPackage->currentPage();
-                                $lastPage = $forPackage->lastPage();
+                                $currentPage = $deniedOrders->currentPage();
+                                $lastPage = $deniedOrders->lastPage();
                                 $startPage = max($currentPage - 2, 1);
                                 $endPage = min($startPage + 4, $lastPage);
                                 @endphp
 
-                                @foreach ($forPackage->getUrlRange($startPage, $endPage) as $page => $url)
+                                @foreach ($deniedOrders->getUrlRange($startPage, $endPage) as $page => $url)
                                 @if ($page == $currentPage)
                                 <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
                                 @else
@@ -106,12 +106,12 @@
                                 @endif
                                 @endforeach
 
-                                @if ($forPackage->hasMorePages())
+                                @if ($deniedOrders->hasMorePages())
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $forPackage->nextPageUrl() }}"><i class="tf-icon bx bx-chevron-right"></i></a>
+                                    <a class="page-link" href="{{ $deniedOrders->nextPageUrl() }}"><i class="tf-icon bx bx-chevron-right"></i></a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $forPackage->url($lastPage) }}"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                                    <a class="page-link" href="{{ $deniedOrders->url($lastPage) }}"><i class="tf-icon bx bx-chevrons-right"></i></a>
                                 </li>
                                 @else
                                 <li class="page-item disabled">
@@ -130,4 +130,45 @@
     </div>
 </div>
 
+@endsection
+
+@section('customScript')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var subTotalField = document.querySelectorAll('.item-sub-total');
+        var totalContainer = {};
+
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute('data-item-id');
+            var [referenceNo, itemId] = itemReferenceNo.split('_');
+
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
+
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll('.purchase-total');
+
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute('data-total-id');
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+        });
+    });
+</script>
 @endsection

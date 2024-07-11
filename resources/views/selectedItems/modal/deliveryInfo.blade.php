@@ -69,7 +69,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
-                            <input type="text" class="form-control" value="{{ ucwords($item->order_retrieval) }}" readonly>
+                            <input type="text" class="form-control" name="order_retrieval" value="{{ ucwords($item->order_retrieval) }}" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="order_date" class="col-form-label">Date</label>
@@ -96,7 +96,7 @@
 
                                 <div class="col-12 mb-3">
                                     <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
-                                    <input type="file" class="form-control" name="proofOfDelivery" id="proof_of_delivery" required>
+                                    <input type="file" class="form-control" name="proof_of_delivery" id="proof_of_delivery" required>
                                 </div>
 
                             </div>

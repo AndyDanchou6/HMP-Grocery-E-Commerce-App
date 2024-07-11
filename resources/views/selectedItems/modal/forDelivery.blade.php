@@ -134,7 +134,7 @@
                             @if($user['delivery_date'] && $user['courier_id'])
                             <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
                                 <label for="" class="col-form-label">Proof of Delivery:</label>
-                                <input type="file" class="form-control" name="proofOfDelivery">
+                                <input type="file" class="form-control" name="proof_of_delivery">
                             </div>
                             @endif
                         </div>
@@ -172,18 +172,24 @@
 
                         </div>
 
-                        @if($user['delivery_date'] && $user['courier_id'])
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-outline-success me-2">Update</button>
-                            <input type="text" name="delivered" value="delivered" hidden>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="mb-3 col-12 denial-reason" style="display: none;">
+                            <label for="#" class="col-form-label">Reason for Denial</label>
+                            <div>
+                                <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
+                            </div>
                         </div>
-                        @else
+
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-outline-primary me-2">Update</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
+
+                            @if($user['delivery_date'] && $user['courier_id'])
+                            <button type="submit" class="btn btn-outline-success me-2 finishedBtn">Update</button>
+                            @else
+                            <button type="submit" class="btn btn-outline-primary me-2 finishedBtn">Update</button>
+                            @endif
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+
                         </div>
-                        @endif
 
                     </form>
 
@@ -359,5 +365,37 @@
                 currency: "PHP",
             });
         });
+
+        var denyBtns = document.querySelectorAll('.denyBtn');
+
+        denyBtns.forEach(function(deny) {
+
+            deny.addEventListener('click', function() {
+
+                var denialInputs = document.querySelector('.denial-reason');
+                var serviceFee = document.querySelector('.service-fee');
+                var finishedBtn = document.querySelector('.finishedBtn');
+
+                denialInputs.style.display = 'block';
+                denialInputs.setAttribute('required', 'required');
+                serviceFee.querySelector('input').removeAttribute('required');
+                serviceFee.style.display = 'none';
+
+                var reasonNotNull = denialInputs.querySelector('textarea');
+
+                reasonNotNull.addEventListener('change', function() {
+                    deny.setAttribute('type', 'submit');
+                    finishedBtn.style.display = 'none';
+
+                    if (reasonNotNull.value == '') {
+                        deny.setAttribute('type', 'button');
+                        finishedBtn.style.display = 'block';
+                        denialInputs.removeAttribute('required');
+                        denialInputs.style.display = 'none';
+                    }
+                })
+            })
+        })
+
     });
 </script>

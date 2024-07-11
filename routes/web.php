@@ -116,6 +116,7 @@ Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::c
 Route::get('/customer/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
 Route::get('/admin/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
+Route::get('/admin/selectedItems/deniedOrders', [SelectedItemsController::class, 'deniedOrders'])->name('selectedItems.deniedOrders');
 Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
 Route::post('/selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
 Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');

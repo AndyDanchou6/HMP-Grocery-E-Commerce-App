@@ -28,6 +28,8 @@ class SelectedItems extends Model
         'proof_of_delivery',
         'order_retrieval',
         'delivery_date',
+        'service_fee',
+        'reasonForDenial',
     ];
 
     public function inventory()
