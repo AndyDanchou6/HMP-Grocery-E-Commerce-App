@@ -96,7 +96,7 @@
 
                                 <div class="col-12 mb-3">
                                     <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
-                                    <input type="file" class="form-control" name="proof_of_delivery" id="proof_of_delivery" required>
+                                    <input type="file" class="form-control" name="proofOfDelivery" id="proof_of_delivery" required>
                                 </div>
 
                             </div>

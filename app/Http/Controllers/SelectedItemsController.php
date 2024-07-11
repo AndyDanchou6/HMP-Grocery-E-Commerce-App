@@ -305,6 +305,7 @@ class SelectedItemsController extends Controller
                         'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
                         'status' => $item->status,
                         'courier_id' => $courier ? $courier->name : 'Unknown',
                         'payment_type' => $item->payment_type,
@@ -378,6 +379,7 @@ class SelectedItemsController extends Controller
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'status' => $item->status,
+                        'service_fee' => $item->service_fee,
                         'courier_id' => $courier ? $courier->name : 'Unknown',
                         'payment_type' => $item->payment_type,
                         'payment_condition' => $item->payment_condition,
@@ -404,6 +406,7 @@ class SelectedItemsController extends Controller
                 'userByReference' => $paginatedItems,
                 'admin' => $admin
             ]);
+            // dd($userByReference);
         }
     }
 
