@@ -1,4 +1,3 @@
-<!-- Modal Template for Payment Proof -->
 <div class="modal fade" id="paymentProof{{$user['referenceNo']}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -28,13 +27,13 @@
                     <div class="row mb-3">
                         <label for="payment_proof{{$user['referenceNo']}}" class="col-sm-3 col-form-label">Upload New Proof:</label>
                         <div class="col-sm-9">
-                            <input type="file" class="form-control" id="payment_proof{{$user['referenceNo']}}" name="payment_proof" accept="image/*" data-item-id="{{ $item->id }}">
+                            <input type="file" class="form-control" id="payment_proof{{$user['referenceNo']}}" name="payment_proof" accept="image/*">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-outline-warning" id="pendingButton{{$user['referenceNo']}}">Pending</button>
-                        <button type="submit" class="btn btn-outline-primary" id="uploadButton{{$user['referenceNo']}}" data-item-id="{{ $item->id }}" style="display: none;">Upload</button>
+                        <button type="submit" class="btn btn-outline-primary" id="uploadButton{{$user['referenceNo']}}" style="display: none;">Upload</button>
                     </div>
                 </form>
             </div>
