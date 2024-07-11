@@ -112,8 +112,16 @@
 
                         </div>
 
+                        <div class="mb-3 col-12 denial-reason" style="display: none;">
+                            <label for="#" class="col-form-label">Reason for Denial</label>
+                            <div>
+                                <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-outline-primary me-2">Finished</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
+                            <button type="submit" class="btn btn-outline-primary me-2 finishedBtn">Finished</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -170,6 +178,40 @@
             }
         }
 
+        var subTotalField = document.querySelectorAll('.item-sub-total');
+        var totalContainer = {};
+
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute('data-item-id');
+            var [referenceNo, itemId] = itemReferenceNo.split('_');
+
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
+
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll('.purchase-total');
+
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute('data-total-id');
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+        });
+
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
         orderRetrievals.forEach(function(orderRetrieval) {
@@ -186,5 +228,37 @@
                 // console.log(itemId);
             });
         });
+
+        // Deny order
+        var denyBtns = document.querySelectorAll('.denyBtn');
+
+        denyBtns.forEach(function(deny) {
+
+            deny.addEventListener('click', function() {
+
+                var denialInputs = document.querySelector('.denial-reason');
+                var serviceFee = document.querySelector('.service-fee');
+                var finishedBtn = document.querySelector('.finishedBtn');
+
+                denialInputs.style.display = 'block';
+                denialInputs.setAttribute('required', 'required');
+                serviceFee.querySelector('input').removeAttribute('required');
+                serviceFee.style.display = 'none';
+
+                var reasonNotNull = denialInputs.querySelector('textarea');
+
+                reasonNotNull.addEventListener('change', function() {
+                    deny.setAttribute('type', 'submit');
+                    finishedBtn.style.display = 'none';
+
+                    if (reasonNotNull.value == '') {
+                        deny.setAttribute('type', 'button');
+                        finishedBtn.style.display = 'block';
+                        denialInputs.removeAttribute('required');
+                        denialInputs.style.display = 'none';
+                    }
+                })
+            })
+        })
     })
 </script>

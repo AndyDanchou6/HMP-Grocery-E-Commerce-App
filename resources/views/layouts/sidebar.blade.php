@@ -81,6 +81,13 @@
         <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('selectedItems.deniedOrders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-cart-x"></i>
+        <span data-i18n="Tables">Denied Orders</span>
+        <span id="deniedOrders" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+      </a>
+    </li>
     @endif
     @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Customer')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
@@ -134,6 +141,12 @@
           if (forPickupCount) {
             forPickupCount.textContent = data.count3;
             forPickupCount.style.display = data.count3 ? 'block' : 'none';
+          }
+
+          const deniedOrders = document.getElementById('deniedOrders');
+          if (deniedOrders) {
+            deniedOrders.textContent = data.count4;
+            deniedOrders.style.display = data.count4 ? 'block' : 'none';
           }
 
 
