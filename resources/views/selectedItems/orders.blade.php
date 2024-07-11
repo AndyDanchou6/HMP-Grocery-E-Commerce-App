@@ -12,14 +12,14 @@
                 or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
         </div>
-        <!-- <form action="{{ route('selectedItems.orders') }}" method="GET" class="d-flex">
+        <form action="{{ route('selectedItems.orders') }}" method="GET" class="d-flex">
             <div class="input-group">
                 <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
                 <button type="submit" class="btn btn-primary">
                     <i class='bx bx-search-alt-2'></i>
                 </button>
             </div>
-        </form> -->
+        </form>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
@@ -82,11 +82,10 @@
                             <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.proof')
                             @endif
-                            @else
+                            @endif
                             @if($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
                             <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.customerPaymentProof')
-                            @endif
                             @endif
                         </td>
                     </tr>
