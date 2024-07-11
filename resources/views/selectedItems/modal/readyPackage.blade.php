@@ -161,6 +161,10 @@
 
                 serviceFeeInput.setAttribute('required', 'required');
             }
+<<<<<<<<< Temporary merge branch 1
+
+=========
+>>>>>>>>> Temporary merge branch 2
             if (retrievalValue == 'pickup') {
 
                 serviceFee.style.display = 'none';
