@@ -82,10 +82,6 @@
                             <label for="" class="col-form-label">Service Fee:</label>
                             <input type="text" class="form-control" value="{{ $user['service_fee'] }}" readonly>
                         </div>
-
-                       
-
-
                     </div>
                     @elseif($user['order_retrieval'] == 'pickup')
                     <div class="row mb-3 p-0">

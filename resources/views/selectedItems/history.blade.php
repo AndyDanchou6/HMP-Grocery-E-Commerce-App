@@ -24,6 +24,7 @@
                         <th>User Name</th>
                         <th>Items</th>
                         <th>Order Type</th>
+                        <th>Payment Type</th>
                         <th>Payment Condition</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -48,6 +49,15 @@
                             @endif
                         </td>
                         <td>
+                            @if($user['payment_type'] == 'COD')
+                            <span class="badge bg-label-primary me-1">{{ $user['payment_type'] }}</span>
+                            @elseif($user['payment_type'] == 'G-cash')
+                            <span class="badge bg-label-info me-1">{{ $user['payment_type'] }}</span>
+                            @else
+                            <span class="badge bg-label-secondary me-1">{{ $user['payment_type'] }}</span>
+                            @endif
+                        </td>
+                        <td>
                             @if($user['payment_condition'] == 'paid')
                             <span class="badge bg-label-success me-1">Paid</span>
                             @else
@@ -64,7 +74,7 @@
                             @endif
                         </td>
                         <td>
-                            @if($user['payment_condition'] == NULL)
+                            @if ($user['payment_condition'] == null && $user['payment_type'] != 'G-cash')
                             <form action="{{ route('selected-items.updatePaymentCondition', ['referenceNo' => $referenceNo]) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('POST')
@@ -74,16 +84,24 @@
                                 </button>
                             </form>
                             @endif
-                            @if($user['order_retrieval'] == 'delivery')
+
+                            @if ($user['order_retrieval'] == 'delivery' && $user['payment_condition'] == 'paid')
                             <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.proof', ['user' => $user])
+                            @endif
+
+                            @if ($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
+                            @if($user['payment_proof'] != NULL)
+                            <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.proof2')
+                            @endif
                             @endif
                         </td>
                     </tr>
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="8" class="text-center">No Package Items found.</td>
+                        <td colspan="9" class="text-center">No Package Items found.</td>
                     </tr>
                     @endif
                 </tbody>

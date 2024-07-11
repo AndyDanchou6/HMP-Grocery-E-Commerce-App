@@ -363,6 +363,7 @@ class SelectedItemsController extends Controller
                         'id' => $item->user->id,
                         'referenceNo' => $item->referenceNo,
                         'name' => $item->user->name,
+                        'role' => $item->user->role,
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
@@ -375,6 +376,7 @@ class SelectedItemsController extends Controller
                         'payment_type' => $item->payment_type,
                         'payment_condition' => $item->payment_condition,
                         'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
                         'delivery_date' => $item->delivery_date,
                         'created_at' => $item->created_at,
                         'updated_at' => $item->updated_at,
@@ -436,18 +438,20 @@ class SelectedItemsController extends Controller
                         'id' => $item->user->id,
                         'referenceNo' => $item->referenceNo,
                         'name' => $item->user->name,
+                        'role' => $item->user->role,
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
                         'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
-                        'status' => $item->status,
                         'service_fee' => $item->service_fee,
+                        'status' => $item->status,
                         'courier_id' => $courier ? $courier->name : 'Unknown',
                         'payment_type' => $item->payment_type,
                         'payment_condition' => $item->payment_condition,
                         'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
                         'delivery_date' => $item->delivery_date,
                         'created_at' => $item->created_at,
                         'updated_at' => $item->updated_at,
@@ -564,6 +568,7 @@ class SelectedItemsController extends Controller
                             'fb_link' => $item->fb_link,
                             'address' => $item->address,
                             'delivery_date' => $item->delivery_date,
+                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
                             'quantity' => $item->quantity,
                             'created_at' => $item->created_at,
                             'updated_at' => $item->updated_at,
@@ -808,15 +813,32 @@ class SelectedItemsController extends Controller
     {
         $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
 
+        $message = '';
+        $icon = '';
+
         foreach ($selectedItems as $item) {
             if ($request->has('payment_condition')) {
                 $item->payment_condition = $request->input('payment_condition');
+                $icon = 'success';
+                $message = 'Paid Successfully.';
+            }
+
+            // if ($request->has('payment_proof')) {
+            //     $item->payment_proof = $request->input('payment_proof');
+            //     $message = 'Payment proof updated successfully.';
+            // }
+
+            if ($request->hasFile('payment_proof')) {
+                $avatarPath = $request->file('payment_proof')->store('proof', 'public');
+                $item->payment_proof = $avatarPath;
+                $icon = 'success';
+                $message = 'Payment proof updated successfully.';
             }
 
             $item->save();
         }
 
-        return redirect()->back()->with('success', 'Paid Successfully.');
+        return redirect()->back()->with($icon, $message);
     }
 
     /**
