@@ -49,6 +49,7 @@
                         <div class="col-12 col-sm-4 col-md-3 mb-3">
                             <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
                             <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
+
                         </div>
 
                         <div class="col-sm-12">
@@ -99,6 +100,7 @@
                                         <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery" id="payment_proof{{$user['referenceNo']}}" required>
                                     </div>
+
 
                                 </div>
                                 @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')

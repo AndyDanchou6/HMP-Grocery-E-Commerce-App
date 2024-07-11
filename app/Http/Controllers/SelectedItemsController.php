@@ -268,6 +268,71 @@ class SelectedItemsController extends Controller
         ]);
         // }
     }
+
+    public function deniedOrders(Request $request)
+    {
+        $search = $request->input('search');
+
+        $deniedOrders = SelectedItems::where('status', 'denied')
+            ->with('user')
+            ->with('inventory')
+            ->orderBy('updated_at', 'desc');
+
+        if ($search) {
+            $deniedOrders->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })->orWhere('referenceNo', 'like', "%{$search}%");
+            });
+        }
+
+        $deniedOrders = $deniedOrders->get();
+
+        $userByReference = [];
+
+        foreach ($deniedOrders as $item) {
+            if (!isset($userByReference[$item->referenceNo])) {
+                $userByReference[$item->referenceNo] = [
+                    'id' => $item->id,
+                    'user_id' => $item->user->id,
+                    'referenceNo' => $item->referenceNo,
+                    'name' => $item->user->name,
+                    'email' => $item->user->email,
+                    'phone' => $item->phone,
+                    'fb_link' => $item->fb_link,
+                    'address' => $item->address,
+                    'order_retrieval' => $item->order_retrieval,
+                    'quantity' => $item->quantity,
+                    'reasonForDenial' => $item->reasonForDenial,
+                    'courier_id' => $item->courier_id,
+                    'payment_type' => $item->payment_type,
+                    'payment_condition' => $item->payment_condition,
+                    'proof_of_delivery' => $item->proof_of_delivery,
+                    'delivery_date' => $item->delivery_date,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                    'items' => []
+                ];
+            }
+
+            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
+        }
+
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return view('selectedItems.deniedOrders', [
+            'deniedOrders' => $paginatedItems,
+            'search' => $search,
+        ]);
+
+        // dd($userByReference);
+    }
+
     public function show(Request $request)
     {
         if (Auth::user()->role == 'Admin') {
@@ -604,112 +669,140 @@ class SelectedItemsController extends Controller
         $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
 
         foreach ($selectedItems as $item) {
-            if ($item->status == 'forPackage') {
 
-                if ($request->has('order_retrieval')) {
-                    $item->order_retrieval = $request->input('order_retrieval');
+            if ($request->has('delete')) {
+                $item->delete();
+            } else {
+                if ($request->has('restore')) {
+                    $item->status = 'forPackage';
+                    $item->reasonForDenial = null;
                 }
 
-                if ($request->has('payment_type')) {
-                    $item->payment_type = $request->input('payment_type');
-                }
+                if ($request->has('deny')) {
+                    $item->status = 'denied';
+                    $item->courier_id = null;
+                    $item->delivery_date = null;
+                    $item->reasonForDenial = $request->input('reasonForDenial');
+                } elseif ($item->status == 'forPackage') {
 
-                $item->status = 'readyForRetrieval';
-                $item->payment_condition = $request->input('payment_condition');
-            } elseif ($item->status == 'readyForRetrieval') {
-
-                if ($item->order_retrieval == 'pickup' && $request->input('order_retrieval') == 'pickup') {
-
-                    $pickedUp = $item->payment_type == $request->input('payment_type') && $item->payment_condition == $request->input('payment_condition');
-
-                    if ($pickedUp) {
-                        $item->status = 'pickedUp';
+                    if ($request->has('order_retrieval')) {
+                        $item->order_retrieval = $request->input('order_retrieval');
                     }
-                }
 
-                if ($request->input('order_retrieval') == 'pickup')
+                    if ($request->has('payment_type')) {
+                        $item->payment_type = $request->input('payment_type');
+                    }
 
-                    if ($request->input('payment_condition') == 'paid') {
+                    $item->payment_condition = $request->input('payment_condition');
+
+                    $item->status = 'readyForRetrieval';
+                } elseif ($item->status == 'readyForRetrieval') {
+
+                    if ($item->order_retrieval == 'pickup' && $request->input('order_retrieval') == 'pickup') {
+
+                        $pickedUp = $item->payment_type == $request->input('payment_type') && $item->payment_condition == $request->input('payment_condition');
+
+                        if ($pickedUp) {
+                            $item->status = 'pickedUp';
+                        }
+                    }
+
+                    if ($request->has('payment_condition')) {
 
                         $item->payment_condition = $request->input('payment_condition');
                     }
 
-                if ($request->hasFile('proof_of_delivery')) {
-                    $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
-                    $item->proof_of_delivery = $avatarPath;
-                    $item->status = 'delivered';
-                }
-
-                if ($request->has('payment_type')) {
-
-                    $item->payment_type = $request->input('payment_type');
-                }
-
-                if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
-                    $item->courier_id = Null;
-                    $item->delivery_date = Null;
-                    $item->service_fee = 0;
-                }
-
-                if ($request->has('delivery_schedule') && $request->input('order_retrieval') == 'delivery') {
-
-                    $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
-
-                    if (!$scheduleOfDelivery) {
-                        return redirect()->back()->with('error', 'Schedule does not exists');
-                    }
-                    $numericValues = [
-                        'Sunday' => 1,
-                        'Monday' => 2,
-                        'Tuesday' => 3,
-                        'Wednesday' => 4,
-                        'Thursday' => 5,
-                        'Friday' => 6,
-                        'Saturday' => 7
-                    ];
-
-                    $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
-                    $today = Carbon::now()->format('l');
-                    $currentDay = $numericValues[$today];
-
-                    $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) > strtotime($scheduleOfDelivery->start_time);
-                    $forNextWeek = $selectedSchedule < $currentDay;
-
-                    $offset = '';
-
-                    if ($forNextWeek || $didNotMakeIt) {
-                        $less = count($numericValues) - $currentDay;
-                        $offset = $selectedSchedule + $less;
-                    } else {
-                        $offset = $selectedSchedule - $currentDay;
+                    if ($request->hasFile('proof_of_delivery')) {
+                        $avatarPath = $request->file('proof_of_delivery')->store('delivery', 'public');
+                        $item->proof_of_delivery = $avatarPath;
+                        $item->status = 'delivered';
                     }
 
-                    $deliveryDate = Carbon::now()->addDays($offset);
+                    if ($request->has('payment_type')) {
 
-                    $startTime = $scheduleOfDelivery->start_time;
-                    list($startHour, $startMinute) = explode(':', $startTime);
+                        $item->payment_type = $request->input('payment_type');
+                    }
 
-                    $deliveryDate->setHour($startHour)
-                        ->setMinute($startMinute)
-                        ->setSecond(0);
-                    $item->delivery_date = $deliveryDate;
+                    if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
+                        $item->courier_id = Null;
+                        $item->delivery_date = Null;
+                        $item->service_fee = 0;
+                    }
+
+                    if ($request->has('delivery_schedule') && $request->input('order_retrieval') == 'delivery') {
+
+                        $scheduleOfDelivery = deliverySchedule::where('id', $request->delivery_schedule)->first();
+
+                        if (!$scheduleOfDelivery) {
+                            return redirect()->back()->with('error', 'Schedule does not exists');
+                        }
+                        $numericValues = [
+                            'Sunday' => 1,
+                            'Monday' => 2,
+                            'Tuesday' => 3,
+                            'Wednesday' => 4,
+                            'Thursday' => 5,
+                            'Friday' => 6,
+                            'Saturday' => 7
+                        ];
+
+                        $selectedSchedule = $numericValues[$scheduleOfDelivery->day];
+                        $today = Carbon::now()->format('l');
+                        $currentDay = $numericValues[$today];
+
+                        $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) > strtotime($scheduleOfDelivery->start_time);
+                        $forNextWeek = $selectedSchedule < $currentDay;
+
+                        $offset = '';
+
+                        if ($forNextWeek || $didNotMakeIt) {
+                            $less = count($numericValues) - $currentDay;
+                            $offset = $selectedSchedule + $less;
+                        } else {
+                            $offset = $selectedSchedule - $currentDay;
+                        }
+
+                        $deliveryDate = Carbon::now()->addDays($offset);
+
+                        $startTime = $scheduleOfDelivery->start_time;
+                        list($startHour, $startMinute) = explode(':', $startTime);
+
+                        $deliveryDate->setHour($startHour)
+                            ->setMinute($startMinute)
+                            ->setSecond(0);
+                        $item->delivery_date = $deliveryDate;
+                    }
+
+                    if ($request->has('courier_id') && $request->input('order_retrieval') == 'delivery') {
+
+                        $item->courier_id = $request->input('courier_id');
+                    }
+
+                    if ($request->has('order_retrieval')) {
+                        $item->order_retrieval = $request->input('order_retrieval');
+                    }
                 }
 
-                if ($request->has('courier_id') && $request->input('order_retrieval') == 'delivery') {
-
-                    $item->courier_id = $request->input('courier_id');
+                if ($request->has('service_fee')) {
+                    if ($request->input('service_fee') != 0) {
+                        $item->service_fee = $request->input('service_fee');
+                    }
                 }
 
-                $item->order_retrieval = $request->input('order_retrieval');
+                $item->save();
             }
+        }
 
-            if ($request->has('service_fee')) {
-                if ($request->input('service_fee') != 0) {
-                    $item->service_fee = $request->input('service_fee');
-                }
-            }
+        if ($request->has('delete')) {
+            return redirect()->back()->with('success', 'Order Has Been Deleted Permanently.');
+        }
 
-            $item->save();
+        if ($request->has('restore')) {
+            return redirect()->back()->with('success', 'Order Has Been Restored.');
+        }
+
+        if ($request->has('deny')) {
+            return redirect()->back()->with('success', 'Order Has Been Denied.');
         }
 
         return redirect()->back()->with('success', 'Order updated.');
@@ -765,12 +858,15 @@ class SelectedItemsController extends Controller
         $item3 = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'pickup')
             ->get();
+        $item4 = SelectedItems::where('status', 'denied')->get();
+
 
         $count1 = $item1->pluck('referenceNo')->unique()->count();
         $count2 = $item2->pluck('referenceNo')->unique()->count();
         $count3 = $item3->pluck('referenceNo')->unique()->count();
+        $count4 = $item4->pluck('referenceNo')->unique()->count();
 
-        return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3]);
+        return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3, 'count4' => $count4]);
     }
 
     public function courierTask(Request $request)
