@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'role' => 'Admin',
             'avatar' => $admin1,
             'name' => 'E-Mart',
-            'email' => 'e.mart@admin.me',
+            'email' => 'j.parrocha@gmail.com',
             'phone' => 09638753244,
             'fb_link' => 'https://www.facebook.com/',
             'address' => 'Rizal Street, Sogod, Southern, Leyte',
