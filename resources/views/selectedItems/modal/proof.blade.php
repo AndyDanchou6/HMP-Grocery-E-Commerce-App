@@ -30,7 +30,6 @@
                 </div>
                 @foreach($user['items'] as $item)
                 @endforeach
-
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">Proof of Delivery:</label>
                     <div class="col-sm-10 text-center">
@@ -41,8 +40,6 @@
                         @endif
                     </div>
                 </div>
-
-                @if($user['order_retrieval'] == 'delivery')
                 <div class="row mb-3">
                     <div class="col-sm-3">
                         <label for="courier_id" class="col-form-label">Courier Name:</label>
@@ -59,13 +56,13 @@
                         <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                     </div>
                 </div>
-                @elseif($user['order_retrieval'] == 'pickup')
+                @if($user['proof_of_delivery'])
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <label for="payment_type" class="col-form-label">Payment Type:</label>
+                        <label for="payment_type" class="col-form-label">Date Delivered:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
+                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->updated_at)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>
                 @endif
