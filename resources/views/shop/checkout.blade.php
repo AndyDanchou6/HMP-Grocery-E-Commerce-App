@@ -27,10 +27,20 @@
                             <p>Fb Link<span></span></p>
                             <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
                         </div>
+
+                        @if($orderType != 'pickup')
+                        <div class="forDeliveryMessage" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
+                            <p class="col-10 text-primary">
+                                Kindly await the additional fee for delivery in your dashboard. Thank you for your cooperation.
+                            </p>
+                        </div>
+                        @endif
+
                         <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
                             <label>GCash Payment Reminder</label>
                             <p style="margin: auto 0;">Please remit your payment to <strong style="color: #696cff; font-size: 20px;">{{ $phone->phone }}</strong> using GCash. Include your <strong style="color: #696cff; font-size: 20px;">order reference number</strong> in the message. Thank you!</p>
                         </div>
+
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="checkout__order">
