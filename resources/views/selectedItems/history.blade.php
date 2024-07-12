@@ -101,7 +101,7 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="9" class="text-center">No Package Items found.</td>
+                        <td colspan="9" class="text-center">No package history available.</td>
                     </tr>
                     @endif
                 </tbody>

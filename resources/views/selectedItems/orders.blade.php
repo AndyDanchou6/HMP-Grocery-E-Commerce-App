@@ -91,7 +91,7 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="8" class="text-center">No Package Items found.</td>
+                        <td colspan="8" class="text-center">No orders available at the moment.</td>
                     </tr>
                     @endif
                 </tbody>
