@@ -453,6 +453,7 @@ class SelectedItemsController extends Controller
                         'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
                         'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
                         'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
                         'created_at' => $item->created_at,
                         'updated_at' => $item->updated_at,
                         'items' => []

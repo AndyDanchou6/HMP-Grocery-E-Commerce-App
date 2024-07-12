@@ -4,7 +4,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Selected Items</h4>
+            <h4 style="margin: auto 0;">For Package Orders</h4>
             <form action="{{ route('selectedItems.forPackaging') }}" method="GET" class="d-flex">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
@@ -60,7 +60,9 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No orders available for packaging.</td>
+
+                        <td colspan="7" class="text-center">No orders for packaging.</td>
+
                     </tr>
                     @endif
                 </tbody>

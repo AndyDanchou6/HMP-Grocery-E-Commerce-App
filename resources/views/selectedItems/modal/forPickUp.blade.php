@@ -110,7 +110,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 col-12 denial-reason" style="display: none;">
+                        <div class="mb-3 col-12 denial-reason" id="denial-reason{{ $user['id'] }}" style="display: none;">
                             <label for="#" class="col-form-label">Reason for Denial</label>
                             <div>
                                 <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
@@ -119,7 +119,7 @@
 
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
-                            <button type="submit" class="btn btn-outline-success me-2 finishedBtn">Update</button>
+                            <button type="submit" class="btn btn-outline-success me-2" id="finishedBtn{{ $user['id'] }}">Update</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -231,8 +231,9 @@
 
             deny.addEventListener('click', function() {
 
-                var denialInputs = document.querySelector('.denial-reason');
-                var finishedBtn = document.querySelector('.finishedBtn');
+                var itemId = deny.getAttribute('data-item-id');
+                var denialInputs = document.querySelector('#denial-reason' + itemId);
+                var finishedBtn = document.querySelector('#finishedBtn' + itemId);
 
                 denialInputs.style.display = 'block';
                 denialInputs.setAttribute('required', 'required');

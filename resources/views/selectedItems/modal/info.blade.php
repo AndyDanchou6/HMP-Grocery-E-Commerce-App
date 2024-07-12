@@ -93,6 +93,17 @@
                         </div>
                     </div>
                     @endif
+
+                    @if($user['status'] == 'denied')
+                    <div class="container">
+                        <div class="mb-3 col-12">
+                            <label for="order_retrieval" class="col-form-label">Reason For Denial</label>
+                            <div>
+                                <textarea class="form-control text-danger col-12" rows="5" readonly>{{ $user['reasonForDenial'] }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 <div class="d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>

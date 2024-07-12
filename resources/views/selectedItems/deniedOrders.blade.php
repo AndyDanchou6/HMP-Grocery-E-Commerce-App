@@ -60,7 +60,9 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No denied orders yet.</td>
+                    
+                        <td colspan="7" class="text-center">No denied orders found.</td>
+
                     </tr>
                     @endif
                 </tbody>

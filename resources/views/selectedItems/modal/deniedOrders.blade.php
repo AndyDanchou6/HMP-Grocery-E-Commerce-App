@@ -112,16 +112,15 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 service-fee" data-item-id="{{ $user['id'] }}">
-                                <label for="" class="col-form-label">Service Fee</label>
-                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
-                            </div>
-
+                        </div>
+                        <div>
+                            <h4 class="text-danger m-3" style="display: none;" id="delete{{ $user['id'] }}">Are you sure you want to delete this order?</h4>
+                            <h4 class="text-success m-3" style="display: none;" id="restore{{ $user['id'] }}">Are you sure you want to restore this order?</h4>
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-outline-danger me-2" name="delete" value="true">Delete</button>
-                            <button type="submit" class="btn btn-outline-success me-2" name="restore" value="true">Restore</button>
+                            <button type="button" class="btn btn-outline-danger me-2 deleteBtn" id="delete-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="delete" value="true">Delete</button>
+                            <button type="button" class="btn btn-outline-success me-2 restoreBtn" id="restore-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="restore" value="true">Restore</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -159,24 +158,6 @@
             });
         }
 
-        function toggleServiceFee(itemId, retrievalValue) {
-            var serviceFee = document.querySelector('.service-fee[data-item-id="' + itemId + '"]');
-            var serviceFeeInput = serviceFee.querySelector('input');
-
-            if (retrievalValue == 'delivery') {
-
-                serviceFee.style.display = 'block';
-
-                // serviceFeeInput.setAttribute('required', 'required');
-            }
-
-            if (retrievalValue == 'pickup') {
-
-                serviceFee.style.display = 'none';
-
-                // serviceFeeInput.removeAttribute('required');
-            }
-        }
 
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
@@ -184,16 +165,65 @@
 
             let itemId = orderRetrieval.getAttribute('data-item-id');
 
-            toggleServiceFee(itemId, orderRetrieval.value);
             hideOptions(orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
-                toggleServiceFee(itemId, orderRetrieval.value);
                 hideOptions(orderRetrieval.value);
                 // console.log(itemId);
             });
         });
+
+        var deleteClickCount = 0;
+        var restoreClickCount = 0;
+
+        var restoreBtns = document.querySelectorAll('.restoreBtn');
+
+        restoreBtns.forEach(function(restoreBtn) {
+
+            restoreBtn.addEventListener('click', function() {
+
+                var itemId = restoreBtn.getAttribute('data-item-id');
+                var restoreWarning = document.querySelector('#restore' + itemId);
+                var deleteWarning = document.querySelector('#delete' + itemId);
+                var deleteBtn = document.querySelector('#delete-btn' + itemId);
+
+                deleteBtn.setAttribute('type', 'button');
+                restoreWarning.style.display = 'block';
+                deleteWarning.style.display = 'none';
+
+                restoreClickCount++;
+                deleteClickCount = 0;
+
+                if (restoreClickCount > 1) {
+                    restoreBtn.setAttribute('type', 'submit');
+                }
+            })
+        })
+
+        var deleteBtns = document.querySelectorAll('.deleteBtn');
+
+        deleteBtns.forEach(function(deleteBtn) {
+
+            deleteBtn.addEventListener('click', function() {
+
+                var itemId = deleteBtn.getAttribute('data-item-id')
+                var restoreWarning = document.querySelector('#restore' + itemId);
+                var deleteWarning = document.querySelector('#delete' + itemId);
+                var restoreBtn = document.querySelector('#restore-btn' + itemId);
+
+                restoreBtn.setAttribute('type', 'button');
+                deleteWarning.style.display = 'block';
+                restoreWarning.style.display = 'none';
+
+                restoreClickCount = 0;
+                deleteClickCount++;
+
+                if (deleteClickCount > 1) {
+                    deleteBtn.setAttribute('type', 'submit');
+                }
+            })
+        })
 
     })
 </script>
