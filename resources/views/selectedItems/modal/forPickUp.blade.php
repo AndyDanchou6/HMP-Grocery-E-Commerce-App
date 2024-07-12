@@ -118,7 +118,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" data-item-id="{{ $user['id'] }}" value="true">Deny</button>
                             <button type="submit" class="btn btn-outline-success me-2" id="finishedBtn{{ $user['id'] }}">Update</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
