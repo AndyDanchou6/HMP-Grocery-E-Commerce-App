@@ -5,8 +5,15 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
             <h4 style="margin: auto 0;">Items to be Delivered</h4>
+            <form action="{{ route('selectedItems.courierDashboard') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-search-alt-2'></i>
+                    </button>
+                </div>
+            </form>
         </div>
-
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
@@ -37,7 +44,7 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No Selected Items found.</td>
+                        <td colspan="7" class="text-center">No delivery requests available.</td>
                     </tr>
                     @endif
                 </tbody>

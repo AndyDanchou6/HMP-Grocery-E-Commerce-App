@@ -57,7 +57,9 @@
                         @endforeach
                         @else
                         <tr>
+
                             <td colspan="7" class="text-center">No orders to deliver.</td>
+
                         </tr>
                         @endif
                     </tbody>

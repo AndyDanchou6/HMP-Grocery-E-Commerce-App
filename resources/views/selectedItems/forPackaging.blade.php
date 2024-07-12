@@ -60,7 +60,9 @@
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="7" class="text-center">No orders yet.</td>
+
+                        <td colspan="7" class="text-center">No orders for packaging.</td>
+
                     </tr>
                     @endif
                 </tbody>
@@ -131,4 +133,3 @@
 </div>
 
 @endsection
-

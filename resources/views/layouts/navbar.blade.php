@@ -26,7 +26,9 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-end pullDown" aria-labelledby="notificationDropdown">
         <div class="dropdown-header">Notifications</div>
-        <ul id="notificationList" class="list-unstyled mb-0"></ul>
+        <ul id="notificationList" class="list-unstyled mb-0">
+
+        </ul>
       </ul>
     </li>
 
