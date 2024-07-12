@@ -57,7 +57,7 @@
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="7" class="text-center">No Selected Items found.</td>
+                            <td colspan="7" class="text-center">No orders available for delivery.</td>
                         </tr>
                         @endif
                     </tbody>

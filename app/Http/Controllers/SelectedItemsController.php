@@ -536,48 +536,53 @@ class SelectedItemsController extends Controller
     //     ]);
     // }
 
-    public function courierDashboard()
+    public function courierDashboard(Request $request)
     {
         if (Auth::user()->role == "Courier") {
             $courier = Auth::user();
 
-            // Query to fetch users who have selected items assigned to the authenticated courier
-            $users = User::whereHas('selectedItems', function ($query) use ($courier) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery')
-                    ->where('selected_items.courier_id', $courier->id);
-            })->with(['selectedItems' => function ($query) use ($courier) {
-                $query->where('selected_items.status', 'readyForRetrieval')
-                    ->where('selected_items.order_retrieval', 'delivery')
-                    ->where('selected_items.courier_id', $courier->id)
-                    ->select('selected_items.*', 'inventories.*', 'selected_items.quantity');
-            }])->orderBy('created_at', 'desc')->get();
+            $search = $request->input('search');
 
+            $selectedItems = SelectedItems::where('selected_items.status', 'readyForRetrieval')
+                ->where('selected_items.order_retrieval', 'delivery')
+                ->where('selected_items.courier_id', $courier->id)
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'desc');
+
+
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
+            }
+
+            $selectedItems = $selectedItems->get();
 
             $userByReference = [];
 
-            foreach ($users as $user) {
-                foreach ($user->selectedItems as $item) {
-                    if (!isset($userByReference[$item->referenceNo])) {
-                        $userByReference[$item->referenceNo] = [
-                            'id' => $user->id,
-                            'referenceNo' => $item->referenceNo,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'phone' => $item->phone,
-                            'fb_link' => $item->fb_link,
-                            'address' => $item->address,
-                            'delivery_date' => $item->delivery_date,
-                            'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                            'quantity' => $item->quantity,
-                            'created_at' => $item->created_at,
-                            'updated_at' => $item->updated_at,
-                        ];
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'delivery_date' => $item->delivery_date,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'quantity' => $item->quantity,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                    ];
 
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    } else {
-                        $userByReference[$item->referenceNo]['items'][] = $item;
-                    }
+                    $userByReference[$item->referenceNo]['items'][] = $item;
+                } else {
+                    $userByReference[$item->referenceNo]['items'][] = $item;
                 }
             }
 
@@ -676,9 +681,7 @@ class SelectedItemsController extends Controller
                 if ($request->has('restore')) {
                     $item->status = 'forPackage';
                     $item->reasonForDenial = null;
-                }
-
-                if ($request->has('deny')) {
+                } elseif ($request->has('deny')) {
                     $item->status = 'denied';
                     $item->courier_id = null;
                     $item->delivery_date = null;
@@ -689,11 +692,11 @@ class SelectedItemsController extends Controller
                         $item->order_retrieval = $request->input('order_retrieval');
                     }
 
-                    if ($request->has('payment_type')) {
-                        $item->payment_type = $request->input('payment_type');
-                    }
+                    // if ($request->has('payment_type')) {
+                    //     $item->payment_type = $request->input('payment_type');
+                    // }
 
-                    $item->payment_condition = $request->input('payment_condition');
+                    // $item->payment_condition = $request->input('payment_condition');
 
                     $item->status = 'readyForRetrieval';
                 } elseif ($item->status == 'readyForRetrieval') {

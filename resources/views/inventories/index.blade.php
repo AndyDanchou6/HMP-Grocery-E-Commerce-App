@@ -41,12 +41,12 @@
                     @foreach ($inventories as $item)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->category->category_name }}</td>
+                        <td><span class="badge bg-label-primary me-1">{{ $item->category->category_name }}</span></td>
                         <td>
                             <img src="{{ asset('storage/' . $item->product_img) }}" style="width: 45px; height: 45px" alt="Product Image" class="rounded-circle">
                         </td>
                         <td>{{ $item->product_name }}</td>
-                        <td>₱{{ number_format($item->price, 2) }}</td>
+                        <td class="text-dark">₱{{ number_format($item->price, 2) }}</td>
                         <td>
                             @if($item->quantity <= 10) <span class="badge bg-label-danger me-1">{{ $item->quantity }}</span>
                                 @elseif($item->quantity <= 20) <span class="badge bg-label-warning me-1">{{ $item->quantity }}</span>
