@@ -179,29 +179,47 @@
             sessionStorage.setItem('previousNotificationMessages', JSON.stringify(currentNotificationMessages));
             showNotifications();
 
-            notificationIcon.classList.add('bx-tada');
-            notificationIcon.classList.add('text-danger');
+            const msg = currentNotificationMessages[0];
+            if (!previousNotificationMessages.includes(msg)) {
+              toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                showDuration: '300',
+                hideDuration: '1000',
+                timeOut: '20000',
+                showEasing: 'swing',
+                hideEasing: 'linear',
+                showMethod: 'fadeIn',
+                hideMethod: 'fadeOut'
+              };
 
-            const newCount = 1;
-            sessionStorage.setItem('notificationCount', newCount);
-            if (notificationCountElement) {
-              notificationCountElement.textContent = newCount;
-              notificationCountElement.classList.remove('d-none');
+              toastr.info(`<strong>${msg}</strong>`);
+
+              if (msg.includes('Finished packaging')) {
+                sessionStorage.setItem('notificationBellState', 'active');
+                notificationIcon.classList.add('bx-tada', 'text-danger');
+
+                const newCount = parseInt(sessionStorage.getItem('notificationCount')) + 1;
+                sessionStorage.setItem('notificationCount', newCount.toString());
+                if (notificationCountElement) {
+                  notificationCountElement.textContent = newCount;
+                  notificationCountElement.classList.remove('d-none');
+                }
+
+                setTimeout(() => {
+                  sessionStorage.setItem('notificationBellState', 'inactive');
+                  notificationIcon.classList.remove('bx-tada', 'text-danger');
+                  sessionStorage.setItem('notificationCount', '0');
+                  notificationCountElement.textContent = '0';
+                  notificationCountElement.classList.add('d-none');
+                }, 5000);
+              }
             }
-
-            setTimeout(() => {
-              sessionStorage.setItem('notificationBellState', 'inactive');
-              notificationIcon.classList.remove('bx-tada');
-              notificationIcon.classList.remove('text-danger');
-              sessionStorage.setItem('notificationCount', 0);
-              notificationCountElement.textContent = 0;
-              notificationCountElement.classList.add('d-none');
-            }, 5000);
 
           } else {
             sessionStorage.setItem('notificationBellState', 'inactive');
-            notificationIcon.classList.remove('bx-tada');
-            notificationIcon.classList.remove('text-danger');
+            notificationIcon.classList.remove('bx-tada', 'text-danger');
           }
         })
         .catch(error => {
@@ -215,10 +233,9 @@
 
     setInterval(fetchAndDisplayNotifications, 5000);
 
-    // Event listener for bell icon click to reset notifications
     notificationIcon.addEventListener('click', function() {
       sessionStorage.setItem('notificationBellState', 'inactive');
-      sessionStorage.setItem('notificationCount', 0);
+      sessionStorage.setItem('notificationCount', '0');
       initializeNotificationState();
     });
   });
