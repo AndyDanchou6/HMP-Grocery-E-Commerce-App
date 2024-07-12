@@ -187,28 +187,19 @@
               positionClass: 'toast-top-right',
               showDuration: '300',
               hideDuration: '1000',
-              timeOut: '15000',
+              timeOut: '5000',
               showEasing: 'swing',
               hideEasing: 'linear',
               showMethod: 'fadeIn',
               hideMethod: 'fadeOut'
             };
 
-
             toastr.info(`<strong>${currentNotificationMessages[0]}</strong>`);
 
             notificationIcon.classList.add('bx-tada');
             notificationIcon.classList.add('text-danger');
-            setTimeout(() => {
-              sessionStorage.setItem('notificationBellState', 'inactive');
-              notificationIcon.classList.remove('bx-tada');
-              notificationIcon.classList.remove('text-danger');
-            }, 10000);
+            sessionStorage.setItem('notificationBellState', 'active');
 
-          } else {
-            sessionStorage.setItem('notificationBellState', 'inactive');
-            notificationIcon.classList.remove('bx-tada');
-            notificationIcon.classList.remove('text-danger');
           }
         })
         .catch(error => {
@@ -230,6 +221,8 @@
     });
   });
 </script>
+
+
 
 
 @include('profile.edit')
