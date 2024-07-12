@@ -66,11 +66,13 @@
                         </td>
                         <td>
                             @if($user['status'] == 'forPackage')
-                            <span class="badge bg-label-danger me-1">Pending</span>
+                            <span class="badge bg-label-primary me-1">Pending</span>
                             @elseif($user['status'] == 'readyForRetrieval')
                             <span class="badge bg-label-warning me-1">To receive</span>
                             @elseif($user['status'] == 'delivered' || $user['status'] == 'pickedUp')
                             <span class="badge bg-label-success me-1">Completed</span>
+                            @else
+                            <span class="badge bg-label-danger me-1">{{ $user['status'] }}</span>
                             @endif
                         </td>
                         <td>
