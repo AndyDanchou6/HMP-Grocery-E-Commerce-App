@@ -161,7 +161,7 @@
 
                             </div>
 
-                            <div class="mb-3 service-fee" data-item-id="{{ $user['id'] }}">
+                            <div class="mb-3 service-fee" id="service-fee{{ $user['id'] }}" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
                                 @if($user['service_fee'])
                                 <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" value="{{ $user['service_fee'] }}">
@@ -172,7 +172,7 @@
 
                         </div>
 
-                        <div class="mb-3 col-12 denial-reason" style="display: none;">
+                        <div class="mb-3 col-12 denial-reason" id="denial-reason{{ $user['id'] }}" style="display: none;">
                             <label for="#" class="col-form-label">Reason for Denial</label>
                             <div>
                                 <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
@@ -180,12 +180,12 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true" data-item-id="{{ $user['id'] }}">Deny</button>
 
                             @if($user['delivery_date'] && $user['courier_id'])
-                            <button type="submit" class="btn btn-outline-success me-2 finishedBtn">Update</button>
+                            <button type="submit" class="btn btn-outline-success me-2" id="finishedBtn{{ $user['id'] }}">Update</button>
                             @else
-                            <button type="submit" class="btn btn-outline-primary me-2 finishedBtn">Update</button>
+                            <button type="submit" class="btn btn-outline-primary me-2" id="finishedBtn{{ $user['id'] }}">Update</button>
                             @endif
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
 
@@ -253,7 +253,7 @@
         }
 
         function toggleServiceFee(itemId, retrievalValue) {
-            var serviceFee = document.querySelector('.service-fee[data-item-id="' + itemId + '"]');
+            var serviceFee = document.querySelector('#service-fee' + itemId);
             var serviceFeeInput = serviceFee.querySelector('input');
 
             if (retrievalValue == 'delivery') {
@@ -372,9 +372,10 @@
 
             deny.addEventListener('click', function() {
 
-                var denialInputs = document.querySelector('.denial-reason');
-                var serviceFee = document.querySelector('.service-fee');
-                var finishedBtn = document.querySelector('.finishedBtn');
+                var itemId = deny.getAttribute('data-item-id');
+                var denialInputs = document.querySelector('#denial-reason' + itemId);
+                var serviceFee = document.querySelector('#service-fee' + itemId);
+                var finishedBtn = document.querySelector('#finishedBtn' + itemId);
 
                 denialInputs.style.display = 'block';
                 denialInputs.setAttribute('required', 'required');

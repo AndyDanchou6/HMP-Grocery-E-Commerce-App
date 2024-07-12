@@ -453,6 +453,7 @@ class SelectedItemsController extends Controller
                         'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
                         'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
                         'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
                         'created_at' => $item->created_at,
                         'updated_at' => $item->updated_at,
                         'items' => []
@@ -676,9 +677,7 @@ class SelectedItemsController extends Controller
                 if ($request->has('restore')) {
                     $item->status = 'forPackage';
                     $item->reasonForDenial = null;
-                }
-
-                if ($request->has('deny')) {
+                } elseif ($request->has('deny')) {
                     $item->status = 'denied';
                     $item->courier_id = null;
                     $item->delivery_date = null;
@@ -689,11 +688,11 @@ class SelectedItemsController extends Controller
                         $item->order_retrieval = $request->input('order_retrieval');
                     }
 
-                    if ($request->has('payment_type')) {
-                        $item->payment_type = $request->input('payment_type');
-                    }
+                    // if ($request->has('payment_type')) {
+                    //     $item->payment_type = $request->input('payment_type');
+                    // }
 
-                    $item->payment_condition = $request->input('payment_condition');
+                    // $item->payment_condition = $request->input('payment_condition');
 
                     $item->status = 'readyForRetrieval';
                 } elseif ($item->status == 'readyForRetrieval') {

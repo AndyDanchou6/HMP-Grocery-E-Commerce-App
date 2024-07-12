@@ -105,14 +105,14 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 service-fee" data-item-id="{{ $user['id'] }}">
+                            <div class="mb-3 service-fee" id="service-fee{{ $user['id'] }}" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
                                 <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
                             </div>
 
                         </div>
 
-                        <div class="mb-3 col-12 denial-reason" style="display: none;">
+                        <div class="mb-3 col-12 denial-reason" id="denial-reason{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" style="display: none;">
                             <label for="#" class="col-form-label">Reason for Denial</label>
                             <div>
                                 <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
@@ -120,8 +120,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true">Deny</button>
-                            <button type="submit" class="btn btn-outline-primary me-2 finishedBtn">Finished</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true" data-item-id="{{ $user['id'] }}">Deny</button>
+                            <button type="submit" class="btn btn-outline-primary me-2" id="finishedBtn{{ $user['id'] }}">Finished</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -160,7 +160,7 @@
         }
 
         function toggleServiceFee(itemId, retrievalValue) {
-            var serviceFee = document.querySelector('.service-fee[data-item-id="' + itemId + '"]');
+            var serviceFee = document.querySelector('#service-fee' + itemId);
             var serviceFeeInput = serviceFee.querySelector('input');
 
             if (retrievalValue == 'delivery') {
@@ -236,9 +236,10 @@
 
             deny.addEventListener('click', function() {
 
-                var denialInputs = document.querySelector('.denial-reason');
-                var serviceFee = document.querySelector('.service-fee');
-                var finishedBtn = document.querySelector('.finishedBtn');
+                var itemId = deny.getAttribute('data-item-id');
+                var denialInputs = document.querySelector('#denial-reason' + itemId);
+                var serviceFee = document.querySelector('#service-fee' + itemId);
+                var finishedBtn = document.querySelector('#finishedBtn' + itemId);
 
                 denialInputs.style.display = 'block';
                 denialInputs.setAttribute('required', 'required');
@@ -261,41 +262,4 @@
             })
         })
     })
-
-    document.addEventListener('DOMContentLoaded', function() {
-
-        var subTotalField = document.querySelectorAll('.item-sub-total');
-        var totalContainer = {};
-
-        subTotalField.forEach(function(subtotal) {
-            var itemReferenceNo = subtotal.getAttribute('data-item-id');
-            var [referenceNo, itemId] = itemReferenceNo.split('_');
-
-            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
-            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
-            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
-
-            var tempSubTotal = price * quantity;
-            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
-                style: 'currency',
-                currency: 'PHP'
-            });
-
-            if (!totalContainer[referenceNo]) {
-                totalContainer[referenceNo] = tempSubTotal;
-            } else {
-                totalContainer[referenceNo] += tempSubTotal;
-            }
-        });
-
-        var totals = document.querySelectorAll('.purchase-total');
-
-        totals.forEach(function(total) {
-            var totalId = total.getAttribute('data-total-id');
-            total.value = totalContainer[totalId].toLocaleString('en-PH', {
-                style: 'currency',
-                currency: 'PHP'
-            });
-        });
-    });
 </script>
