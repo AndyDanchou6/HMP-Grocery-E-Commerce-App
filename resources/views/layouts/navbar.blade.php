@@ -181,24 +181,29 @@
             sessionStorage.setItem('previousNotificationMessages', JSON.stringify(currentNotificationMessages));
             showNotifications();
 
+            toastr.options = {
+              closeButton: true,
+              progressBar: true,
+              positionClass: 'toast-top-right',
+              showDuration: '300',
+              hideDuration: '1000',
+              timeOut: '15000',
+              showEasing: 'swing',
+              hideEasing: 'linear',
+              showMethod: 'fadeIn',
+              hideMethod: 'fadeOut'
+            };
+
+
+            toastr.info(`<strong>${currentNotificationMessages[0]}</strong>`);
+
             notificationIcon.classList.add('bx-tada');
             notificationIcon.classList.add('text-danger');
-
-            const newCount = 1;
-            sessionStorage.setItem('notificationCount', newCount);
-            if (notificationCountElement) {
-              notificationCountElement.textContent = newCount;
-              notificationCountElement.classList.remove('d-none');
-            }
-
             setTimeout(() => {
               sessionStorage.setItem('notificationBellState', 'inactive');
               notificationIcon.classList.remove('bx-tada');
               notificationIcon.classList.remove('text-danger');
-              sessionStorage.setItem('notificationCount', 0);
-              notificationCountElement.textContent = 0;
-              notificationCountElement.classList.add('d-none');
-            }, 5000);
+            }, 10000);
 
           } else {
             sessionStorage.setItem('notificationBellState', 'inactive');
