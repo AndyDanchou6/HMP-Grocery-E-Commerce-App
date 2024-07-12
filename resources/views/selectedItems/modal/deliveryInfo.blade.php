@@ -33,7 +33,7 @@
 
                         <div class="col-12 col-sm-6 col-md-4 mb-3">
                             <label for="phone" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
-                            <input type="text" class="form-control" value="{{ $item->product_name }}" readonly>
+                            <input type="text" class="form-control" value="{{ $item->inventory->product_name }}" readonly>
                         </div>
 
                         <div class="col-6 col-sm-3 col-md-2 mb-3">
@@ -43,7 +43,7 @@
 
                         <div class="col-6 col-sm-3 col-md-3 mb-3">
                             <label for="item_price" class="col-6 col-sm-3 col-md-3 col-form-label">Item Price</label>
-                            <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->price, 2) }}" readonly>
+                            <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->inventory->price, 2) }}" readonly>
                         </div>
 
                         <div class="col-12 col-sm-4 col-md-3 mb-3">

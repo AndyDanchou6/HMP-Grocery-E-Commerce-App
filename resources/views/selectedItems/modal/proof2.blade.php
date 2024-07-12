@@ -19,6 +19,14 @@
                             No payment proof available.
                         </div>
                         @endif
+
+                    </div>
+
+                </div>
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Reference No.</label>
+                    <div class="col-sm-9 text-center">
+                        <input type="text" class="form-control text-info" name="referenceNo" id="" value="{{ $item['referenceNo'] }}" readonly>
                     </div>
                 </div>
                 <form id="paymentProofForm{{$user['referenceNo']}}" action="{{ route('selected-items.updatePaymentCondition', ['referenceNo' => $user['referenceNo']]) }}" method="POST" enctype="multipart/form-data">
