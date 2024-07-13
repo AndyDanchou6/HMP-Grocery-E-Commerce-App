@@ -43,7 +43,7 @@
 
                     <div class="col-6 col-sm-3 col-md-3 mb-3">
                         <label for="quantity" class="col-6 col-sm-3 col-md-3 col-form-label">Quantity</label>
-                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $user['quantity'] }}" readonly>
+                        <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
                     <div class="col-12 col-sm-4 col-md-3 mb-3">
                         <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
