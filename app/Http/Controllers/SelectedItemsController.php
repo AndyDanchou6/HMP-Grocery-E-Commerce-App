@@ -63,7 +63,7 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item;
         }
 
         $perPage = 10;
@@ -181,7 +181,7 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item;
         }
 
         $schedules = deliverySchedule::where('status', 'Active')->get();
@@ -252,7 +252,7 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item;
         }
 
         $perPage = 10;
@@ -315,7 +315,7 @@ class SelectedItemsController extends Controller
                 ];
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item->inventory;
+            $userByReference[$item->referenceNo]['items'][] = $item;
         }
 
         $perPage = 10;
