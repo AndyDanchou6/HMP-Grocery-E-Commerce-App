@@ -141,6 +141,6 @@ Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsCont
 /* Customers */
 Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders'])->name('selectedItems.orders');
 Route::get('/customer/pending_orders', [CustomerController::class, 'pending_orders'])->name('customers.pendingOrders');
-Route::middleware('auth')->get('/customer/pendingOrderUpdate', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pendingOrdersUpdate');
+Route::get('/customer/pendingOrderUpdate', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pendingOrdersUpdate');
 Route::get('/customer/delivery_retrieval', [CustomerController::class, 'delivery_retrieval'])->name('customers.delivery_retrieval');
 Route::middleware('auth')->get('/customer/delivery_retrievalUpdate', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.deliveryUpdate');
