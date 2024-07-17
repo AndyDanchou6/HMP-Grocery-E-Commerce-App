@@ -47,14 +47,16 @@
                     },
                     credentials: 'same-origin'
                 })
-                .then(response => {
+                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json();
+                    return response.text();  // Get the response as text
                 })
-                .then(data => {
-                    fetchedData = data;
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);  // Try to parse the text as JSON
+                        fetchedData = data;
 
                     const tableBody = document.getElementById('tableBody');
                     tableBody.innerHTML = '';
