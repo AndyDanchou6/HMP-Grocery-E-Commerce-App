@@ -86,6 +86,7 @@ class ProfileController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $id,
                 'name' => 'required',
+                'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -98,6 +99,11 @@ class ProfileController extends Controller
             $user->fb_link = $request->input('fb_link');
             $user->address = $request->input('address');
             $user->phone = $request->input('phone');
+
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = $avatarPath;
+            }
 
             $user->save();
 

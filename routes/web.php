@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CustomerController;
 use App\Models\Category;
 use App\Models\SelectedItems;
 use Illuminate\Http\Request;
@@ -73,11 +74,11 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('customer')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('customer.home');
+    Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'customerDashboard'])->name('customer.home');
 });
 
 Route::prefix('courier')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('courier.home');
+    Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'courierDashboard'])->name('courier.home');
 });
 
 Route::get('/error', [AuthController::class, 'error'])->name('error');
@@ -113,7 +114,6 @@ Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('s
 
 Route::get('/admin/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
 Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
-Route::get('/customer/selectedItems/orders', [SelectedItemsController::class, 'orders'])->name('selectedItems.orders');
 Route::get('/admin/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
 Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
 Route::get('/admin/selectedItems/deniedOrders', [SelectedItemsController::class, 'deniedOrders'])->name('selectedItems.deniedOrders');
@@ -123,7 +123,6 @@ Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'sho
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
 
-
 //--- Delivery Schedules ----!>
 Route::get('admin/schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
 Route::post('admin/schedules/create', [DeliveryScheduleController::class, 'store'])->name('schedules.store');
@@ -132,4 +131,13 @@ Route::put('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'up
 
 Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
 
+Route::get('counting', [InventoryController::class, 'criticalProducts'])->name('inventories.criticalProducts');
+
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
+
+/* Customers */
+Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders'])->name('selectedItems.orders');
+Route::get('/customer/pending_orders', [CustomerController::class, 'pending_orders'])->name('customers.pendingOrders');
+Route::middleware('auth')->get('/customer/pendingOrderUpdate', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pendingOrdersUpdate');
+Route::get('/customer/delivery_retrieval', [CustomerController::class, 'delivery_retrieval'])->name('customers.delivery_retrieval');
+Route::middleware('auth')->get('/customer/delivery_retrievalUpdate', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.deliveryUpdate');

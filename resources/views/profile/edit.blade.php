@@ -2,11 +2,22 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalTitle">{{Auth::user()->name }}'s profile</h5>
+                <h5 class="modal-title" id="editModalTitle">{{ Auth::user()->name }}'s profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('profile.update', Auth::user()->id) }}" method="POST" enctype="multipart/form-data">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-auto text-center">
+                        @if(Auth::user()->avatar)
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" id="change_avatar" alt="Profile Picture" class="rounded-circle" style="width: 200px; height: 200px; border-radius: 50%;">
+                        <div style="margin-top: 5px;"><label>Avatar</label></div>
+                        @else
+                        <img src="{{ asset('assets/img/user.png') }}" id="change_avatar" alt="Profile Picture" class="rounded-circle" style="width: 200px; height: 200px; border-radius: 50%;">
+                        <div style="margin-top: 5px;"><label>Avatar</label></div>
+                        @endif
+                    </div>
+                </div>
+                <form id="editProfileForm" action="{{ route('profile.update', Auth::user()->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="row">
@@ -17,8 +28,8 @@
                     </div>
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="edit_avatar" class="form-label">Avatar</label>
-                            <input type="file" id="edit_avatar" name="avatar" class="form-control" />
+                            <label for="edit_avatar_input" class="form-label">Avatar</label>
+                            <input type="file" id="edit_avatar_input" name="avatar" class="form-control" />
                         </div>
                     </div>
                     <div class="row">
@@ -56,3 +67,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editAvatarInput = document.getElementById('edit_avatar_input');
+        const changeAvatarImg = document.getElementById('change_avatar');
+        const uploadAvatarButton = document.getElementById('uploadAvatarButton');
+
+        if (editAvatarInput) {
+            editAvatarInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    changeAvatarImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                uploadAvatarButton.style.display = 'block';
+            });
+        }
+
+        const editProfileForm = document.getElementById('editProfileForm');
+        if (editProfileForm) {
+            editProfileForm.addEventListener('submit', function(event) {
+                uploadAvatarButton.disabled = true;
+            });
+        }
+    });
+</script>

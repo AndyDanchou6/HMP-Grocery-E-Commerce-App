@@ -74,6 +74,8 @@
                         <td>
                             @if($user['payment_condition'] == 'paid')
                             <span class="badge bg-label-success me-1">Paid</span>
+                            @elseif($user['payment_proof'])
+                            <span class="badge bg-label-warning me-1">Pending</span>
                             @else
                             <span class="badge bg-label-danger me-1">Unpaid</span>
                             @endif
@@ -96,11 +98,20 @@
                             @include('selectedItems.modal.proof')
                             @endif
                             @endif
-                            @if($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
+
+                            @if($user['status'] != 'denied')
+                            @if($user['payment_condition'] != 'paid')
+                            @if($user['payment_proof'])
+                            <a class="bi bi-receipt me-1 details-button text-warning" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.customerPaymentProof')
+                            @elseif($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
                             <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.customerPaymentProof')
                             @endif
+                            @endif
+                            @endif
                         </td>
+
                     </tr>
                     @endforeach
                     @else

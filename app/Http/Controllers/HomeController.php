@@ -27,9 +27,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::where('quantity', '<=', 10)->paginate(8);
-        $categories = Category::pluck('category_name', 'id');
+        if (Auth::user()->role == 'Admin') {
 
-        return view('home', compact('inventories', 'categories'));
+            $inventories = Inventory::where('quantity', '<=', 10)->paginate(8);
+            $categories = Category::pluck('category_name', 'id');
+
+            return view('home', compact('inventories', 'categories'));
+        } else {
+            return redirect()->route('error404');
+        }
     }
 }
