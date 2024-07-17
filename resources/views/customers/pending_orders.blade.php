@@ -47,9 +47,8 @@
 
                 const userByReference = data.userByReference;
 
-                if (Object.keys(userByReference).length > 0) {
-                    Object.keys(userByReference).forEach((referenceNo, index) => {
-                        const user = userByReference[referenceNo];
+                if (userByReference && userByReference.length > 0) {
+                    userByReference.forEach((user, index) => {
                         const row = document.createElement('tr');
 
                         row.innerHTML = `
@@ -79,7 +78,7 @@
                     });
                 } else {
                     const row = document.createElement('tr');
-                    row.innerHTML = `<td colspan="8" class="text-center">No orders available at the moment.</td>`;
+                    row.innerHTML = `<td colspan="6" class="text-center">No orders available at the moment.</td>`;
                     tableBody.appendChild(row);
                 }
             } catch (error) {
@@ -96,12 +95,7 @@
             messagesModalFooter.innerHTML = '';
 
             if (fetchedData && fetchedData.userByReference) {
-                const userByReference = fetchedData.userByReference.reduce((acc, item) => {
-                    acc[item.referenceNo] = item;
-                    return acc;
-                }, {});
-
-                const user = userByReference[referenceNo];
+                const user = fetchedData.userByReference.find(user => user.referenceNo === referenceNo);
 
                 if (user && user.items && user.items.length > 0) {
                     let totalSubtotal = 0;
@@ -200,35 +194,23 @@
                                     <label for="" class="col-form-label">Courier Name:</label>
                                     <input type="text" class="form-control" value="${user.courier_id}" readonly>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="" class="col-form-label">Payment Type:</label>
-                                    <input type="text" class="form-control" value="${user.payment_type}" readonly>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="" class="col-form-label">Service Fee:</label>
-                                    <input type="text" class="form-control" value="${user.service_fee}" readonly>
-                                </div>
-                            </div>`;
+                            </div>
+                        `;
                     }
 
-                    if (user.order_retrieval === 'pickup') {
+                    if (user.payment_proof) {
                         messagesModalFooter.innerHTML += `
-                            <div class="row mb-3 p-0" style="margin-right: 60px;">
-                                <div class="col-sm-4">
-                                    <label for="payment_type" class="col-form-label">Payment Type:</label>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" value="${user.payment_type}" readonly>
-                                </div>
+                            <div class="mb-3">
+                                <label for="payment_proof" class="col-form-label">Payment Proof:</label>
+                                <img src="${user.payment_proof}" class="img-fluid" alt="Payment Proof">
                             </div>
                         `;
                     }
                 } else {
-                    messagesModalBody.innerHTML = '<p>No products found for this order.</p>';
+                    messagesModalBody.innerHTML = '<p>No messages found for this order.</p>';
                 }
             } else {
-                console.error('User data not available or fetchedData.userByReference is missing.');
-                messagesModalBody.innerHTML = '<p>Error fetching user details.</p>';
+                messagesModalBody.innerHTML = '<p>Error fetching order details.</p>';
             }
         }
 
