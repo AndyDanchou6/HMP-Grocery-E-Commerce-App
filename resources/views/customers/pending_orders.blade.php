@@ -33,28 +33,26 @@
 
 @section('customScript')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         let fetchedData = null;
 
-        function fetchOrders() {
-            fetch('/customer/pendingOrderUpdate')
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    fetchedData = data;
+        async function fetchOrders() {
+            try {
+                const response = await fetch('/customer/pendingOrderUpdate');
+                const data = await response.json();
+                fetchedData = data;
 
-                    const tableBody = document.getElementById('tableBody');
-                    tableBody.innerHTML = '';
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
 
-                    const userByReference = data.userByReference;
+                const userByReference = data.userByReference;
 
-                    if (Object.keys(userByReference).length > 0) {
-                        Object.keys(userByReference).forEach((referenceNo, index) => {
-                            const user = userByReference[referenceNo];
-                            const row = document.createElement('tr');
+                if (Object.keys(userByReference).length > 0) {
+                    Object.keys(userByReference).forEach((referenceNo, index) => {
+                        const user = userByReference[referenceNo];
+                        const row = document.createElement('tr');
 
-                            row.innerHTML = `
+                        row.innerHTML = `
                             <td>${index + 1}</td>
                             <td><span class="badge bg-primary me-1">${user.referenceNo}</span></td>
                             <td><strong>${user.order_retrieval ? user.order_retrieval.charAt(0).toUpperCase() + user.order_retrieval.slice(1) : ''}</strong></td>
@@ -69,33 +67,29 @@
                             </td>
                         `;
 
-                            tableBody.appendChild(row);
+                        tableBody.appendChild(row);
 
-                            row.querySelectorAll('.details-button').forEach(button => {
-                                button.addEventListener('click', function(event) {
-                                    event.preventDefault();
-                                    const referenceNo = event.currentTarget.getAttribute('data-reference-no');
-                                    fetchMessages(referenceNo);
-                                });
+                        row.querySelectorAll('.details-button').forEach(button => {
+                            button.addEventListener('click', async function(event) {
+                                event.preventDefault();
+                                const referenceNo = event.currentTarget.getAttribute('data-reference-no');
+                                await fetchMessages(referenceNo);
                             });
                         });
-                    } else {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td colspan="8" class="text-center">No orders available at the moment.</td>`;
-                        tableBody.appendChild(row);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching orders:', error);
-                })
-                .finally(() => {
-                    setTimeout(fetchOrders, 5000);
-                });
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="8" class="text-center">No orders available at the moment.</td>`;
+                    tableBody.appendChild(row);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            } finally {
+                setTimeout(fetchOrders, 5000);
+            }
         }
 
-        fetchOrders();
-
-        function fetchMessages(referenceNo) {
+        async function fetchMessages(referenceNo) {
             const messagesModalBody = document.querySelector('#messagesModal .modal-body');
             const messagesModalFooter = document.querySelector('#messagesModal .modal-footer');
             messagesModalBody.innerHTML = '';
@@ -125,8 +119,6 @@
                             style: 'currency',
                             currency: 'PHP'
                         }).format(subtotal);
-                        // Format and display total
-
 
                         messagesModalBody.innerHTML += `
                             <div class="row mb-3 item-row">
@@ -151,41 +143,43 @@
                             <div class="col-sm-12">
                                 <hr>
                             </div>
-                `;
+                        `;
                     });
 
                     const totalFormatted = new Intl.NumberFormat('en-PH', {
                         style: 'currency',
                         currency: 'PHP'
                     }).format(totalSubtotal);
-                    messagesModalFooter.innerHTML = `
 
-                    <div class="row row-cols-1 row-cols-md-2 align-items-center mb-3">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="col-form-label">Total</label>
-                                <input type="text" class="form-control" value="${totalFormatted}" readonly>
+                    messagesModalFooter.innerHTML = `
+                        <div class="row row-cols-1 row-cols-md-2 align-items-center mb-3">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="col-form-label">Total</label>
+                                    <input type="text" class="form-control" value="${totalFormatted}" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="col-form-label">Reference No.</label>
+                                    <input type="text" class="form-control" value="${user.referenceNo}" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="col-form-label">Order Retrieval</label>
+                                    <input type="text" class="form-control" value="${user.order_retrieval ? user.order_retrieval.charAt(0).toUpperCase() + user.order_retrieval.slice(1) : ''}" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="col-form-label">Date</label>
+                                    <input type="text" class="form-control" value="${new Date(user.created_at).toLocaleString('en-PH', { timeZone: 'Asia/Manila', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}" readonly>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="col-form-label">Reference No.</label>
-                                <input type="text" class="form-control" value="${user.referenceNo}" readonly>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="col-form-label">Order Retrieval</label>
-                                <input type="text" class="form-control" value="${user.order_retrieval ? user.order_retrieval.charAt(0).toUpperCase() + user.order_retrieval.slice(1) : ''}" readonly>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="col-form-label">Date</label>
-                                <input type="text" class="form-control" value="${new Date(user.created_at).toLocaleString('en-PH', { timeZone: 'Asia/Manila', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}" readonly>
-                            </div>
-                        </div>
-                    </div>`;
+                    `;
+
                     if (user.order_retrieval === 'delivery') {
                         const deliverySchedule = user.delivery_date ?
                             `<div class="col-md-6">
@@ -200,25 +194,24 @@
                             `;
 
                         messagesModalFooter.innerHTML += `
-                    <div class="row align-items-center mb-3">
-                        ${deliverySchedule}
-
-                         <div class="col-md-6">
-                            <label for="" class="col-form-label">Courier Name:</label>
-                            <input type="text" class="form-control" value="${user.courier_id}" readonly>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="" class="col-form-label">Payment Type:</label>
-                            <input type="text" class="form-control" value="${user.payment_type}" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="" class="col-form-label">Service Fee:</label>
-                            <input type="text" class="form-control" value="${user.service_fee}" readonly>
-                        </div>
-                    </div>`;
+                            <div class="row align-items-center mb-3">
+                                ${deliverySchedule}
+                                <div class="col-md-6">
+                                    <label for="" class="col-form-label">Courier Name:</label>
+                                    <input type="text" class="form-control" value="${user.courier_id}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="col-form-label">Payment Type:</label>
+                                    <input type="text" class="form-control" value="${user.payment_type}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="col-form-label">Service Fee:</label>
+                                    <input type="text" class="form-control" value="${user.service_fee}" readonly>
+                                </div>
+                            </div>`;
                     }
-                    if (user.order_retrieval == 'pickup') {
+
+                    if (user.order_retrieval === 'pickup') {
                         messagesModalFooter.innerHTML += `
                             <div class="row mb-3 p-0" style="margin-right: 60px;">
                                 <div class="col-sm-4">
@@ -230,7 +223,6 @@
                             </div>
                         `;
                     }
-
                 } else {
                     messagesModalBody.innerHTML = '<p>No products found for this order.</p>';
                 }
@@ -240,6 +232,11 @@
             }
         }
 
+        await fetchOrders();
+
+        setInterval(async () => {
+            await fetchOrders();
+        }, 5000);
 
     });
 </script>
