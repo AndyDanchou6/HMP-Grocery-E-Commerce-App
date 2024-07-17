@@ -27,6 +27,7 @@
                         <th>Category</th>
                         <th>Image</th>
                         <th>Product Name</th>
+                        <th>Variant</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Status</th>
@@ -46,6 +47,7 @@
                             <img src="{{ asset('storage/' . $item->product_img) }}" style="width: 45px; height: 45px" alt="Product Image" class="rounded-circle">
                         </td>
                         <td>{{ $item->product_name }}</td>
+                        <td>{{ $item->variant }}</td>
                         <td class="text-dark">₱{{ number_format($item->price, 2) }}</td>
                         <td>
                             @if($item->quantity <= 10) <span class="badge bg-label-danger me-1">{{ $item->quantity }}</span>
@@ -90,5 +92,6 @@
 </div>
 
 @include('inventories.modal.create')
+@include('inventories.modal.addVariant')
 
 @endsection

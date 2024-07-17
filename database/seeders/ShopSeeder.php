@@ -18,27 +18,27 @@ class ShopSeeder extends Seeder
             [
                 'category_img' => 'products/logo/category1.jpg',
                 'category_name' => 'Fresh Produce',
-                'description' => 'Description for Fresh Produce category',
+                'description' => 'Description for Fresh Produce'
             ],
             [
                 'category_img' => 'products/logo/category2.jpg',
                 'category_name' => 'Dairy and Eggs',
-                'description' => 'Description for Dairy and Eggs category',
+                'description' => 'Description for Dairy and Eggs'
             ],
             [
                 'category_img' => 'products/logo/category3.png',
                 'category_name' => 'Meat and Seafood',
-                'description' => 'Description for Meat and Seafood category',
+                'description' => 'Description for Meat and Seafood'
             ],
             [
                 'category_img' => 'products/logo/category4.jpg',
                 'category_name' => 'Pantry Staples',
-                'description' => 'Description for Pantry Staples category',
+                'description' => 'Description for Pantry Staples'
             ],
             [
                 'category_img' => 'products/logo/category5.png',
                 'category_name' => 'Bakery and Snacks',
-                'description' => 'Description for Bakery and Snacks category',
+                'description' => 'Description for Bakery and Snacks'
             ],
         ];
 
@@ -59,8 +59,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Carabao Mangoes",
                 'price' => rand(10, 20),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category1->id,
@@ -68,8 +66,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Malunggay leaves",
                 'price' => rand(10, 15),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category1->id,
@@ -77,8 +73,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Saba bananas",
                 'price' => rand(20, 40),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category1->id,
@@ -86,8 +80,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Calamansi",
                 'price' => rand(10, 15),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category2->id,
@@ -95,8 +87,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Magnolia Fresh Milk",
                 'price' => rand(50, 100),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category2->id,
@@ -104,8 +94,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Eden Cheese",
                 'price' => rand(30, 50),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category2->id,
@@ -113,8 +101,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "NestFresh Eggs",
                 'price' => rand(80, 120),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category2->id,
@@ -122,8 +108,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Carabao's Milk",
                 'price' => rand(40, 60),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category3->id,
@@ -131,8 +115,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Century Tuna",
                 'price' => rand(20, 30),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category3->id,
@@ -140,8 +122,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Purefoods Tender Juicy Hotdog",
                 'price' => rand(20, 30),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category3->id,
@@ -149,8 +129,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Magnolia Chicken (Whole Chicken)",
                 'price' => rand(180, 200),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category3->id,
@@ -158,8 +136,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "555 Canned Tuna",
                 'price' => rand(20, 30),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category4->id,
@@ -167,8 +143,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Datu Puti Vinegar",
                 'price' => rand(10, 15),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category4->id,
@@ -176,8 +150,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Silver Swan Soy Sauce",
                 'price' => rand(10, 15),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category4->id,
@@ -185,8 +157,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Argentina Corned Beef",
                 'price' => rand(10, 100),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category4->id,
@@ -194,8 +164,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Knorr Sinigang Mix",
                 'price' => rand(20, 25),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category5->id,
@@ -203,8 +171,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Gardenia Classic White Bread",
                 'price' => rand(40, 50),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category5->id,
@@ -212,8 +178,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "SkyFlakes Crackers (1 box pack)",
                 'price' => rand(150, 170),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category5->id,
@@ -221,8 +185,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Jack 'n Jill Piattos",
                 'price' => rand(20, 25),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
             [
                 'category_id' => $category5->id,
@@ -230,8 +192,6 @@ class ShopSeeder extends Seeder
                 'product_name' => "Oishi Pillows",
                 'price' => rand(10, 15),
                 'quantity' => rand(15, 50),
-                'information' => 'Information for Products',
-                'description' => 'Description for Products',
             ],
         ];
 

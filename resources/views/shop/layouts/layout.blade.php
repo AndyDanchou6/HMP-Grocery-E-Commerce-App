@@ -25,6 +25,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('index/img/favicon.ico') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 </head>
 
@@ -210,7 +211,6 @@
         function totalItemCost() {
             var itemSelected = sessionStorage.getItem('selectedItems');
 
-
             if (itemSelected != null) {
 
                 var parsedItems = JSON.parse(itemSelected);
@@ -246,10 +246,9 @@
 
             var alreadySelected = sessionStorage.getItem('selectedItems');
 
-
-            //      Store in session storage an object with items selected (converted to string)
-
-            if (alreadySelected == null) { // Check if there are selected items
+            // Store in session storage an object with items selected (converted to string)
+            // Check if there are selected items
+            if (alreadySelected == null) {
                 sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
             } else {
 
@@ -260,19 +259,24 @@
                         parsedSelected[key].item_quantity = parseFloat(quantity);
                         sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
                     } else {
-                        if (operation == 'increment') { // Check if item is selected already and increment
+
+                        // Check if item is selected already and increment
+                        if (operation == 'increment') {
                             parsedSelected[key].item_quantity += 1;
                             sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
                         }
 
-                        if (operation == 'decrement') { // Check if item is selected already and decrement
+                        // Check if item is selected already and decrement
+                        if (operation == 'decrement') {
                             parsedSelected[key].item_quantity -= 1;
                             sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
                         }
                     }
                 } else {
                     if (operation == 'increment') {
-                        parsedSelected[key] = { // If item is already selected
+
+                        // If item is already selected
+                        parsedSelected[key] = {
                             'item_id': itemId,
                             'item_price': itemPrice,
                             'item_quantity': 1
@@ -319,7 +323,7 @@
             })
         }
 
-        function outOfStockBanner(outOfStockBanners, userInput = "none") {
+        function outOfStockBanner(outOfStockBanners) {
 
             outOfStockBanners.forEach(function(outOfStock) {
                 var dataQuantity = outOfStock.getAttribute('data-quantity');
@@ -330,19 +334,57 @@
 
                     outOfStock.style.display = 'block';
 
-                    if (userInput == 'none') {
-                        quantityFields.style.display = "none";
-                    }
+                    quantityFields.style.display = "none";
                 }
             })
         }
 
+        async function updateStocks() {
+            const availableStocksApi = '/availableStocks';
+
+            try {
+                const response = await fetch(availableStocksApi); // Replace '/data' with your endpoint
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                const data = await response.json();
+
+                if (data.status != 200) {
+                    throw new Error('Error fetching available stocks.');
+                }
+
+                var availableStocks = data.data;
+
+                availableStocks.forEach(function(stocks) {
+
+                    var itemId = stocks.id;
+                    var quantity = stocks.quantity;
+
+                    var product_onDisplay = document.querySelector('.product_onDisplay[data-item-id="' + itemId + '"]');
+
+                    product_onDisplay.setAttribute('data-quantity', quantity);
+                    console.log(product_onDisplay);
+                })
+
+                setTimeout(updateStocks, 8000);
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+                await new Promise(resolve => setTimeout(resolve, 8000));
+                updateStocks();
+            }
+        }
+
+
         document.addEventListener('DOMContentLoaded', function() {
+
+            // updateStocks();
 
             var totalField = document.querySelector('#floating-total input');
 
             if (totalField) {
-                totalField.value = totalItemCost(); // Loads the Total cost
+
+                // Loads the Total cost
+                totalField.value = totalItemCost();
             }
 
 
@@ -352,11 +394,12 @@
 
             onCartBanner();
 
-            // Out of Stock Banner 
+            // Display Out of Stock Products
             var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
 
             outOfStockBanner(outOfStockBanners);
 
+            // clicks on image adds on cart
             const clickedItems = document.querySelectorAll('.product_onDisplay');
 
             clickedItems.forEach(function(clickedItem) {
@@ -365,7 +408,8 @@
 
                 if (quantityAvailable != 0) {
 
-                    clickedItem.addEventListener('click', function() { // Listens to every click on items
+                    // Listens to every click on items
+                    clickedItem.addEventListener('click', function() {
 
                         var itemId = clickedItem.getAttribute('data-item-id');
                         var itemPrice = clickedItem.getAttribute('data-price');
@@ -373,14 +417,16 @@
                         var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
                         var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
 
-                        // console.log(outOfStock)
                         if (currentAmount > quantityAvailable) {
                             currentAmount = currentAmount;
                             outOfStock.style.display = 'block';
                         } else {
-                            stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable); // Stores the selected item
 
-                            totalField.value = totalItemCost(); // Loads a new total after clicking item
+                            // Stores the selected item
+                            stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable);
+
+                            // Loads a new total after clicking item
+                            totalField.value = totalItemCost();
                             updateAmountSelected(itemQuantityFields);
                             onCartBanner();
 
@@ -389,6 +435,7 @@
                 }
             });
 
+            // Adjust selected items with buttons
             const quantityButton = document.querySelectorAll('.productAdjustButton');
 
             quantityButton.forEach(function(quantity) {
@@ -400,14 +447,15 @@
 
                 quantityAdjustButton.forEach(function(buttons) {
 
-                    buttons.addEventListener('click', function(event) { // Listens and stores selected items via buttons (need to change)
+                    // Listens and stores selected items via buttons (need to change)
+                    buttons.addEventListener('click', function(event) {
 
                         var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
                         var inputValue = document.querySelector('#quantity' + itemId);
                         var itemQuantity = 0;
 
-
-                        if (buttons.classList.contains('inc')) { // increment quantity by button
+                        // increment quantity by button
+                        if (buttons.classList.contains('inc')) {
 
                             if (inputValue.value >= parseFloat(itemDataQuantity)) {
                                 itemQuantity = parseFloat(itemDataQuantity);
@@ -421,7 +469,8 @@
                             }
                         }
 
-                        if (buttons.classList.contains('dec') && inputValue.value != 0) { // decrement quantity by button
+                        // decrement quantity by button
+                        if (buttons.classList.contains('dec') && inputValue.value != 0) {
                             itemQuantity = JSON.parse(inputValue.value) - 1;
                             stashItemsSelected(itemPrice, itemId, 'decrement', itemDataQuantity);
                             onCartBanner();
@@ -429,11 +478,11 @@
                         }
 
                         totalField.value = totalItemCost();
-
                     });
                 });
             });
 
+            // Store selected items then display them
             var toCartButton = document.querySelector('#toCartButton');
 
             if (toCartButton) {
@@ -460,7 +509,6 @@
                         toCartItems = {
                             'items': tempItemStorage
                         }
-                        // console.log(toCartItems)
 
                         const storeCartApi = "/carts"
 
@@ -483,8 +531,6 @@
                         })
                     }
                 })
-            } else {
-                // console.log('Button not Found')
             }
         });
     </script>

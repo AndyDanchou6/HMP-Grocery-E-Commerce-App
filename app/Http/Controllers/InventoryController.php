@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isEmpty;
+
 class InventoryController extends Controller
 {
     /**
@@ -48,6 +50,44 @@ class InventoryController extends Controller
         //
     }
 
+    public function addAsVariant(Request $request)
+    {
+        $subCategory = Inventory::where('id', $request->input('subCategory'))
+            ->first();
+
+        if (!$subCategory) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product does not exists.'
+            ]);
+        }
+
+        $currentlyAdded = Inventory::where('id', $request->input('currentlyAdded'))->first();
+
+        if (!$currentlyAdded) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product does not exists.'
+            ]);
+        }
+
+        $currentlyAdded->product_name = $subCategory->product_name;
+        $currentlyAdded->category_id = $subCategory->category_id;
+        $currentlyAdded->variant = $request->input('variant');
+
+        if (!$currentlyAdded->save()) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Error updating product.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Product added as a variant.',
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -55,10 +95,9 @@ class InventoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_name' => 'required|string|max:255',
+            'variant' => 'string|max:255|nullable',
             'price' => 'required|numeric',
             'quantity' => 'required|integer|min:0',
-            'information' => 'required',
-            'description' => 'required',
             'category_id' => 'required|exists:categories,id',
             'product_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -73,17 +112,41 @@ class InventoryController extends Controller
         $item->price = $request->input('price');
         $item->quantity = $request->input('quantity');
         $item->category_id = $request->input('category_id');
-        $item->information = $request->input('information');
-        $item->description = $request->input('description');
+        $item->variant = $request->input('variant');
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
             $item->product_img = $avatarPath;
         }
 
-        $item->save();
+        if (!$item->save()) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to add new product',
+            ]);
+        }
 
-        return redirect()->back()->with('success', 'Created successfully.');
+        $newlyAdded = Inventory::where('product_name', $request->input('product_name'))
+            ->first();
+
+        $sameProduct = Inventory::where('id', '!=', $newlyAdded->id)
+            ->where('product_name', 'like', '%' . $request->input('product_name') . '%')
+            ->orWhere('variant', 'like', '%' . $request->input('product_name') . '%')
+            ->get();
+
+        if (!$sameProduct->isEmpty()) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'New product has match.',
+                'matches' => $sameProduct,
+                'addedProductId' => $newlyAdded->id,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'New product is good to go.',
+        ]);
     }
 
     /**
@@ -111,8 +174,7 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'quantity' => 'required|integer|min:0',
-            'information' => 'required|string|max:1000',
-            'description' => 'required|string|max:1000',
+            'variant' => 'string|max:128',
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -124,9 +186,8 @@ class InventoryController extends Controller
 
         $item->product_name = $request->input('product_name');
         $item->price = $request->input('price');
-        $item->information = $request->input('information');
+        $item->variant = $request->input('variant');
         $item->category_id = $request->input('category_id');
-        $item->description = $request->input('description');
         $item->quantity = $request->input('quantity');
 
         if ($request->hasFile('product_img')) {
@@ -165,4 +226,32 @@ class InventoryController extends Controller
     //     ]);
 
     // }
+
+    public function availableStocks()
+    {
+
+        try {
+            $products = Inventory::select('id', 'quantity')
+                ->get();
+            if ($products) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Available stocks fetched.',
+                    'data' => $products,
+                ]);
+            }
+
+            return response()->json(['status' => '404', 'message' => 'No products available.']);
+        } catch (\Exception $e) {
+
+            return response()->json(['error', 'message' => 'System error!']);
+        }
+    }
+
+    public function test()
+    {
+        $productByName = Inventory::all()->groupBy('product_name');
+
+        dd($productByName);
+    }
 }

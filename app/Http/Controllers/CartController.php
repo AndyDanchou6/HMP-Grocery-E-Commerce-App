@@ -49,16 +49,35 @@ class CartController extends Controller
 
             $referenceNo = rand(100000, 999999);
 
+            while (SelectedItems::where('referenceNo', $referenceNo)->exists()) {
+                $referenceNo = rand(100000, 999999);
+            }
+
             foreach ($items as $item) {
-                SelectedItems::create([
-                    'referenceNo' => $referenceNo,
-                    'user_id' => $user->id,
-                    'item_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->inventory->price,
-                    'order_retrieval' => $orderRetrievalType,
-                    'status' => 'forCheckout'
-                ]);
+
+                $existingUserCheckouts = SelectedItems::where('user_id', $user->id)
+                    ->where('item_id', $item->product_id)
+                    ->where('status', 'forCheckout')
+                    ->first();
+
+                if ($existingUserCheckouts == null) {
+                    SelectedItems::create([
+                        'referenceNo' => $referenceNo,
+                        'user_id' => $user->id,
+                        'item_id' => $item->product_id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->inventory->price,
+                        'order_retrieval' => $orderRetrievalType,
+                        'status' => 'forCheckout'
+                    ]);
+                } else {
+
+                    $existingUserCheckouts->quantity = $item->quantity;
+                    $existingUserCheckouts->order_retrieval = $orderRetrievalType;
+                    $existingUserCheckouts->status = 'forCheckout';
+
+                    $existingUserCheckouts->save();
+                }
 
                 $item->delete();
             }
