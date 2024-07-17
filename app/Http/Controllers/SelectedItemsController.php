@@ -21,63 +21,68 @@ class SelectedItemsController extends Controller
 
     public function forPackaging(Request $request)
     {
-        $search = $request->input('search');
+        if (Auth::user()->role == 'Admin') {
 
-        $selectedItems = SelectedItems::where('status', 'forPackage')
-            ->with('user')
-            ->with('inventory')
-            ->orderBy('created_at', 'asc');
+            $search = $request->input('search');
 
-        if ($search) {
-            $selectedItems->where(function ($query) use ($search) {
-                $query->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                })->orWhere('referenceNo', 'like', "%{$search}%");
-            });
-        }
+            $selectedItems = SelectedItems::where('status', 'forPackage')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'asc');
 
-        $selectedItems = $selectedItems->get();
-
-        $userByReference = [];
-
-        foreach ($selectedItems as $item) {
-            if (!isset($userByReference[$item->referenceNo])) {
-                $userByReference[$item->referenceNo] = [
-                    'id' => $item->id,
-                    'user_id' => $item->user->id,
-                    'referenceNo' => $item->referenceNo,
-                    'name' => $item->user->name,
-                    'email' => $item->user->email,
-                    'phone' => $item->phone,
-                    'fb_link' => $item->fb_link,
-                    'address' => $item->address,
-                    'order_retrieval' => $item->order_retrieval,
-                    'quantity' => $item->quantity,
-                    'courier_id' => $item->courier_id,
-                    'payment_type' => $item->payment_type,
-                    'payment_condition' => $item->payment_condition,
-                    'proof_of_delivery' => $item->proof_of_delivery,
-                    'delivery_date' => $item->delivery_date,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'items' => []
-                ];
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item;
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'courier_id' => $item->courier_id,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.forPackaging', [
+                'forPackage' => $paginatedItems,
+                'search' => $search,
+            ]);
+        } else {
+            return redirect()->route('error');
         }
-
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
-
-        return view('selectedItems.forPackaging', [
-            'forPackage' => $paginatedItems,
-            'search' => $search,
-        ]);
 
         // dd($forPackage);
     }
@@ -134,204 +139,205 @@ class SelectedItemsController extends Controller
 
     public function forDelivery(Request $request)
     {
-        // if (!Auth::check() || !(Auth::user()->role == 'Admin')) {
-        //     return redirect()->route('error404');
-        // } else {
-        $search = $request->input('search');
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
 
-        $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
-            ->where('order_retrieval', 'delivery')
-            ->with('user')
-            ->with('inventory')
-            ->orderBy('delivery_date', 'asc');
+            $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
+                ->where('order_retrieval', 'delivery')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('delivery_date', 'asc');
 
-        if ($search) {
-            $selectedItems->where(function ($query) use ($search) {
-                $query->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                })->orWhere('referenceNo', 'like', "%{$search}%");
-            });
-        }
-
-        $selectedItems = $selectedItems->get();
-
-        $userByReference = [];
-
-        foreach ($selectedItems as $item) {
-            if (!isset($userByReference[$item->referenceNo])) {
-                $userByReference[$item->referenceNo] = [
-                    'id' => $item->id,
-                    'user_id' => $item->user->id,
-                    'referenceNo' => $item->referenceNo,
-                    'name' => $item->user->name,
-                    'email' => $item->user->email,
-                    'phone' => $item->phone,
-                    'fb_link' => $item->fb_link,
-                    'address' => $item->address,
-                    'order_retrieval' => $item->order_retrieval,
-                    'quantity' => $item->quantity,
-                    'courier_id' => $item->courier_id,
-                    'service_fee' => $item->service_fee,
-                    'payment_type' => $item->payment_type,
-                    'payment_condition' => $item->payment_condition,
-                    'proof_of_delivery' => $item->proof_of_delivery,
-                    'delivery_date' => $item->delivery_date,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'items' => []
-                ];
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item;
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'courier_id' => $item->courier_id,
+                        'service_fee' => $item->service_fee,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            $schedules = deliverySchedule::where('status', 'Active')->get();
+            $couriers = User::where('role', 'Courier')->get();
+
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.forDelivery', [
+                'forDelivery' => $paginatedItems,
+                'search' => $search,
+                'couriers' => $couriers,
+                'schedules' => $schedules
+            ]);
+        } else {
+            return redirect()->route('error');
         }
-
-        $schedules = deliverySchedule::where('status', 'Active')->get();
-        $couriers = User::where('role', 'Courier')->get();
-
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
-
-        return view('selectedItems.forDelivery', [
-            'forDelivery' => $paginatedItems,
-            'search' => $search,
-            'couriers' => $couriers,
-            'schedules' => $schedules
-        ]);
-
-        // }
     }
 
     public function forPickup(Request $request)
     {
-        // if (!Auth::check() || (Auth::user()->role == 'Customer' || Auth::user()->role == 'Courier')) {
-        //     return redirect()->route('error404');
-        // } else {
-        $search = $request->input('search');
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
 
-        $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
-            ->where('order_retrieval', 'pickup')
-            ->with('user')
-            ->with('inventory');
+            $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
+                ->where('order_retrieval', 'pickup')
+                ->with('user')
+                ->with('inventory');
 
-        if ($search) {
-            $selectedItems->where(function ($query) use ($search) {
-                $query->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                })->orWhere('referenceNo', 'like', "%{$search}%");
-            });
-        }
-
-        $selectedItems = $selectedItems->get();
-
-        $userByReference = [];
-
-        foreach ($selectedItems as $item) {
-            if (!isset($userByReference[$item->referenceNo])) {
-                $userByReference[$item->referenceNo] = [
-                    'id' => $item->id,
-                    'user_id' => $item->user->id,
-                    'referenceNo' => $item->referenceNo,
-                    'name' => $item->user->name,
-                    'email' => $item->user->email,
-                    'phone' => $item->phone,
-                    'fb_link' => $item->fb_link,
-                    'address' => $item->address,
-                    'order_retrieval' => $item->order_retrieval,
-                    'quantity' => $item->quantity,
-                    'courier_id' => $item->courier_id,
-                    'payment_type' => $item->payment_type,
-                    'payment_condition' => $item->payment_condition,
-                    'proof_of_delivery' => $item->proof_of_delivery,
-                    'delivery_date' => $item->delivery_date,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'items' => []
-                ];
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item;
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'courier_id' => $item->courier_id,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.forPickup', [
+                'forPickup' => $paginatedItems,
+                'search' => $search,
+            ]);
+        } else {
+            return redirect()->route('error');
         }
-
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
-
-        return view('selectedItems.forPickup', [
-            'forPickup' => $paginatedItems,
-            'search' => $search,
-        ]);
-        // }
     }
 
     public function deniedOrders(Request $request)
     {
-        $search = $request->input('search');
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
 
-        $deniedOrders = SelectedItems::where('status', 'denied')
-            ->with('user')
-            ->with('inventory')
-            ->orderBy('updated_at', 'desc');
+            $deniedOrders = SelectedItems::where('status', 'denied')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('updated_at', 'desc');
 
-        if ($search) {
-            $deniedOrders->where(function ($query) use ($search) {
-                $query->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                })->orWhere('referenceNo', 'like', "%{$search}%");
-            });
-        }
-
-        $deniedOrders = $deniedOrders->get();
-
-        $userByReference = [];
-
-        foreach ($deniedOrders as $item) {
-            if (!isset($userByReference[$item->referenceNo])) {
-                $userByReference[$item->referenceNo] = [
-                    'id' => $item->id,
-                    'user_id' => $item->user->id,
-                    'referenceNo' => $item->referenceNo,
-                    'name' => $item->user->name,
-                    'email' => $item->user->email,
-                    'phone' => $item->phone,
-                    'fb_link' => $item->fb_link,
-                    'address' => $item->address,
-                    'order_retrieval' => $item->order_retrieval,
-                    'quantity' => $item->quantity,
-                    'reasonForDenial' => $item->reasonForDenial,
-                    'courier_id' => $item->courier_id,
-                    'payment_type' => $item->payment_type,
-                    'payment_condition' => $item->payment_condition,
-                    'proof_of_delivery' => $item->proof_of_delivery,
-                    'delivery_date' => $item->delivery_date,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'items' => []
-                ];
+            if ($search) {
+                $deniedOrders->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
             }
 
-            $userByReference[$item->referenceNo]['items'][] = $item;
+            $deniedOrders = $deniedOrders->get();
+
+            $userByReference = [];
+
+            foreach ($deniedOrders as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->id,
+                        'user_id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'courier_id' => $item->courier_id,
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery,
+                        'delivery_date' => $item->delivery_date,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
+            return view('selectedItems.deniedOrders', [
+                'deniedOrders' => $paginatedItems,
+                'search' => $search,
+            ]);
+        } else {
+            return redirect()->route('error');
         }
-
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-        $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-        ]);
-
-        return view('selectedItems.deniedOrders', [
-            'deniedOrders' => $paginatedItems,
-            'search' => $search,
-        ]);
-
-        // dd($userByReference);
     }
 
     public function show(Request $request)
@@ -400,144 +406,9 @@ class SelectedItemsController extends Controller
                 'search' => $search,
             ]);
         } else {
-            return redirect()->route('error404');
+            return redirect()->route('error');
         }
     }
-
-
-    public function orders(Request $request)
-    {
-        if (Auth::user()->role == 'Courier') {
-            return redirect()->route('error404');
-        } else {
-            $search = $request->input('search');
-
-            $userId = Auth::id();
-
-            $selectedItems = SelectedItems::where('selected_items.status', '!=', 'forCheckout')
-                ->where('selected_items.user_id', $userId)
-                ->with('user')
-                ->with('inventory')
-                ->orderBy('created_at', 'desc');
-
-
-            if ($search) {
-                $selectedItems->where(function ($query) use ($search) {
-                    $query->whereHas('user', function ($query) use ($search) {
-                        $query->where('referenceNo', 'like', "%{$search}%");
-                    });
-                });
-            }
-
-            $selectedItems = $selectedItems->get();
-
-            $userByReference = [];
-
-            foreach ($selectedItems as $item) {
-                if (!isset($userByReference[$item->referenceNo])) {
-                    $courier = User::find($item->courier_id);
-                    $userByReference[$item->referenceNo] = [
-                        'id' => $item->user->id,
-                        'referenceNo' => $item->referenceNo,
-                        'name' => $item->user->name,
-                        'role' => $item->user->role,
-                        'email' => $item->user->email,
-                        'phone' => $item->phone,
-                        'fb_link' => $item->fb_link,
-                        'address' => $item->address,
-                        'order_retrieval' => $item->order_retrieval,
-                        'quantity' => $item->quantity,
-                        'service_fee' => $item->service_fee,
-                        'status' => $item->status,
-                        'courier_id' => $courier ? $courier->name : 'Unknown',
-                        'payment_type' => $item->payment_type,
-                        'payment_condition' => $item->payment_condition,
-                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
-                        'delivery_date' => $item->delivery_date,
-                        'reasonForDenial' => $item->reasonForDenial,
-                        'created_at' => $item->created_at,
-                        'updated_at' => $item->updated_at,
-                        'items' => []
-                    ];
-                }
-                $userByReference[$item->referenceNo]['items'][] = $item;
-            }
-
-            $perPage = 10;
-            $currentPage = LengthAwarePaginator::resolveCurrentPage();
-            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-            ]);
-
-            $admin = User::where('role', 'Admin')->first();
-
-            return view('selectedItems.orders', [
-                'userByReference' => $paginatedItems,
-                'admin' => $admin
-            ]);
-            // dd($userByReference);
-        }
-    }
-
-    // public function orders(Request $request)
-    // {
-    //     if (Auth::user()->role == 'Courier') {
-    //         return redirect()->route('error404');
-    //     }
-
-
-    //     $userId = Auth::id();
-
-    //     $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
-    //     ->where('user_id', $userId)
-    //         ->with(['user', 'inventory'])
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-
-    //     $userByReference = [];
-
-    //     foreach ($selectedItems as $item) {
-    //         if (!isset($userByReference[$item->referenceNo])) {
-    //             $courier = User::find($item->courier_id);
-    //             $userByReference[$item->referenceNo] = [
-    //                 'id' => $item->id,
-    //                 'referenceNo' => $item->referenceNo,
-    //                 'name' => $item->name,
-    //                 'email' => $item->email,
-    //                 'phone' => $item->phone,
-    //                 'fb_link' => $item->fb_link,
-    //                 'address' => $item->address,
-    //                 'order_retrieval' => $item->order_retrieval,
-    //                 'status' => $item->status,
-    //                 'courier_id' => $courier ? $courier->name : 'Unknown',
-    //                 'payment_type' => $item->payment_type,
-    //                 'payment_condition' => $item->payment_condition,
-    //                 'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-    //                 'delivery_date' => $item->delivery_date,
-    //                 'created_at' => $item->created_at,
-    //                 'updated_at' => $item->updated_at,
-    //                 'items' => []
-    //             ];
-    //         }
-    //         $userByReference[$item->referenceNo]['items'][] = $item;
-    //     }
-
-    //     $perPage = 7;
-    //     $currentPage = LengthAwarePaginator::resolveCurrentPage();
-    //     $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-    //     $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-    //         'path' => LengthAwarePaginator::resolveCurrentPath(),
-    //     ]);
-
-    //     $admin = User::where('role', 'Admin')->first();
-
-    //     return view('selectedItems.orders', [
-    //         'userByReference' => $paginatedItems,
-    //         'admin' => $admin
-    //     ]);
-    // }
 
     public function courierDashboard(Request $request)
     {
@@ -600,43 +471,6 @@ class SelectedItemsController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function forCheckout()
-    {
-        // if (empty(Auth::user()->role)) {
-        //     return redirect()->route('error404');
-        // } else {
-        //     $users = User::whereHas('selectedItems', function ($query) {
-        //         $query->where('selected_items.status', 'forPackage');
-        //     })->with(['selectedItems' => function ($query) {
-        //         $query->where('selected_items.status', 'forPackage')
-        //             ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval');
-        //     }])->get();
-
-        //     return view('selectedItems.forPackaging', compact('users'));
-        // }
-        if (!Auth::check() || !(Auth::user()->role != 'Admin' && Auth::user()->role == 'Delivery_Driver')) {
-            return redirect()->route('error404');
-        } else {
-            $users = User::whereHas('selectedItems', function ($query) {
-                $query->where('selected_items.status', 'forCheckout');
-            })->with(['selectedItems' => function ($query) {
-                $query->where('selected_items.status', 'forCheckout')
-                    ->select('inventories.*', 'selected_items.referenceNo', 'selected_items.quantity', 'selected_items.order_retrieval', 'selected_items.status');
-            }])->get();
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-
-
-    /**
-     * Display the specified resource.
-     */
     public function showMorning()
     {
         $specificDate = Carbon::create(2024, 6, 26);
@@ -826,13 +660,8 @@ class SelectedItemsController extends Controller
             if ($request->has('payment_condition')) {
                 $item->payment_condition = $request->input('payment_condition');
                 $icon = 'success';
-                $message = 'Paid Successfully.';
+                $message = 'Payment condition updated successfully.';
             }
-
-            // if ($request->has('payment_proof')) {
-            //     $item->payment_proof = $request->input('payment_proof');
-            //     $message = 'Payment proof updated successfully.';
-            // }
 
             if ($request->hasFile('payment_proof')) {
                 $avatarPath = $request->file('payment_proof')->store('proof', 'public');
@@ -846,6 +675,7 @@ class SelectedItemsController extends Controller
 
         return redirect()->back()->with($icon, $message);
     }
+
 
     /**
      * Remove the specified resource from storage.

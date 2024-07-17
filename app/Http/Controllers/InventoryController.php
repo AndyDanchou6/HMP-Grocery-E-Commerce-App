@@ -211,20 +211,28 @@ class InventoryController extends Controller
         return redirect()->back()->with('success', 'Deleted successfully.');
     }
 
-    // public function searchItems(Request $request)
+    public function criticalProducts(Request $request)
+    {
+
+        $inventories = Inventory::where('quantity', '<=', 10)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json(['inventories' => $inventories]);
+        }
+
+        return view('inventories.index', compact('inventories'));
+    }
+
+    // public function criticalProducts()
     // {
-    //     $ids = $request->input('ids', []);
+    //     $inventories = Inventory::where('quantity', '<=', 10)
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(1); // Adjust per your pagination needs
+    //     $categories = Category::pluck('category_name', 'id');
 
-    //     $items = Inventory::whereIn('id', $ids)->get();
-
-    //     // return view('shop.carts', compact('selectedItems'));
-
-    //     return response()->json([
-    //         'status' => 200,
-    //         'message' => 'Items Found',
-    //         'data' => $items
-    //     ]);
-
+    //     return view('inventories.index', compact('inventories', 'categories'));
     // }
 
     public function availableStocks()

@@ -64,33 +64,33 @@
       <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link" style="position: relative;">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <span data-i18n="For Packaging">For Packaging</span>
-        <span id="forPackagingCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+        <span id="forPackagingCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck"></i>
         <span data-i18n="Tables">For Delivery</span>
-        <span id="forDeliveryCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+        <span id="forDeliveryCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag"></i>
         <span data-i18n="Tables">For Pickup</span>
-        <span id="forPickupCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+        <span id="forPickupCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('selectedItems.deniedOrders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-cart-x"></i>
         <span data-i18n="Tables">Denied Orders</span>
-        <span id="deniedOrders" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+        <span id="deniedOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
     @endif
-    @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Customer')
-    <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
+    @if(Auth::user()->role == 'Customer')
+    <li class="menu-header small text-uppercase"><span class="menu-header-text">Customer Section</span></li>
     <li id="tables" class="menu-item">
       <a href="{{ route('reviews.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-chat-left"></i>
@@ -103,6 +103,18 @@
         <div data-i18n="Tables">Orders</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('customers.pendingOrders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-box-seam"></i>
+        <div data-i18n="Tables">Pending Orders</div>
+      </a>
+    </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('customers.delivery_retrieval') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-truck"></i>
+        <div data-i18n="Tables">Orders to deliver</div>
+      </a>
+    </li>
     @endif
     @if(Auth::user()->role == 'Courier')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Courier Section</span></li>
@@ -110,7 +122,7 @@
       <a href="{{ route('selectedItems.courierDashboard') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-list-ul"></i>
         <div data-i18n="Tables">Delivery Request</div>
-        <span id="courierCount" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
+        <span id="courierCount" class="badge badge-center rounded-pill bg-label-primary" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
       </a>
     </li>
     @endif
