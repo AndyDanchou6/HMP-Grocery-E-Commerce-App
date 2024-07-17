@@ -32,6 +32,12 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <label for="editVariantName" class="col-sm-3 col-form-label">Variant Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="variant" id="editVariantName" class="form-control" placeholder="Enter Variant Name" value="{{ $item->variant }}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
                         <label for="editPrice" class="col-sm-3 col-form-label">Price</label>
                         <div class="col-sm-9">
                             <input type="number" name="price" id="editPrice" class="form-control" placeholder="Enter Price" value="{{ $item->price }}">
@@ -43,7 +49,7 @@
                             <input type="number" name="quantity" id="editQuantity" class="form-control" placeholder="Enter Quantity" value="{{ $item->quantity }}">
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <!-- <div class="row mb-3">
                         <label for="information" class="col-sm-3 col-form-label">Information</label>
                         <div class="col-sm-9">
                             <textarea name="information" id="editDescription" class="form-control" placeholder="Enter Description">{{ $item->information }}</textarea>
@@ -54,7 +60,7 @@
                         <div class="col-sm-9">
                             <textarea name="description" id="editDescription" class="form-control" placeholder="Enter Description">{{ $item->description }}</textarea>
                         </div>
-                    </div>
+                    </div> -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>

@@ -116,4 +116,5 @@
 </section>
 
 @include('shop.floatingTotal')
+
 @endsection

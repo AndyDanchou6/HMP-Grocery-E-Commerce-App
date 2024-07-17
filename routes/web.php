@@ -131,5 +131,8 @@ Route::delete('admin/schedules/{schedule}', [DeliveryScheduleController::class, 
 Route::put('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
 
 Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
+Route::get('/availableStocks', [InventoryController::class, 'availableStocks']);
+Route::get('/productByName', [InventoryController::class, 'test']);
+Route::post('/addAsVariant', [InventoryController::class, 'addAsVariant']);
 
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');

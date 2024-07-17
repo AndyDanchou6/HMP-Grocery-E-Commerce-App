@@ -49,9 +49,7 @@ class ShopController extends Controller
 
             $inventory = Inventory::with('reviews', 'category')
                 ->when($query, function ($queryBuilder) use ($query) {
-                    $queryBuilder->where('product_name', 'LIKE', "%$query%")
-                        ->orWhere('description', 'LIKE', "%$query%")
-                        ->orWhere('information', 'LIKE', "%$query%");
+                    $queryBuilder->where('product_name', 'LIKE', "%$query%");
                 })
                 ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
                     $queryBuilder->where('category_id', $categoryFilter);
