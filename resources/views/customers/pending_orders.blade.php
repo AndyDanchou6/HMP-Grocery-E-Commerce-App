@@ -37,7 +37,7 @@
         let fetchedData = null;
 
         function fetchOrders() {
-            fetch('{{ route("customers.pendingOrdersUpdate") }}')
+            fetch('/customer/pendingOrderUpdate')
                 .then(response => {
                     return response.json();
                 })
