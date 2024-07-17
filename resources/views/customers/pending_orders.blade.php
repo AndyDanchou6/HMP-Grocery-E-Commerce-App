@@ -36,18 +36,18 @@
     document.addEventListener('DOMContentLoaded', function() {
         let fetchedData = null;
 
-        function fetchOrders() {
+         function fetchOrders() {
             fetch('{{ route("customers.pendingOrdersUpdate") }}', {
                     method: 'GET',
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest', // Indicates AJAX request
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}", // CSRF token for security
-                        'Content-Type': 'application/json', // Expected content type
-                        'Accept': 'application/json' // Expected response type
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     credentials: 'same-origin'
                 })
-                 .then(response => {
+                .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
@@ -58,52 +58,52 @@
                         const data = JSON.parse(text);  // Try to parse the text as JSON
                         fetchedData = data;
 
-                    const tableBody = document.getElementById('tableBody');
-                    tableBody.innerHTML = '';
+                        const tableBody = document.getElementById('tableBody');
+                        tableBody.innerHTML = '';
 
-                    const userByReference = data.userByReference;
+                        const userByReference = data.userByReference;
 
-                    if (Object.keys(userByReference).length > 0) {
-                        Object.keys(userByReference).forEach((referenceNo, index) => {
-                            const user = userByReference[referenceNo];
-                            const row = document.createElement('tr');
+                        if (Object.keys(userByReference).length > 0) {
+                            Object.keys(userByReference).forEach((referenceNo, index) => {
+                                const user = userByReference[referenceNo];
+                                const row = document.createElement('tr');
 
-                            row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td><span class="badge bg-primary me-1">${user.referenceNo}</span></td>
-                            <td><strong>${user.order_retrieval ? user.order_retrieval.charAt(0).toUpperCase() + user.order_retrieval.slice(1) : ''}</strong></td>
-                            <td>
-                                <span class="badge bg-${user.payment_type === 'COD' ? 'primary' : user.payment_type === 'G-cash' ? 'info' : 'secondary'} me-1">${user.payment_type}</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-${user.payment_condition === 'paid' ? 'success' : 'danger'} me-1">${user.payment_condition ? user.payment_condition.charAt(0).toUpperCase() + user.payment_condition.slice(1) : 'Unpaid'}</span>
-                            </td>
-                            <td>
-                                <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messagesModal" data-reference-no="${user.referenceNo}"></a>
-                            </td>
-                        `;
+                                row.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>${user.referenceNo}</td>
+                                    <td>${user.order_retrieval}</td>
+                                    <td>${user.payment_type}</td>
+                                    <td>${user.payment_condition}</td>
+                                    <td>
+                                        <a class="bx bx-message-alt me-1 details-button" href="#" data-reference-no="${user.referenceNo}"></a>
+                                    </td>
+                                `;
 
-                            tableBody.appendChild(row);
+                                tableBody.appendChild(row);
 
-                            row.querySelectorAll('.details-button').forEach(button => {
-                                button.addEventListener('click', function(event) {
-                                    event.preventDefault();
-                                    const referenceNo = event.currentTarget.getAttribute('data-reference-no');
-                                    fetchMessages(referenceNo);
+                                row.querySelectorAll('.details-button').forEach(button => {
+                                    button.addEventListener('click', function(event) {
+                                        event.preventDefault();
+                                        const referenceNo = event.currentTarget.getAttribute('data-reference-no');
+                                        fetchMessages(referenceNo);
+                                    });
                                 });
                             });
-                        });
-                    } else {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `<td colspan="8" class="text-center">No orders available at the moment.</td>`;
-                        tableBody.appendChild(row);
+                        } else {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td colspan="6" class="text-center">No pending orders available.</td>`;
+                            tableBody.appendChild(row);
+                        }
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        console.log('Response text:', text);  // Log the response text for debugging
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching orders:', error);
                 })
                 .finally(() => {
-                    setTimeout(fetchOrders, 5000);
+                    setTimeout(fetchOrders, 5000);  // Polling every 5 seconds
                 });
         }
 
