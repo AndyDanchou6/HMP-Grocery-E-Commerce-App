@@ -7,9 +7,12 @@
   </div>
   <!-- ...Existing navbar code... -->
   <ul class="navbar-nav flex-row align-items-center ms-auto">
-    @if(Auth::user()->role != 'Courier')
+    @if(Auth::user()->role == 'Customer')
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
       <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
+    </a>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}">
+      <i class="bx bx-history bx-sm bx-tada-hover"></i>
     </a>
     @endif
     @if(Auth::user()->role == 'Admin')
@@ -121,7 +124,7 @@
                     positionClass: 'toast-top-right',
                     showDuration: '300',
                     hideDuration: '1000',
-                    timeOut: '15000',
+                    timeOut: '3000',
                     showEasing: 'swing',
                     hideEasing: 'linear',
                     showMethod: 'fadeIn',

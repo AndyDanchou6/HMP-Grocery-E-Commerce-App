@@ -134,13 +134,12 @@ Route::get('/availableStocks', [InventoryController::class, 'availableStocks']);
 Route::get('/productByName', [InventoryController::class, 'test']);
 Route::post('/addAsVariant', [InventoryController::class, 'addAsVariant']);
 
-Route::get('counting', [InventoryController::class, 'criticalProducts'])->name('inventories.criticalProducts');
-
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
+Route::middleware('auth')->get('/selectedItems/countOrders', [CustomerController::class, 'orderCount'])->name('customers.countOrders');
 
 /* Customers */
-Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders'])->name('selectedItems.orders');
-Route::get('/customer/pending_orders', [CustomerController::class, 'pending_orders'])->name('customers.pendingOrders');
-Route::get('/customer/pendingOrderUpdate', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pendingOrdersUpdate');
-Route::get('/customer/delivery_retrieval', [CustomerController::class, 'delivery_retrieval'])->name('customers.delivery_retrieval');
-Route::middleware('auth')->get('/customer/delivery_retrievalUpdate', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.deliveryUpdate');
+Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders'])->name('customers.orders');
+Route::get('/customer/orders/pending', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pending_orders');
+Route::get('/customer/orders/deliveryRetrieval', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.delivery_retrieval');
+Route::get('/customer/orders/pickupRetrieval', [CustomerController::class, 'forPickupRetrieval'])->name('customers.pickup_retrieval');
+

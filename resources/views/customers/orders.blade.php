@@ -11,7 +11,7 @@
                 or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
             </div>
         </div>
-        <form action="{{ route('selectedItems.orders') }}" method="GET" class="w-100 mb-3">
+        <form action="{{ route('customers.orders') }}" method="GET" class="w-100 mb-3">
             <div class="container-fluid">
                 <div class="row justify-content-end">
                     <div class="col-md-5" style="margin-right: 10px;">
@@ -24,7 +24,6 @@
                     </div>
                 </div>
             </div>
-
         </form>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
