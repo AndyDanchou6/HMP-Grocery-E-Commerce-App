@@ -23,7 +23,7 @@
                     </div>
                     @elseif(Auth::user()->role == 'Customer')
                     <div class="header__top__right__auth" style="margin-right: 10px;">
-                        <a href="{{ route('selectedItems.orders') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
+                        <a href="{{ route('customer.home') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
                     </div>
                     @endif
                     <div class="header__top__right__auth">
@@ -69,7 +69,7 @@
         <div class="col-lg-3">
             <div class="header__cart">
                 <ul>
-                    <li><a href="{{ route('selectedItems.orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
+                    <li><a href="{{ route('customers.pending_orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
                     <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
                 </ul>
                 <!-----item------>
