@@ -140,16 +140,11 @@ class CustomerController extends Controller
                         'items' => []
                     ];
                 }
-                $userByReference[$item->referenceNo]['items'][] = [
-                    'id' => $item->id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->inventory->price,
-                    'product_name' => $item->inventory->product_name,
-                ];
+                $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
             return response()->json([
-                'userByReference' => array_values($userByReference), // Ensure to return values as array
+                'userByReference' => array_values($userByReference),
             ]);
         } catch (\Exception $e) {
             Log::error('Error fetching pending orders: ' . $e->getMessage());
@@ -208,12 +203,7 @@ class CustomerController extends Controller
                         'items' => []
                     ];
                 }
-                $userByReference[$item->referenceNo]['items'][] = [
-                    'id' => $item->id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->inventory->price,
-                    'product_name' => $item->inventory->product_name,
-                ];
+                $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
             return response()->json([
