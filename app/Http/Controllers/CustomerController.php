@@ -96,11 +96,11 @@ class CustomerController extends Controller
     public function pendingOrdersUpdate(Request $request)
     {
         try {
-            $userId = $request->user()->id;
+            $userId = $request->user();
             Log::info('Fetching orders for user ID: ' . $userId);
 
             $selectedItems = SelectedItems::where('status', 'forPackage')
-                ->where('user_id', $userId)
+                ->where('user_id', $userId->id)
                 ->with('user')
                 ->with('inventory')
                 ->orderBy('created_at', 'desc')
@@ -143,9 +143,14 @@ class CustomerController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
-            return response()->json([
-                'userByReference' => array_values($userByReference),
-            ]);
+            if ($request->ajax()) {
+                return response()->json(['userByReference' => array_values($userByReference)]);
+            }
+
+            return view('customers.pending_orders', compact('userByReference'));
+            // return response()->json([
+            //     'userByReference' => array_values($userByReference),
+            // ]);
         } catch (\Exception $e) {
             Log::error('Error fetching pending orders: ' . $e->getMessage());
             return response()->json(['error' => 'Unable to fetch pending orders'], 500);
@@ -271,9 +276,14 @@ class CustomerController extends Controller
                 ];
             }
 
-            return response()->json([
-                'userByReference' => array_values($userByReference), // Ensure to return values as array
-            ]);
+            // if ($request->ajax()) {
+            //     return response()->json(['userByReference' => array_values($userByReference)]);
+            // }
+            // return view('customers.pending_orders', compact('userByReference'));
+
+            // return response()->json([
+            //     'userByReference' => array_values($userByReference), // Ensure to return values as array
+            // ]);
         } catch (\Exception $e) {
             Log::error('Error fetching pending orders: ' . $e->getMessage());
             return response()->json(['error' => 'Unable to fetch pending orders'], 500);
