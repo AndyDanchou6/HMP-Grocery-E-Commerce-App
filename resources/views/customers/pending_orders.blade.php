@@ -40,9 +40,10 @@
             fetch('{{ route("customers.pendingOrdersUpdate") }}', {
                     method: 'GET',
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'X-Requested-With': 'XMLHttpRequest', // Indicates AJAX request
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}", // CSRF token for security
+                        'Content-Type': 'application/json', // Expected content type
+                        'Accept': 'application/json' // Expected response type
                     },
                     credentials: 'same-origin'
                 })
