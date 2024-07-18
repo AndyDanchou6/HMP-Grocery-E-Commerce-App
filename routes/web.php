@@ -142,8 +142,4 @@ Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders
 Route::get('/customer/orders/pendingOrders', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pending_orders');
 Route::get('/customer/orders/deliveryRetrieval', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.delivery_retrieval');
 Route::get('/customer/orders/pickupRetrieval', [CustomerController::class, 'forPickupRetrieval'])->name('customers.pickup_retrieval');
-<<<<<<< HEAD
 Route::get('/customer/orders/pendingOrders1', [CustomerController::class, 'pendingOrdersUpdate1'])->name('customers.pending_orders1');
-=======
-
->>>>>>> 093c360d90d172c83bd1c9fab1185c6c1c892723
