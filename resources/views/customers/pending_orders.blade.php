@@ -2,7 +2,6 @@
 
 @section('content')
 
-<<<<<<< HEAD
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header row justify-content-between align-items-center">
@@ -68,7 +67,46 @@
     </div>
 </div>
 </div>
-=======
+@endsection
 
->>>>>>> 093c360d90d172c83bd1c9fab1185c6c1c892723
+@section('customScript')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var subTotalField = document.querySelectorAll('.item-sub-total');
+        var totalContainer = {};
+
+        subTotalField.forEach(function(subtotal) {
+            var itemReferenceNo = subtotal.getAttribute('data-item-id');
+            var [referenceNo, itemId] = itemReferenceNo.split('_');
+
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+            var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
+
+            var tempSubTotal = price * quantity;
+            userSubTotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll('.purchase-total');
+
+        totals.forEach(function(total) {
+            var totalId = total.getAttribute('data-total-id');
+            total.value = totalContainer[totalId].toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+        });
+    });
+</script>
+
 @endsection
