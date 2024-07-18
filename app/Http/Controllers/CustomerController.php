@@ -141,6 +141,7 @@ class CustomerController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
+
             return view('customers.pending_orders', compact('userByReference'));
         } catch (\Exception $e) {
             Log::error('Error fetching pending orders: ' . $e->getMessage());
@@ -260,7 +261,7 @@ class CustomerController extends Controller
         }
     }
 
-    public function forPickupRetrieval(Request $request)
+   public function forPickupRetrieval(Request $request)
     {
         $userId = $request->user()->id;
 
