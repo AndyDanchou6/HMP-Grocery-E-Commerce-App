@@ -102,10 +102,10 @@
                             @if($user['payment_condition'] != 'paid')
                             @if($user['payment_proof'])
                             <a class="bi bi-receipt me-1 details-button text-warning" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.customerPaymentProof')
+                            @include('customers.modal.customerPaymentProof')
                             @elseif($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
                             <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.customerPaymentProof')
+                            @include('customers.modal.customerPaymentProof')
                             @endif
                             @endif
                             @endif

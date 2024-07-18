@@ -24,8 +24,8 @@
                             <input type="text" name="phone" required>
                         </div>
                         <div class="checkout__input">
-                            <p>Fb Link<span></span></p>
-                            <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
+                            <p>Fb Link (Optional)<span></span></p>
+                            <textarea name="fb_link" id="fb_link" class="form-control"></textarea>
                         </div>
 
                         @if($orderType != 'pickup')

@@ -10,9 +10,9 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-auto text-center">
                         @if(Auth::user()->avatar)
-                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" id="change_user_avatar" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px;">
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" id="change_user_avatar" alt="Profile Picture" class="rounded-circle" style="width: 200px; height: 200px;">
                         @else
-                        <img src="{{ asset('assets/img/user.png') }}" id="change_user_avatar" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px;">
+                        <img src="{{ asset('assets/img/user.png') }}" id="change_user_avatar" alt="Profile Picture" class="rounded-circle" style="width: 200px; height: 200px;">
                         @endif
                         <div style="margin-top: 5px;"><label>Avatar</label></div>
                     </div>
