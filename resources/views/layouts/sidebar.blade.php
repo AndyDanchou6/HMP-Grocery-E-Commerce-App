@@ -98,6 +98,13 @@
       </a>
     </li>
     <li id="tables" class="menu-item">
+      <a href="{{ route('customers.unpaid_orders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-currency-dollar"></i>
+        <div data-i18n="Tables">Unpaid Orders</div>
+        <span id="forUnpaidOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
+      </a>
+    </li>
+    <li id="tables" class="menu-item">
       <a href="{{ route('customers.pending_orders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <div data-i18n="Tables">Pending Orders</div>
@@ -136,6 +143,8 @@
               const forPendingOrders = document.getElementById('forPendingOrders');
               const forDeliveryOrders = document.getElementById('forDeliveryOrders');
               const forPickupOrders = document.getElementById('forPickupOrders');
+              const forUnpaidOrders = document.getElementById('forUnpaidOrders');
+
               if (data.status == 200) {
                 if (forPendingOrders) {
                   forPendingOrders.textContent = data.count1;
@@ -144,10 +153,15 @@
                 if (forDeliveryOrders) {
                   forDeliveryOrders.textContent = data.count2;
                   forDeliveryOrders.style.display = data.count2 ? 'block' : 'none';
+                  forPickupOrders.textContent = data.count3;
                 }
                 if (forPickupOrders) {
-                  forPickupOrders.textContent = data.count3;
                   forPickupOrders.style.display = data.count3 ? 'block' : 'none';
+                }
+
+                if (forUnpaidOrders) {
+                  forUnpaidOrders.textContent = data.count4;
+                  forUnpaidOrders.style.display = data.count4 ? 'block' : 'none';
                 }
               }
             })

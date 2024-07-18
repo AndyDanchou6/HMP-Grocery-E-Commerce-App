@@ -93,20 +93,17 @@ class CustomerController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function pendingOrdersUpdate(Request $request)
+    public function forPendingOrders(Request $request)
     {
-        try {
-            $userId = $request->user();
-            Log::info('Fetching orders for user ID: ' . $userId);
+        if (Auth::user()->role == 'Customer') {
+            $userId = $request->user()->id;
 
             $selectedItems = SelectedItems::where('status', 'forPackage')
-                ->where('user_id', $userId->id)
+                ->where('user_id', $userId)
                 ->with('user')
                 ->with('inventory')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
-            Log::info('Selected items count: ' . $selectedItems->count());
 
             $userByReference = [];
 
@@ -143,26 +140,23 @@ class CustomerController extends Controller
 
 
             return view('customers.pending_orders', compact('userByReference'));
-        } catch (\Exception $e) {
-            Log::error('Error fetching pending orders: ' . $e->getMessage());
-            return response()->json(['error' => 'Unable to fetch pending orders'], 500);
+        } else {
+            return redirect()->route('error');
         }
     }
 
-    public function pendingOrdersUpdate1(Request $request)
+    public function forUnpaidOrders(Request $request)
     {
-        try {
-            $userId = $request->user();
-            Log::info('Fetching orders for user ID: ' . $userId);
+        if (Auth::user()->role == 'Customer') {
+            $userId = $request->user()->id;
 
-            $selectedItems = SelectedItems::where('status', 'forPackage')
-                ->where('user_id', $userId->id)
+            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+                ->where('payment_condition', NULL)
+                ->where('user_id', $userId)
                 ->with('user')
                 ->with('inventory')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
-            Log::info('Selected items count: ' . $selectedItems->count());
 
             $userByReference = [];
 
@@ -196,11 +190,12 @@ class CustomerController extends Controller
                 }
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
+            $admin = User::where('role', 'Admin')->first();
 
-            return view('customers.pending_orders1', compact('userByReference'));
-        } catch (\Exception $e) {
-            Log::error('Error fetching pending orders: ' . $e->getMessage());
-            return response()->json(['error' => 'Unable to fetch pending orders'], 500);
+            // dd($userByReference);
+            return view('customers.unpaid_orders', compact('userByReference', 'admin'));
+        } else {
+            return redirect()->route('error');
         }
     }
     /**
@@ -208,7 +203,7 @@ class CustomerController extends Controller
      */
     public function forDeliveryRetrieval(Request $request)
     {
-        try {
+        if (Auth::user()->role == 'Customer') {
             $userId = $request->user()->id;
 
             $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
@@ -255,61 +250,65 @@ class CustomerController extends Controller
             }
 
             return view('customers.delivery_retrieval', compact('userByReference'));
-        } catch (\Exception $e) {
-            Log::error('Error fetching pending orders: ' . $e->getMessage());
-            return response()->json(['error' => 'Unable to fetch pending orders'], 500);
+        } else {
+            return redirect()->route('error');
         }
     }
 
-   public function forPickupRetrieval(Request $request)
+    public function forPickupRetrieval(Request $request)
     {
-        $userId = $request->user()->id;
+        if (Auth::user()->role == 'Customer') {
 
-        $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
-            ->where('order_retrieval', 'pickup')
-            ->where('user_id', $userId)
-            ->with('user')
-            ->with('inventory')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            $userId = $request->user()->id;
 
-        $userByReference = [];
+            $selectedItems = SelectedItems::where('status', 'readyForRetrieval')
+                ->where('order_retrieval', 'pickup')
+                ->where('user_id', $userId)
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        foreach ($selectedItems as $item) {
-            if (!isset($userByReference[$item->referenceNo])) {
-                $courier = User::find($item->courier_id);
-                $userByReference[$item->referenceNo] = [
-                    'id' => $item->user->id,
-                    'referenceNo' => $item->referenceNo,
-                    'name' => $item->user->name,
-                    'role' => $item->user->role,
-                    'email' => $item->user->email,
-                    'item_id' => $item->inventory->product_name,
-                    'price' => $item->inventory->price,
-                    'phone' => $item->phone,
-                    'fb_link' => $item->fb_link,
-                    'address' => $item->address,
-                    'order_retrieval' => $item->order_retrieval,
-                    'quantity' => $item->quantity,
-                    'service_fee' => $item->service_fee,
-                    'status' => $item->status,
-                    'courier_id' => $courier ? $courier->name : 'Unknown',
-                    'payment_type' => $item->payment_type,
-                    'payment_condition' => $item->payment_condition,
-                    'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
-                    'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
-                    'delivery_date' => $item->delivery_date,
-                    'reasonForDenial' => $item->reasonForDenial,
-                    'created_at' => $item->created_at,
-                    'updated_at' => $item->updated_at,
-                    'items' => []
-                ];
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'email' => $item->user->email,
+                        'item_id' => $item->inventory->product_name,
+                        'price' => $item->inventory->price,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+                $userByReference[$item->referenceNo]['items'][] = $item;
             }
-            $userByReference[$item->referenceNo]['items'][] = $item;
+
+
+            return view('customers.pickup_retrieval', compact('userByReference'));
+        } else {
+            return redirect()->route('error');
         }
-
-
-        return view('customers.pickup_retrieval', compact('userByReference'));
     }
 
     public function orderCount(Request $request)
@@ -319,6 +318,7 @@ class CustomerController extends Controller
         $countPending = SelectedItems::where('status', 'forPackage')
             ->where('user_id', $userId)->distinct('referenceNo')
             ->count('referenceNo');
+        // $countUnpaid = SelectedItems::
         $countDelivery = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'delivery')->where('user_id', $userId)
             ->distinct('referenceNo')
@@ -327,12 +327,18 @@ class CustomerController extends Controller
             ->where('order_retrieval', 'pickup')->where('user_id', $userId)
             ->distinct('referenceNo')
             ->count('referenceNo');
+        $countUnpaid = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_condition', '=', NULL)->where('user_id', $userId)
+            ->distinct('referenceNo')
+            ->count('referenceNo');
+
 
         return response()->json([
             'status' => 200,
             'count1' => $countPending,
             'count2' => $countDelivery,
-            'count3' => $countPickup
+            'count3' => $countPickup,
+            'count4' => $countUnpaid
         ]);
     }
     /**
