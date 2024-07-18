@@ -149,6 +149,60 @@ class CustomerController extends Controller
         }
     }
 
+    public function pendingOrdersUpdate1(Request $request)
+    {
+        try {
+            $userId = $request->user();
+            Log::info('Fetching orders for user ID: ' . $userId);
+
+            $selectedItems = SelectedItems::where('status', 'forPackage')
+                ->where('user_id', $userId->id)
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            Log::info('Selected items count: ' . $selectedItems->count());
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            return view('customers.pending_orders1', compact('userByReference'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching pending orders: ' . $e->getMessage());
+            return response()->json(['error' => 'Unable to fetch pending orders'], 500);
+        }
+    }
     /**
      * Display the specified resource.
      */
