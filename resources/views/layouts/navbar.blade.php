@@ -1,17 +1,15 @@
-<!-- Navbar -->
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme">
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
     <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
       <i class="bx bx-menu bx-sm"></i>
     </a>
   </div>
-  <!-- ...Existing navbar code... -->
   <ul class="navbar-nav flex-row align-items-center ms-auto">
     @if(Auth::user()->role == 'Customer')
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
       <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
     </a>
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}">
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}" id="active-state">
       <i class="bx bx-history bx-sm bx-tada-hover"></i>
     </a>
     @endif
@@ -22,15 +20,14 @@
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('schedules.index') }}">
       <i class="bx bx-calendar bx-sm bx-tada-hover"></i>
     </a>
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown text-primary" id="notification-icon">
       <a class="nav-link px-0 me-xl-4 navbar-icon notification-toggle nav-link-lg" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i id="notificationIcon" class="bx bx-bell bx-sm"></i>
         <span id="notificationCount" class="badge bg-danger d-none">0</span>
       </a>
       <ul class="dropdown-menu dropdown-menu-end pullDown" aria-labelledby="notificationDropdown">
         <div class="dropdown-header">Notifications</div>
-        <ul id="notificationList" class="list-unstyled mb-0">
-        </ul>
+        <ul id="notificationList" class="list-unstyled mb-0"></ul>
       </ul>
     </li>
     <script>
@@ -203,8 +200,8 @@
                 </div>
               </div>
               <div class="flex-grow-1">
-                <span class="fw-semibold d-block" id="user_name">{{ Auth::user()->name }}</span>
-                <small class="text-muted" id="user_email">{{ Auth::user()->role }}</small>
+                <span class="fw-semibold d-block">{{Auth()->user()->name}}</span>
+                <small class="text-muted">{{ ucfirst(Auth()->user()->role) }}</small>
               </div>
             </div>
           </a>
@@ -238,7 +235,6 @@
           <script>
             document.addEventListener('DOMContentLoaded', function() {
               function ordersCount() {
-                console.log("Fetching order counts..."); // Debug log
 
                 fetch("{{ route('customers.countOrders') }}", {
                     method: 'GET',
@@ -250,11 +246,8 @@
                     credentials: 'same-origin'
                   })
                   .then(response => {
-                    console.log("Response received:", response); // Debug log
                     return response.json();
                   }).then(data => {
-                    console.log("Data received:", data); // Debug log
-
                     const unpaidOrders = document.getElementById('unpaidOrders');
                     if (data.status === 200) {
                       if (unpaidOrders) {

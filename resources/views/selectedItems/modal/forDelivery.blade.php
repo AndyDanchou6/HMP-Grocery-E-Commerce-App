@@ -134,7 +134,8 @@
                             @if($user['delivery_date'] && $user['courier_id'])
                             <div class="col-12 mb-3" id="proof-of-delivery{{ $item->id }}">
                                 <label for="" class="col-form-label">Proof of Delivery:</label>
-                                <input type="file" class="form-control" name="proof_of_delivery">
+                                <input type="file" id="proofOfDeliveryy" class="form-control" name="proof_of_delivery">
+                                <small id="proofSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                             </div>
                             @endif
                         </div>
@@ -398,5 +399,18 @@
             })
         })
 
+    });
+</script>
+<script>
+    document.getElementById('proofOfDeliveryy').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const errorMessage = document.getElementById('proofSizeError');
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            errorMessage.style.display = 'block';
+            event.target.value = '';
+        } else {
+            errorMessage.style.display = 'none';
+        }
     });
 </script>

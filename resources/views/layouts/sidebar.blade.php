@@ -42,83 +42,111 @@
     @endif
     @if(Auth::user()->role == 'Admin')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Admin Section</span></li>
-    <li id="tables" class="menu-item">
+    <li id="user-tables" class="menu-item">
       <a href="{{ route('users.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-user"></i>
         <div data-i18n="Tables">Users</div>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="inventory-tables" class="menu-item">
       <a href="{{ route('inventories.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-package"></i>
         <div data-i18n="Tables">Inventory</div>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="category-tables" class="menu-item">
       <a href="{{ route('categories.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-list-ul"></i>
         <div data-i18n="Tables">Category</div>
       </a>
     </li>
-    <li id="forPackaging" class="menu-item">
+    <li id="forPackaging-tables" class="menu-item">
       <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link" style="position: relative;">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <span data-i18n="For Packaging">For Packaging</span>
         <span id="forPackagingCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forDelivery-tables" class="menu-item">
       <a href="{{ route('selectedItems.forDelivery') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck"></i>
         <span data-i18n="Tables">For Delivery</span>
         <span id="forDeliveryCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forPickup-tables" class="menu-item">
       <a href="{{ route('selectedItems.forPickup') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag"></i>
         <span data-i18n="Tables">For Pickup</span>
         <span id="forPickupCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forDeniedOrders-tables" class="menu-item">
       <a href="{{ route('selectedItems.deniedOrders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-cart-x"></i>
         <span data-i18n="Tables">Denied Orders</span>
         <span id="deniedOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
+    <li class="menu-item" id="payment-menu">
+      <a href="#" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bi bi-cash"></i>
+        <div data-i18n="Form Elements">Payments</div>
+        <i id="paymentAlert" class="bi bi-dot fs-1" style="position: absolute; left: 175px;"></i>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item" id="menu-gcash">
+          <a href="{{ route('selectedItems.forGcashPayments') }}" class="menu-link">
+            <div data-i18n="Basic Inputs">G-cash</div>
+            <span id="forPaymentProof" class="badge bg-warning rounded-pill" style="color: white; position: absolute; top: 30%; left: 160px;"></span>
+            <span id="forGcashPayments" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+          </a>
+        </li>
+        <li class=" menu-item" id="menu-cod">
+          <a href="{{ route('selectedItems.forCODPayments') }}" class="menu-link">
+            <div data-i18n="Input groups">COD</div>
+            <span id="forCODPayments" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+          </a>
+        </li>
+        <li class="menu-item" id="menu-instore">
+          <a href="{{ route('selectedItems.forInStorePayments') }}" class="menu-link">
+            <div data-i18n="Input groups">In-store</div>
+            <span id="forInStorePayments" class="badge bg-danger rounded-pill" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+          </a>
+        </li>
+      </ul>
+    </li>
     @endif
     @if(Auth::user()->role == 'Customer')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Customer Section</span></li>
-    <li id="tables" class="menu-item">
+    <li id="reviews-tables" class="menu-item">
       <a href="{{ route('reviews.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-chat-left"></i>
         <div data-i18n="Tables">Reviews</div>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forUnpaidOrders-tables" class="menu-item">
       <a href="{{ route('customers.unpaid_orders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-currency-dollar"></i>
         <div data-i18n="Tables">Unpaid Orders</div>
         <span id="forUnpaidOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forPendingOrders-tables" class="menu-item">
       <a href="{{ route('customers.pending_orders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <div data-i18n="Tables">Pending Orders</div>
         <span id="forPendingOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forDeliveryOrders-tables" class="menu-item">
       <a href="{{ route('customers.delivery_retrieval') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck"></i>
         <div data-i18n="Tables">Orders to Delivery</div>
         <span id="forDeliveryOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
-    <li id="tables" class="menu-item">
+    <li id="forPickupOrders-tables" class="menu-item">
       <a href="{{ route('customers.pickup_retrieval') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-bag"></i>
         <div data-i18n="Tables">Orders to Pickup</div>
@@ -153,9 +181,10 @@
                 if (forDeliveryOrders) {
                   forDeliveryOrders.textContent = data.count2;
                   forDeliveryOrders.style.display = data.count2 ? 'block' : 'none';
-                  forPickupOrders.textContent = data.count3;
                 }
+
                 if (forPickupOrders) {
+                  forPickupOrders.textContent = data.count3;
                   forPickupOrders.style.display = data.count3 ? 'block' : 'none';
                 }
 
@@ -174,7 +203,6 @@
         ordersCount();
       })
     </script>
-
     @endif
     @if(Auth::user()->role == 'Courier')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Courier Section</span></li>
@@ -185,6 +213,7 @@
         <span id="courierCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
       </a>
     </li>
+    <script src="{{ asset('assets/js/menu.js') }}"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         function courierTaskCount() {
@@ -248,11 +277,45 @@
             deniedOrders.textContent = data.count4;
             deniedOrders.style.display = data.count4 ? 'block' : 'none';
           }
+
+          const forGcashPayments = document.getElementById('forGcashPayments');
+          if (forGcashPayments) {
+            forGcashPayments.textContent = data.count5;
+            forGcashPayments.style.display = data.count5 ? 'block' : 'none';
+          }
+
+          const forCODPayments = document.getElementById('forCODPayments');
+          if (forCODPayments) {
+            forCODPayments.textContent = data.count6;
+            forCODPayments.style.display = data.count6 ? 'block' : 'none';
+          }
+
+          const forInStorePayments = document.getElementById('forInStorePayments');
+          if (forInStorePayments) {
+            forInStorePayments.textContent = data.count7;
+            forInStorePayments.style.display = data.count7 ? 'block' : 'none';
+          }
+
+          const paymentAlert = document.getElementById('paymentAlert');
+          if (paymentAlert) {
+            if (data.count8 > 0) {
+              paymentAlert.classList.add('text-danger');
+              paymentAlert.classList.remove('d-none');
+            } else {
+              paymentAlert.classList.add('d-none');
+            }
+          }
+
+          const forPaymentProof = document.getElementById('forPaymentProof');
+          if (forPaymentProof) {
+            forPaymentProof.textContent = data.count9;
+            forPaymentProof.style.display = data.count9 ? 'block' : 'none';
+          }
         })
         .catch(error => {
           console.error('Error fetching count:', error);
-        }).finally(count => {
-          setTimeout(count, 5000)
+        }).finally(() => {
+          setTimeout(updateCounts, 5000)
         });
     }
     updateCounts();

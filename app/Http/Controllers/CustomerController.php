@@ -26,6 +26,7 @@ class CustomerController extends Controller
                 ->where('selected_items.user_id', $userId)
                 ->with('user')
                 ->with('inventory')
+                ->orderByRaw("FIELD(status, 'delivered', 'pickedUp') ASC")
                 ->orderBy('created_at', 'desc');
 
 

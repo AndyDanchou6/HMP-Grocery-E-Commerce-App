@@ -30,6 +30,7 @@
                         <div class="col mb-3">
                             <label for="edit_avatar" class="form-label">Change Avatar</label>
                             <input type="file" id="edit_avatar" name="avatar" class="form-control" accept="image/*" />
+                            <small id="fileSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row">
@@ -70,28 +71,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM fully loaded and parsed');
-
         const editAvatarInput = document.getElementById('edit_avatar');
         const changeAvatarImg = document.getElementById('change_user_avatar');
         const updateAvatar = document.getElementById('updateAvatar');
 
         if (editAvatarInput) {
             editAvatarInput.addEventListener('change', function(event) {
-                console.log('File input changed');
                 const file = event.target.files[0];
                 if (!file) return;
-
-                console.log('File selected:', file);
-
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    console.log('FileReader result:', e.target.result);
                     changeAvatarImg.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
 
-                // Show the upload button
                 updateAvatar.style.display = 'inline-block';
             });
         }
@@ -99,9 +92,21 @@
         const editProfileForm = document.getElementById('editProfileForm');
         if (editProfileForm) {
             editProfileForm.addEventListener('submit', function(event) {
-                console.log('Form submitted');
                 event.target.querySelector('button[type="submit"]').disabled = true;
             });
+        }
+    });
+</script>
+<script>
+    document.getElementById('edit_avatar').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const errorMessage = document.getElementById('fileSizeError');
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            errorMessage.style.display = 'block';
+            event.target.value = '';
+        } else {
+            errorMessage.style.display = 'none';
         }
     });
 </script>

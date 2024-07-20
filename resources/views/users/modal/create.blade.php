@@ -2,10 +2,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Create New User</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">User Creation Form</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="row justify-content-center align-items-center" style="margin-bottom: 30px;">
+                    <div class="col-auto text-center">
+                        <img src="{{ asset('assets/img/user.png') }}" id="avatarPreview" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; border-radius: 50%;">
+                        <div style="margin-top: 5px;"><label>Avatar</label></div>
+                    </div>
+                </div>
                 <form action="{{ route('users.store') }}" method="POST" id="createFormElement" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
@@ -17,7 +23,8 @@
                     <div class="row mb-3">
                         <label for="avatar" class="col-sm-2 col-form-label">Avatar</label>
                         <div class="col-sm-10">
-                            <input type="file" class="form-control" id="avatar" name="avatar">
+                            <input type="file" class="form-control" id="userAvatar" name="avatar">
+                            <small id="userAvatarFileError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -47,3 +54,43 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editAvatarInput = document.getElementById('userAvatar');
+        const uploadAvatarButton = document.getElementById('avatarPreview');
+
+        if (editAvatarInput) {
+            editAvatarInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadAvatarButton.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+            });
+        }
+
+        const editProfileForm = document.getElementById('editProfileForm');
+        if (editProfileForm) {
+            editProfileForm.addEventListener('submit', function(event) {
+                uploadAvatarButton.disabled = true;
+            });
+        }
+    });
+
+    document.getElementById('userAvatar').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const errorMessage = document.getElementById('userAvatarFileError');
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            errorMessage.style.display = 'block';
+            event.target.value = '';
+        } else {
+            errorMessage.style.display = 'none';
+        }
+    });
+</script>

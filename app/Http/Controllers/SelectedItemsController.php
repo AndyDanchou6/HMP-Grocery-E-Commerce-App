@@ -347,7 +347,8 @@ class SelectedItemsController extends Controller
             $selectedItemsQuery = SelectedItems::where('status', '!=', 'forCheckout')
                 ->whereIn('order_retrieval', ['delivery', 'pickup'])
                 ->with('user')
-                ->with('inventory');
+                ->with('inventory')
+                ->orderByRaw("FIELD(status, 'delivered', 'pickedUp') ASC");
 
             if ($search) {
                 $selectedItemsQuery->where(function ($query) use ($search) {
@@ -496,14 +497,6 @@ class SelectedItemsController extends Controller
             'fb_link' => $request->input('fb_link')
         ]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    // public function update(Request $request, $id)
-    // {
-    //     //
-    // }
 
     public function updateStatus(Request $request, string $referenceNo)
     {
@@ -659,7 +652,7 @@ class SelectedItemsController extends Controller
             if ($request->has('payment_condition')) {
                 $item->payment_condition = $request->input('payment_condition');
                 $icon = 'success';
-                $message = 'Payment condition updated successfully.';
+                $message = 'Paid successfully.';
             }
 
             if ($request->hasFile('payment_proof')) {
@@ -694,14 +687,45 @@ class SelectedItemsController extends Controller
             ->where('order_retrieval', 'pickup')
             ->get();
         $item4 = SelectedItems::where('status', 'denied')->get();
+        $item5 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_condition', '=', null)
+            ->where('payment_type', 'G-cash')->get();
 
+        $item6 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_condition', '=', null)
+            ->where('payment_type', 'COD')->get();
+        $item7 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_condition', '=', null)
+            ->where('payment_type', 'In-store')->get();
+        $item8 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_condition', '=', null)->get();
+
+        $item9 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->whereNotNull('payment_proof')
+            ->where('payment_condition', '=', null)
+            ->get();
 
         $count1 = $item1->pluck('referenceNo')->unique()->count();
         $count2 = $item2->pluck('referenceNo')->unique()->count();
         $count3 = $item3->pluck('referenceNo')->unique()->count();
         $count4 = $item4->pluck('referenceNo')->unique()->count();
+        $count5 = $item5->pluck('referenceNo')->unique()->count();
+        $count6 = $item6->pluck('referenceNo')->unique()->count();
+        $count7 = $item7->pluck('referenceNo')->unique()->count();
+        $count8 = $item8->pluck('referenceNo')->unique()->count();
+        $count9 = $item9->pluck('referenceNo')->unique()->count();
 
-        return response()->json(['count1' => $count1, 'count2' => $count2, 'count3' => $count3, 'count4' => $count4]);
+        return response()->json([
+            'count1' => $count1,
+            'count2' => $count2,
+            'count3' => $count3,
+            'count4' => $count4,
+            'count5' => $count5,
+            'count6' => $count6,
+            'count7' => $count7,
+            'count8' => $count8,
+            'count9' => $count9
+        ]);
     }
 
     public function courierTask(Request $request)
@@ -774,6 +798,198 @@ class SelectedItemsController extends Controller
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error updating status.', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function forGcashPayments(Request $request)
+    {
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
+
+            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+                ->where('payment_condition', '=', NULL)
+                ->where('payment_type', 'G-cash')
+                ->with('user')
+                ->with('inventory')
+                ->orderBy('payment_proof', 'desc');
+
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
+            }
+
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            return view('selectedItems.forGcashPayments', [
+                'userByReference' => $userByReference,
+                'search' => $search
+            ]);
+        } else {
+            return redirect()->route('error');
+        }
+    }
+
+    public function forCODPayments(Request $request)
+    {
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
+
+            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+                ->where('payment_condition', '=', NULL)
+                ->where('payment_type', 'COD')
+                ->with('user')
+                ->with('inventory');
+
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
+            }
+
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            // dd($userByReference);
+            return view('selectedItems.forCODPayments', [
+                'userByReference' => $userByReference,
+                'search' => $search
+            ]);
+        } else {
+            return redirect()->route('error');
+        }
+    }
+
+    public function forInStorePayments(Request $request)
+    {
+        if (Auth::user()->role == 'Admin') {
+            $search = $request->input('search');
+
+            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+                ->where('payment_condition', '=', NULL)
+                ->where('payment_type', 'In-store')
+                ->with('user')
+                ->with('inventory');
+
+            if ($search) {
+                $selectedItems->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })->orWhere('referenceNo', 'like', "%{$search}%");
+                });
+            }
+
+            $selectedItems = $selectedItems->get();
+
+            $userByReference = [];
+
+            foreach ($selectedItems as $item) {
+                if (!isset($userByReference[$item->referenceNo])) {
+                    $courier = User::find($item->courier_id);
+                    $userByReference[$item->referenceNo] = [
+                        'id' => $item->user->id,
+                        'referenceNo' => $item->referenceNo,
+                        'name' => $item->user->name,
+                        'role' => $item->user->role,
+                        'email' => $item->user->email,
+                        'phone' => $item->phone,
+                        'fb_link' => $item->fb_link,
+                        'address' => $item->address,
+                        'order_retrieval' => $item->order_retrieval,
+                        'quantity' => $item->quantity,
+                        'service_fee' => $item->service_fee,
+                        'status' => $item->status,
+                        'courier_id' => $courier ? $courier->name : 'Unknown',
+                        'payment_type' => $item->payment_type,
+                        'payment_condition' => $item->payment_condition,
+                        'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+                        'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+                        'delivery_date' => $item->delivery_date,
+                        'reasonForDenial' => $item->reasonForDenial,
+                        'created_at' => $item->created_at,
+                        'updated_at' => $item->updated_at,
+                        'items' => []
+                    ];
+                }
+                $userByReference[$item->referenceNo]['items'][] = $item;
+            }
+
+            // dd($userByReference);
+            return view('selectedItems.forInStorePayments', [
+                'userByReference' => $userByReference,
+                'search' => $search
+            ]);
+        } else {
+            return redirect()->route('error');
         }
     }
 }

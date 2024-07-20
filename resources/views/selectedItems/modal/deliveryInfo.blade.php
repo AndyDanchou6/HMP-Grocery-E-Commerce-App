@@ -99,6 +99,7 @@
                                         <img id="paymentProofImage{{$user['referenceNo']}}" src="{{ asset('storage/' . $item->proof_of_delivery) }}" class="img-fluid mx-auto d-block img-thumbnail d-none" alt="Current Payment Proof" style="max-width: 100%; max-height: 400px; border: 2px solid #696cff;">
                                         <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery" id="payment_proof{{$user['referenceNo']}}" required>
+                                        <small id="proofDeliveryFileSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                                     </div>
 
 
@@ -192,5 +193,18 @@
                     currency: 'PHP'
                 });
             });
+        });
+    </script>
+    <script>
+        document.getElementById('payment_proof{{$user["referenceNo"]}}').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const errorMessage = document.getElementById('proofDeliveryFileSizeError');
+
+            if (file && file.size > 2 * 1024 * 1024) {
+                errorMessage.style.display = 'block';
+                event.target.value = '';
+            } else {
+                errorMessage.style.display = 'none';
+            }
         });
     </script>

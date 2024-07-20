@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ $user['name'] }}'s Gcash Payment Proof</h5>
+                <h5 class="modal-title">{{ $user['name'] }}'s Gcash Payment</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -28,6 +28,7 @@
                         <label for="payment_proof{{$user['referenceNo']}}" class="col-sm-3 col-form-label">Upload New Proof:</label>
                         <div class="col-sm-9">
                             <input type="file" class="form-control" id="payment_proof{{$user['referenceNo']}}" name="payment_proof" accept="image/*">
+                            <small id="fileErrorSize" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -76,6 +77,19 @@
                 }
 
             });
+        }
+    });
+</script>
+<script>
+    document.getElementById('payment_proof{{$user["referenceNo"]}}').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const errorMessage = document.getElementById('fileErrorSize');
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            errorMessage.style.display = 'block';
+            event.target.value = '';
+        } else {
+            errorMessage.style.display = 'none';
         }
     });
 </script>
