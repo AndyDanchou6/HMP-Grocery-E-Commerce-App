@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('quantity')->default(1);
             $table->unsignedBigInteger('courier_id')->nullable();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
             $table->string('fb_link')->nullable();
             $table->string('payment_type')->nullable();
             $table->string('payment_condition')->nullable();

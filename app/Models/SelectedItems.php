@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Inventory;
+use App\Models\ServiceFee;
 
 class SelectedItems extends Model
 {
@@ -20,16 +21,16 @@ class SelectedItems extends Model
         'status',
         'quantity',
         'phone',
-        'address',
         'fb_link',
         'courier_id',
         'payment_type',
+        'service_fee_id',
+        'reasonForDenial',
         'payment_condition',
         'proof_of_delivery',
         'order_retrieval',
         'delivery_date',
         'service_fee',
-        'reasonForDenial',
     ];
 
     public function inventory()
@@ -45,5 +46,10 @@ class SelectedItems extends Model
     public function courier()
     {
         return $this->belongsTo(User::class, 'courier_id');
+    }
+
+    public function serviceFee()
+    {
+        return $this->belongsTo(ServiceFee::class, 'service_fee_id');
     }
 }

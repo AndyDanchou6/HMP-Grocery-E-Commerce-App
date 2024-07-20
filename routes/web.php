@@ -12,6 +12,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ServiceFeeController;
 use App\Models\Category;
 use App\Models\SelectedItems;
 use Illuminate\Http\Request;
@@ -32,39 +33,6 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return view('landingPage');
 })->name('welcome');
-
-Route::get('/test-select', function () {
-    // $pickup1 = \App\Models\SelectedItems::create([
-    //     'referenceNo' => rand(10000000, 99999999),
-    //     'user_id' => 1,
-    //     'item_id' => 1,
-    //     'status' => 'forPackage',
-    //     'quantity' => 4,
-    //     'order_retrieval' => 'pickup'
-    // ]);
-
-    // $pickup2 = \App\Models\SelectedItems::create([
-    //     'referenceNo' => rand(10000000, 99999999),
-    //     'user_id' => 1,
-    //     'item_id' => 3,
-    //     'status' => 'forPackage',
-    //     'quantity' => 6,
-    //     'order_retrieval' => 'pickup'
-    // ]);
-
-
-    $cart1 = \App\Models\Cart::create([
-        'user_id' => 1,
-        'product_id' => rand(1, 20),
-        'quantity' => rand(5, 10),
-    ]);
-
-    $cart2 = \App\Models\Cart::create([
-        'user_id' => 3,
-        'product_id' => rand(1, 20),
-        'quantity' => rand(5, 10),
-    ]);
-});
 
 Auth::routes();
 
@@ -141,6 +109,13 @@ Route::get('/productByName', [InventoryController::class, 'test']);
 Route::post('/addAsVariant', [InventoryController::class, 'addAsVariant']);
 
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
+
+// Service Fee
+Route::get('admin/service_fee', [ServiceFeeController::class, 'index'])->name('serviceFee.index');
+Route::post('admin/service_fee/create', [ServiceFeeController::class, 'store'])->name('serviceFee.store');
+Route::put('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'update'])->name('serviceFee.update');
+Route::delete('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'destroy'])->name('serviceFee.destroy');
+
 Route::middleware('auth')->get('/selectedItems/countOrders', [CustomerController::class, 'orderCount'])->name('customers.countOrders');
 
 /* Customers Route Section */

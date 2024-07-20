@@ -127,6 +127,7 @@ class InventoryController extends Controller
         }
 
         $newlyAdded = Inventory::where('product_name', $request->input('product_name'))
+            ->orderBy('created_at', 'desc')
             ->first();
 
         $sameProduct = Inventory::where('id', '!=', $newlyAdded->id)
