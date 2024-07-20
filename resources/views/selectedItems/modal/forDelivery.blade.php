@@ -15,38 +15,39 @@
                 </div>
                 <div class="row mb-3">
                     <label for="fb_link" class="col-sm-2 col-form-label">Facebook</label>
+                    @if($user['fb_link'])
                     <div class="col-sm-10">
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="address" class="col-sm-2 col-form-label">Address</label>
+                    @else
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows="3" readonly>{{ $user['address'] }}</textarea>
+                        <input type="text" class="form-control" value="No information" readonly>
                     </div>
+                    @endif
                 </div>
+
                 <div>
                     <h5>Purchased Items</h5>
                 </div>
                 @foreach($user['items'] as $item)
                 <div class="row item-row" data-item-id="{{ $item->id }}">
 
-                    <div class="col-12 col-sm-6 col-md-4 mb-3">
+                    <div class="col-12 mb-3">
                         <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
                         <input type="text" class="form-control" value="{{ $item->inventory->product_name }}" readonly>
                     </div>
 
-                    <div class="col-6 col-sm-3 col-md-2 mb-3">
-                        <label for="item_price" class="col-6 col-sm-3 col-md-2 col-form-label">Item Price</label>
+                    <div class="col-8 col-sm-4 mb-3">
+                        <label for="item_price" class="col-form-label">Item Price</label>
                         <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->inventory->price, 2) }}" readonly>
                     </div>
 
-                    <div class="col-6 col-sm-3 col-md-3 mb-3">
-                        <label for="quantity" class="col-6 col-sm-3 col-md-3 col-form-label">Quantity</label>
+                    <div class="col-4 col-sm-3 mb-3">
+                        <label for="quantity" class="col-form-label">Quantity</label>
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
-                    <div class="col-12 col-sm-4 col-md-3 mb-3">
-                        <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
+                    <div class="col-12 col-sm-5 mb-3">
+                        <label for="subtotal" class="col-form-label">SubTotal</label>
                         <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
 
@@ -58,7 +59,7 @@
                 @endforeach
             </div>
             <div class="modal-footer">
-                <div class="row row-cols-1 row-cols-md-2 align-items-center" style="margin-bottom: 10px; margin-right: 50px;">
+                <div class="row row-cols-1 row-cols-md-2 align-items-center" style="position: relative; width: 95%; margin: auto;">
                     <div class="mb-3">
                         <label for="total" class="col-form-label">Total</label>
                         <input type="text" name="total" class="form-control purchase-total" data-total-id="{{ $user['referenceNo'] }}" readonly>
@@ -68,7 +69,7 @@
                         <input type="text" name="reference" class="form-control" value="{{ $user['referenceNo'] }}" readonly>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="w-100 mb-3">
                         <label for="order_date" class="col-form-label">Order Date</label>
                         <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
@@ -78,6 +79,22 @@
                     <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" enctype="multipart/form-data" style="position: relative; width: 100%">
                         @csrf
                         @method('POST')
+
+                        <div class="mb-3" id="dropOff{{ $user['id'] }}">
+                            <label for="" class="py-2">Delivery Address</label>
+                            <div class="w-100">
+                                <select class="w-100 py-2 rounded form-select service_fee_id" name="service_fee_id">
+                                    <option value="" selected disabled>Choose Drop-off</option>
+                                    @foreach($dropOffPoints as $dropOffPoint)
+                                    @if(isset($user['address']))
+                                    <option value="{{ $dropOffPoint->id }}" {{ $user['address'] == $dropOffPoint->location  ? 'selected' : ''}}>{{ $dropOffPoint->location }}</option>
+                                    @else
+                                    <option value="{{ $dropOffPoint->id }}">{{ $dropOffPoint->location }}</option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
                         <!-- Courier and Delivery Date -->
                         <div class="row row-cols-md-2 mb-3 item-row">
@@ -161,14 +178,12 @@
 
                             </div>
 
+                            @if(isset($item->serviceFee->fee))
                             <div class="mb-3 service-fee" id="service-fee{{ $user['id'] }}" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
-                                @if($user['service_fee'])
-                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" value="{{ $user['service_fee'] }}">
-                                @else
-                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
-                                @endif
+                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00" value="{{ $item->serviceFee->fee }}" readonly>
                             </div>
+                            @endif
 
                         </div>
 
@@ -269,6 +284,23 @@
             }
         }
 
+        function toggleDropOff(itemId, retrievalValue) {
+
+            var dropOff = document.querySelector('#dropOff' + itemId);
+
+            if (retrievalValue == 'delivery') {
+
+                dropOff.style.display = 'block';
+                dropOff.querySelector('select').setAttribute('required', 'required');
+            }
+
+            if (retrievalValue == 'pickup') {
+
+                dropOff.querySelector('select').removeAttribute('required');
+                dropOff.style.display = 'none';
+            }
+        }
+
         //     // Hide delivery options if retrieval is pickup
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
         var orderRetrievalValue = '';
@@ -280,15 +312,16 @@
             hideOptions(orderRetrieval.value);
             toggleReceiptSubmission(itemId, orderRetrieval.value);
             toggleDeliveryOptions(itemId, orderRetrieval.value);
-            toggleServiceFee(itemId, orderRetrieval.value);
+            toggleDropOff(itemId, orderRetrieval.value);
+            // toggleServiceFee(itemId, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
                 hideOptions(orderRetrieval.value);
                 toggleDeliveryOptions(itemId, orderRetrieval.value);
-                toggleServiceFee(itemId, orderRetrieval.value);
                 toggleReceiptSubmission(itemId, orderRetrieval.value);
-
+                toggleDropOff(itemId, orderRetrieval.value);
+                // toggleServiceFee(itemId, orderRetrieval.value);
             });
         });
 

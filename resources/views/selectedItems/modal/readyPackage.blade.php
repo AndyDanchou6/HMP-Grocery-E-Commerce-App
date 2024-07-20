@@ -14,39 +14,40 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook Link</label>
+                    <label for="fb_link" class="col-sm-2 col-form-label">Facebook</label>
+                    @if($user['fb_link'])
                     <div class="col-sm-10">
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="address" class="col-sm-2 col-form-label">Address</label>
+                    @else
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows="3" readonly>{{ $user['address'] }}</textarea>
+                        <input type="text" class="form-control" value="No information" readonly>
                     </div>
+                    @endif
                 </div>
+
                 <div>
                     <h5>Purchased Items</h5>
                 </div>
                 @foreach($user['items'] as $item)
                 <div class="row item-row" data-item-id="{{ $item->id }}">
 
-                    <div class="col-12 col-sm-6 col-md-4 mb-3">
-                        <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
+                    <div class="col-12 mb-3">
+                        <label for="item_name" class="col-form-label">Item Name</label>
                         <input type="text" class="form-control" value="{{ $item->inventory->product_name }}" readonly>
                     </div>
 
-                    <div class="col-6 col-sm-3 col-md-2 mb-3">
-                        <label for="item_price" class="col-6 col-sm-3 col-md-2 col-form-label">Item Price</label>
+                    <div class="col-8 col-sm-4 mb-3">
+                        <label for="item_price" class="col-form-label">Item Price</label>
                         <input type="text" class="form-control item-price" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="₱{{ number_format($item->inventory->price, 2) }}" readonly>
                     </div>
 
-                    <div class="col-6 col-sm-3 col-md-3 mb-3">
-                        <label for="quantity" class="col-6 col-sm-3 col-md-3 col-form-label">Quantity</label>
+                    <div class="col-4 col-sm-3 mb-3">
+                        <label for="quantity" class="col-form-label">Quantity</label>
                         <input type="number" class="form-control item-quantity" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="{{ $item->quantity }}" readonly>
                     </div>
-                    <div class="col-12 col-sm-4 col-md-3 mb-3">
-                        <label for="subtotal" class="col-12 col-sm-4 col-md-3 col-form-label">SubTotal</label>
+                    <div class="col-12 col-sm-5 mb-3">
+                        <label for="subtotal" class="col-form-label">SubTotal</label>
                         <input type="text" class="form-control item-sub-total" data-item-id="{{ $user['referenceNo'].'_'.$item->id }}" value="0" readonly>
                     </div>
 
@@ -58,7 +59,7 @@
                 @endforeach
             </div>
             <div class="modal-footer">
-                <div class="row row-cols-1 row-cols-md-2 align-items-center" style="margin-bottom: 10px; margin-right: 50px;">
+                <div class="row row-cols-1 row-cols-md-2" style="position: relative; width: 95%; margin: auto;">
                     <div class="mb-3">
                         <label for="total" class="col-form-label">Total</label>
                         <input type="text" name="total" class="form-control purchase-total" data-total-id="{{ $user['referenceNo'] }}" readonly>
@@ -67,21 +68,45 @@
                         <label for="reference" class="col-form-label">Reference No.</label>
                         <input type="text" name="reference" class="form-control" value="{{ $user['referenceNo'] }}" readonly>
                     </div>
-                    <div class="mb-3">
-                        <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
-                        <input type="text" class="form-control" value="{{ ucwords($user['order_retrieval']) }}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="order_date" class="col-form-label">Date</label>
+                    <div class="w-100 mb-3">
+                        <label for="order_date" class="col-form-label">Order Date</label>
                         <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>
 
                 <div style="position: relative; width: 90%; margin: auto;">
-                    <form action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" style="position: relative; width: 100%">
+                    <form id="packageUpdateForm" action="{{ route('selected-items.update', ['referenceNo' => $user['referenceNo']]) }}" method="POST" style="position: relative; width: 100%">
                         @csrf
                         @method('POST')
+
+                        <div class="mb-3" id="dropOff{{ $user['id'] }}">
+                            <label for="" class="col-sm-2 py-2">Delivery Address</label>
+                            <div class="w-100">
+                                <select class="w-100 py-2 rounded form-select service_fee_id" name="service_fee_id">
+                                    <option value="" selected>Choose Drop-off</option>
+                                    @foreach($dropOffPoints as $dropOffPoint)
+                                    @if(isset($user['address']))
+                                    <option value="{{ $dropOffPoint->id }}" {{ $user['address'] == $dropOffPoint->location  ? 'selected' : ''}}>{{ $dropOffPoint->location }}</option>
+                                    @else
+                                    <option value="{{ $dropOffPoint->id }}">{{ $dropOffPoint->location }}</option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 align-items-center">
+                            <div class="mb-3">
+                                <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
+                                <div>
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}">
+                                        <option value="" selected disabled>Choose Order Retrieval</option>
+                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
+                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <div>
@@ -94,20 +119,13 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
-                                <div>
-                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}">
-                                        <option value="" selected disabled>Choose Order Retrieval</option>
-                                        <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
-                                        <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
-                                    </select>
-                                </div>
-                            </div>
-
                             <div class="mb-3 service-fee" id="service-fee{{ $user['id'] }}" data-item-id="{{ $user['id'] }}">
                                 <label for="" class="col-form-label">Service Fee</label>
-                                <input type="number" class="form-control" step="0.01" min="0.01" name="service_fee" placeholder="0.00">
+                                @if(isset($item->serviceFee->fee))
+                                <input type="number" class="form-control" step="0.01" min="0.01" placeholder="0.00" value="{{ $item->serviceFee->fee }}" readonly>
+                                @else
+                                <input type="number" class="form-control" step="0.01" min="0.01" placeholder="0.00" value="0.00" readonly>
+                                @endif
                             </div>
 
                         </div>
@@ -161,20 +179,32 @@
 
         function toggleServiceFee(itemId, retrievalValue) {
             var serviceFee = document.querySelector('#service-fee' + itemId);
-            var serviceFeeInput = serviceFee.querySelector('input');
 
             if (retrievalValue == 'delivery') {
 
                 serviceFee.style.display = 'block';
-
-                serviceFeeInput.setAttribute('required', 'required');
             }
 
             if (retrievalValue == 'pickup') {
 
                 serviceFee.style.display = 'none';
+            }
+        }
 
-                serviceFeeInput.removeAttribute('required');
+        function toggleDropOff(itemId, retrievalValue) {
+
+            var dropOff = document.querySelector('#dropOff' + itemId);
+
+            if (retrievalValue == 'delivery') {
+
+                dropOff.style.display = 'block';
+                dropOff.querySelector('select').setAttribute('required', 'required');
+            }
+
+            if (retrievalValue == 'pickup') {
+
+                dropOff.style.display = 'none';
+                dropOff.querySelector('select').removeAttribute('required');
             }
         }
 
@@ -219,13 +249,14 @@
             let itemId = orderRetrieval.getAttribute('data-item-id');
 
             toggleServiceFee(itemId, orderRetrieval.value);
+            toggleDropOff(itemId, orderRetrieval.value);
             hideOptions(orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
                 toggleServiceFee(itemId, orderRetrieval.value);
+                toggleDropOff(itemId, orderRetrieval.value);
                 hideOptions(orderRetrieval.value);
-                // console.log(itemId);
             });
         });
 

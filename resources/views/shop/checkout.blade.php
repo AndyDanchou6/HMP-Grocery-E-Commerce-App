@@ -13,30 +13,35 @@
                 @csrf
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
-                        @if($orderType != 'pickup')
+
+                        @if($orderType == 'delivery')
                         <div class="checkout__input">
-                            <p>Address<span></span></p>
-                            <textarea name="address" id="address" class="form-control" required></textarea>
+                            <p>Delivery Address<span></span></p>
+                            <div class="dropOffPoint">
+                                <select class="w-100 mb-3" name="service_fee_id" id="dropOffPoint" required>
+                                    @if($serviceFee->count() > 0)
+                                    <option disabled selected>Choose Drop-Off Location ---</option>
+                                    @foreach($serviceFee as $dropOff)
+                                    <option value="{{ $dropOff->id }}" data-fee="{{ $dropOff->fee }}">{{ $dropOff->location }} --- ₱{{ $dropOff->fee }}</option>
+                                    @endforeach
+                                    @else
+                                    <option value="null">No drop-off point assigned</option>
+                                    @endif
+                                </select>
+                            </div>
                         </div>
                         @endif
+
                         <div class="checkout__input">
-                            <p>Phone<span></span></p>
+                            <p>Phone Number<span></span></p>
                             <input type="text" name="phone" required>
                         </div>
                         <div class="checkout__input">
-                            <p>Fb Link<span></span></p>
-                            <textarea name="fb_link" id="fb_link" class="form-control" required></textarea>
+                            <p>Facebook Name/Link<span></span></p>
+                            <textarea name="fb_link" id="fb_link" class="form-control" placeholder="Optional"></textarea>
                         </div>
 
-                        @if($orderType != 'pickup')
-                        <div class="forDeliveryMessage" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
-                            <p class="col-10 text-primary">
-                                Kindly await the additional fee for delivery in your dashboard. Thank you for your cooperation.
-                            </p>
-                        </div>
-                        @endif
-
-                        <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-top: 50px; margin-bottom: 20px;">
+                        <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-bottom: 20px;">
                             <label>GCash Payment Reminder</label>
                             <p style="margin: auto 0;">Please remit your payment to <strong style="color: #696cff; font-size: 20px;">{{ $phone->phone }}</strong> using GCash. Include your <strong style="color: #696cff; font-size: 20px;">order reference number</strong> in the message. Thank you!</p>
                         </div>
@@ -64,6 +69,7 @@
                                 </tbody>
                             </table>
                             <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
+                            <div class="checkout__order__subtotal" id="checkoutDeliveryFee">Delivery Fee <span>₱0.00</span></div>
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
                             <p>Choose your payment</p>
                             @if($selectedItems->first()->order_retrieval == 'delivery')
@@ -143,6 +149,35 @@
                 gcashReminder.classList.add('d-none');
             });
         }
+
+        var options = document.querySelectorAll('.option');
+        var checkout__order__total = document.querySelector('.checkout__order__total');
+        var total = checkout__order__total.querySelector('span');
+        var totalValue = total.textContent;
+        var indexOfPeso = totalValue.indexOf('₱');
+        var stringTotalValue = totalValue.substring(indexOfPeso + 1).trim();
+        var floatTotalValue = parseFloat(stringTotalValue);
+        var totalBeforeFee = floatTotalValue;
+
+        var checkout__order__fee = document.querySelector('#checkoutDeliveryFee');
+        var feeField = checkout__order__fee.querySelector('span');
+
+        options.forEach(function(selected) {
+            selected.addEventListener('click', function() {
+
+                var index = selected.textContent.indexOf('₱');
+                var stringFeeValue = selected.textContent.substring(index + 1).trim();
+
+                if (parseFloat(stringFeeValue)) {
+
+                    var floatFeeValue = parseFloat(stringFeeValue);
+                    var newTotalValue = floatFeeValue + totalBeforeFee;
+
+                    total.textContent = '₱' + newTotalValue.toFixed(2);
+                    feeField.textContent = '₱' + floatFeeValue.toFixed(2);
+                }
+            })
+        })
 
     })
 </script>

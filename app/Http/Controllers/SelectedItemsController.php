@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use App\Models\ServiceFee;
 
 class SelectedItemsController extends Controller
 {
@@ -28,6 +29,7 @@ class SelectedItemsController extends Controller
             $selectedItems = SelectedItems::where('status', 'forPackage')
                 ->with('user')
                 ->with('inventory')
+                ->with('serviceFee')
                 ->orderBy('created_at', 'asc');
 
             if ($search) {
@@ -52,7 +54,6 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'courier_id' => $item->courier_id,
@@ -64,6 +65,10 @@ class SelectedItemsController extends Controller
                         'updated_at' => $item->updated_at,
                         'items' => []
                     ];
+
+                    if ($item->serviceFee) {
+                        $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+                    }
                 }
 
                 $userByReference[$item->referenceNo]['items'][] = $item;
@@ -76,15 +81,21 @@ class SelectedItemsController extends Controller
                 'path' => LengthAwarePaginator::resolveCurrentPath(),
             ]);
 
+            $dropOffPoints = ServiceFee::all();
+
             return view('selectedItems.forPackaging', [
                 'forPackage' => $paginatedItems,
                 'search' => $search,
+                'dropOffPoints' => $dropOffPoints,
             ]);
         } else {
             return redirect()->route('error');
         }
 
-        // dd($forPackage);
+        // dd($userByReference);
+        // return response()->json([
+        //     'data' => $userByReference,
+        // ]);
     }
 
     // public function forPackaging()
@@ -170,7 +181,6 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'courier_id' => $item->courier_id,
@@ -183,6 +193,10 @@ class SelectedItemsController extends Controller
                         'updated_at' => $item->updated_at,
                         'items' => []
                     ];
+
+                    if ($item->serviceFee) {
+                        $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+                    }
                 }
 
                 $userByReference[$item->referenceNo]['items'][] = $item;
@@ -198,15 +212,19 @@ class SelectedItemsController extends Controller
                 'path' => LengthAwarePaginator::resolveCurrentPath(),
             ]);
 
+            $dropOffPoints = ServiceFee::all();
+
             return view('selectedItems.forDelivery', [
                 'forDelivery' => $paginatedItems,
                 'search' => $search,
                 'couriers' => $couriers,
-                'schedules' => $schedules
+                'schedules' => $schedules,
+                'dropOffPoints' => $dropOffPoints,
             ]);
         } else {
             return redirect()->route('error');
         }
+        // dd($userByReference);
     }
 
     public function forPickup(Request $request)
@@ -241,7 +259,6 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'courier_id' => $item->courier_id,
@@ -306,7 +323,7 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
+                        'address' => $item->serviceFee->location,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'reasonForDenial' => $item->reasonForDenial,
@@ -374,10 +391,8 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
-                        'service_fee' => $item->service_fee,
                         'status' => $item->status,
                         'courier_id' => $courier ? $courier->name : 'Unknown',
                         'payment_type' => $item->payment_type,
@@ -390,6 +405,10 @@ class SelectedItemsController extends Controller
                         'updated_at' => $item->updated_at,
                         'items' => []
                     ];
+
+                    if ($item->serviceFee) {
+                        $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+                    }
                 }
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
@@ -446,7 +465,7 @@ class SelectedItemsController extends Controller
                         'role' => $item->user->role,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->address,
+                        'address' => $item->serviceFee->location,
                         'delivery_date' => $item->delivery_date,
                         'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
                         'quantity' => $item->quantity,
@@ -487,13 +506,13 @@ class SelectedItemsController extends Controller
     {
         $request->validate([
             'phone' => 'required',
-            'address' => 'required',
+            // 'address' => 'required',
             'fb_link' => 'required'
         ]);
 
         SelectedItems::create([
             'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
+            // 'address' => $request->input('address'),
             'fb_link' => $request->input('fb_link')
         ]);
     }
@@ -512,6 +531,8 @@ class SelectedItemsController extends Controller
 
         foreach ($selectedItems as $item) {
 
+            $deliverToPickUp = $request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery';
+
             if ($request->has('delete')) {
                 $item->delete();
             } else {
@@ -522,6 +543,7 @@ class SelectedItemsController extends Controller
                     $item->status = 'denied';
                     $item->courier_id = null;
                     $item->delivery_date = null;
+                    $item->service_fee_id = null;
                     $item->reasonForDenial = $request->input('reasonForDenial');
                 } elseif ($item->status == 'forPackage') {
 
@@ -563,10 +585,10 @@ class SelectedItemsController extends Controller
                         $item->payment_type = $request->input('payment_type');
                     }
 
-                    if ($request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery') {
-                        $item->courier_id = Null;
-                        $item->delivery_date = Null;
-                        $item->service_fee = 0;
+                    if ($deliverToPickUp) {
+                        $item->courier_id = null;
+                        $item->delivery_date = null;
+                        $item->service_fee_id = null;
                     }
 
                     if ($request->has('delivery_schedule') && $request->input('order_retrieval') == 'delivery') {
@@ -623,10 +645,8 @@ class SelectedItemsController extends Controller
                     }
                 }
 
-                if ($request->has('service_fee')) {
-                    if ($request->input('service_fee') != 0) {
-                        $item->service_fee = $request->input('service_fee');
-                    }
+                if ($request->has('service_fee_id') && !$deliverToPickUp) {
+                    $item->service_fee_id = $request->input('service_fee_id');
                 }
 
                 $item->save();

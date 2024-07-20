@@ -78,10 +78,12 @@
                             <label for="" class="col-form-label">Payment Type:</label>
                             <input type="text" class="form-control" value="{{ $user['payment_type'] }}" readonly>
                         </div>
+                        @if($item->serviceFee != null)
                         <div class="col-md-6">
                             <label for="" class="col-form-label">Service Fee:</label>
-                            <input type="text" class="form-control" value="{{ $user['service_fee'] }}" readonly>
+                            <input type="text" class="form-control" value="{{ $item->serviceFee->fee }}" readonly>
                         </div>
+                        @endif
                     </div>
                     @elseif($user['order_retrieval'] == 'pickup')
                     <div class="row mb-3 p-0">

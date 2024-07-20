@@ -21,19 +21,29 @@
         <div class="row">
             <div class="col-lg-3 col-md-5">
                 <div class="sidebar">
-                    <div class="sidebar__item">
-                        <h4>Department</h4>
+                    <div class="sidebar__item d-none d-md-block">
+                        <h4>Products</h4>
                         <ul class="sidebar__list">
+
+                            @foreach($subCategory as $product => $item)
                             <li>
-                                <a href="{{ route('shop.products') }}" class="category-link {{ request('category') ? '' : 'active' }}" data-category-id="">
-                                    All
+                                <a href="{{ route('shop.products', ['subCategory' => $product]) }}" class="category-link {{ request('subCategory') == $product ? 'active' : '' }}" data-category-id="{{ $product }}">
+                                    {{ $product }}
                                 </a>
                             </li>
-                            @foreach($category as $item)
-                            <li>
-                                <a href="{{ route('shop.products', ['category' => $item->id]) }}" class="category-link {{ request('category') == $item->id ? 'active' : '' }}" data-category-id="{{ $item->id }}">
-                                    {{ $item->category_name }}
-                                </a>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="d-md-none" id="productSidebarToggle">
+                        <div class="bg-primary px-5 py-3 rounded text-light">
+                            <i class="fa fa-bars mr-2"></i>
+                            <span>Products</span>
+                            <span style="position: absolute; right: 50px; top: 20px;"><i class="fa fa-caret-down "></i></span>
+                        </div>
+                        <ul>
+                            @foreach($subCategory as $product => $item)
+                            <li style="display: none; text-decoration: none;">
+                                <a href="{{ route('shop.products', ['subCategory' => $product]) }}" class="category-link {{ request('subCategory') == $product ? 'active' : '' }}" data-category-id="{{ $product }}">{{ $product }}</a>
                             </li>
                             @endforeach
                         </ul>
@@ -92,7 +102,12 @@
                                 </ul>
                             </div>
                             <div class="product__item__text">
-                                <h6><a href="#">{{ $item->product_name }}</a></h6>
+                                <h6><a>{{ $item->product_name }}</a></h6>
+                                @if($item->variant)
+                                <h6><a>{{ $item->variant }}</a></h6>
+                                @else
+                                <h6><a>(No Variant)</a></h6>
+                                @endif
                                 <h5>₱{{ $item->price }}.00</h5>
                                 <h6 style="margin-top: 9px; text-align: center;">{{ $item->category->category_name }}</h6>
                             </div>
@@ -118,3 +133,29 @@
 @include('shop.floatingTotal')
 
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var productSidebarToggle = document.querySelector('#productSidebarToggle');
+        var productSidebarShowed = false;
+
+        productSidebarToggle.addEventListener('click', function() {
+            var productLists = productSidebarToggle.querySelectorAll('li');
+            var listDisplayStat = ''
+
+            if (productSidebarShowed == false) {
+                listDisplayStat = "block";
+                productSidebarShowed = true;
+            } else {
+                listDisplayStat = "none";
+                productSidebarShowed = false;
+            }
+
+            productLists.forEach(function(product) {
+
+                product.style.display = listDisplayStat;
+            })
+        })
+    })
+</script>

@@ -68,8 +68,13 @@
                         <img src="{{ asset('storage/' . $item->product_img) }}" alt="{{ $item->product_name }}" style="width: 270px; height: 270px;">
                     </div>
                     <div class="featured__item__text text-center mt-3">
-                        <h6><a href="#">{{ $item->product_name }}</a></h6>
-                        <h5>₱{{ number_format($item->price, 2) }}</h5>
+                        <h6><a>{{ $item->product_name }}</a></h6>
+                        @if($item->variant)
+                        <h6><a>{{ $item->variant }}</a></h6>
+                        @else
+                        <h6><a>(No Variant)</a></h6>
+                        @endif
+                        <h5 class="d-block">₱{{ number_format($item->price, 2) }}</h5>
                         <h6 style="margin-top: 9px;">{{ $item->category->category_name }}</h6>
                     </div>
                     <div class="product__details__quantity" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">

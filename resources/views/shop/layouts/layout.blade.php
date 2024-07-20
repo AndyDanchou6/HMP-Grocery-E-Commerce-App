@@ -400,40 +400,40 @@
             outOfStockBanner(outOfStockBanners);
 
             // clicks on image adds on cart
-            const clickedItems = document.querySelectorAll('.product_onDisplay');
+                // const clickedItems = document.querySelectorAll('.product_onDisplay');
 
-            clickedItems.forEach(function(clickedItem) {
+                // clickedItems.forEach(function(clickedItem) {
 
-                var quantityAvailable = clickedItem.getAttribute('data-quantity');
+                //     var quantityAvailable = clickedItem.getAttribute('data-quantity');
 
-                if (quantityAvailable != 0) {
+                //     if (quantityAvailable != 0) {
 
-                    // Listens to every click on items
-                    clickedItem.addEventListener('click', function() {
+                //         // Listens to every click on items
+                //         clickedItem.addEventListener('click', function() {
 
-                        var itemId = clickedItem.getAttribute('data-item-id');
-                        var itemPrice = clickedItem.getAttribute('data-price');
+                //             var itemId = clickedItem.getAttribute('data-item-id');
+                //             var itemPrice = clickedItem.getAttribute('data-price');
 
-                        var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
-                        var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
+                //             var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
+                //             var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
 
-                        if (currentAmount > quantityAvailable) {
-                            currentAmount = currentAmount;
-                            outOfStock.style.display = 'block';
-                        } else {
+                //             if (currentAmount > quantityAvailable) {
+                //                 currentAmount = currentAmount;
+                //                 outOfStock.style.display = 'block';
+                //             } else {
 
-                            // Stores the selected item
-                            stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable);
+                //                 // Stores the selected item
+                //                 stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable);
 
-                            // Loads a new total after clicking item
-                            totalField.value = totalItemCost();
-                            updateAmountSelected(itemQuantityFields);
-                            onCartBanner();
+                //                 // Loads a new total after clicking item
+                //                 totalField.value = totalItemCost();
+                //                 updateAmountSelected(itemQuantityFields);
+                //                 onCartBanner();
 
-                        }
-                    });
-                }
-            });
+                //             }
+                //         });
+                //     }
+                // });
 
             // Adjust selected items with buttons
             const quantityButton = document.querySelectorAll('.productAdjustButton');
