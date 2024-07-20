@@ -5,7 +5,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header row justify-content-between align-items-center">
-            <h4 class="col-md-3"><span class="badge bg-label-warning me-1">Orders to delivery</span></h4>
+            <h4 class="col-md-3"><span class="badge bg-label-warning me-1">Orders to Pickup</span></h4>
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
@@ -15,7 +15,6 @@
                         <th>Reference No.</th>
                         <th>Payment Type</th>
                         <th>Payment Condition</th>
-                        <th>Delivered on</th>
                         <th>Items</th>
                     </tr>
                 </thead>
@@ -41,13 +40,6 @@
                             <span class="badge bg-label-warning me-1">Pending</span>
                             @else
                             <span class="badge bg-label-danger me-1">Unpaid</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($user['delivery_date'])
-                            <span class="badge bg-label-success me-1">{{ \Carbon\Carbon::parse($user['delivery_date'])->format('l, F j, Y g:i A') }}</span>
-                            @else
-                            <span class="badge bg-label-danger me-1">Not Scheduled Yet</span>
                             @endif
                         </td>
                         <td>

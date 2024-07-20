@@ -53,15 +53,9 @@ Route::get('/error', [AuthController::class, 'error'])->name('error');
 
 Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
 
-Route::resource('admin/categories', CategoryController::class);
-
-Route::resource('admin/inventories', InventoryController::class);
-
-Route::resource('admin/users', AdminController::class)->middleware('admin');
-
 Route::resource('profile', ProfileController::class);
 
-// Route::resource('selectedItems', SelectedItemsController::class);
+Route::resource('admin/users', AdminController::class)->middleware('admin');
 
 Route::resource('reviews', ReviewController::class);
 
@@ -80,38 +74,38 @@ Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])-
 Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
 Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
 
-Route::get('/admin/selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
 Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
-Route::get('/admin/selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
-Route::get('/admin/selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
-Route::get('/admin/selectedItems/deniedOrders', [SelectedItemsController::class, 'deniedOrders'])->name('selectedItems.deniedOrders');
-Route::post('/selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
-Route::post('/selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
-Route::get('/admin/selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
+
+//--- Admin Route Section ----!>
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::resource('inventories', InventoryController::class);
+
+    Route::get('selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
+    Route::get('selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
+    Route::get('selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
+    Route::get('selectedItems/deniedOrders', [SelectedItemsController::class, 'deniedOrders'])->name('selectedItems.deniedOrders');
+    Route::post('selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
+    Route::post('selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
+    Route::get('selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
+
+    //--- Delivery Schedules ----!>
+    Route::get('schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
+    Route::post('schedules/create', [DeliveryScheduleController::class, 'store'])->name('schedules.store');
+    Route::delete('schedules/{schedule}', [DeliveryScheduleController::class, 'destroy'])->name('schedules.destroy');
+    Route::put('schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
+});
+
+
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
-
-//--- Delivery Schedules ----!>
-Route::get('admin/schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
-Route::post('admin/schedules/create', [DeliveryScheduleController::class, 'store'])->name('schedules.store');
-Route::delete('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'destroy'])->name('schedules.destroy');
-Route::put('admin/schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
 
 Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
 Route::get('/availableStocks', [InventoryController::class, 'availableStocks']);
 Route::get('/productByName', [InventoryController::class, 'test']);
 Route::post('/addAsVariant', [InventoryController::class, 'addAsVariant']);
 
-Route::get('counting', [InventoryController::class, 'criticalProducts'])->name('inventories.criticalProducts');
-
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
-
-/* Customers */
-Route::get('/customer/selectedItems/orders', [CustomerController::class, 'orders'])->name('selectedItems.orders');
-Route::get('/customer/pending_orders', [CustomerController::class, 'pending_orders'])->name('customers.pendingOrders');
-Route::middleware('auth')->get('/customer/pendingOrderUpdate', [CustomerController::class, 'pendingOrdersUpdate'])->name('customers.pendingOrdersUpdate');
-Route::get('/customer/delivery_retrieval', [CustomerController::class, 'delivery_retrieval'])->name('customers.delivery_retrieval');
-Route::middleware('auth')->get('/customer/delivery_retrievalUpdate', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.deliveryUpdate');
 
 // Service Fee
 Route::get('admin/service_fee', [ServiceFeeController::class, 'index'])->name('serviceFee.index');
@@ -119,3 +113,13 @@ Route::post('admin/service_fee/create', [ServiceFeeController::class, 'store'])-
 Route::put('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'update'])->name('serviceFee.update');
 Route::delete('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'destroy'])->name('serviceFee.destroy');
 
+Route::middleware('auth')->get('/selectedItems/countOrders', [CustomerController::class, 'orderCount'])->name('customers.countOrders');
+
+/* Customers Route Section */
+Route::prefix('customer')->middleware('auth')->group(function () {
+    Route::get('selectedItems/orders', [CustomerController::class, 'orders'])->name('customers.orders');
+    Route::get('orders/pendingOrders', [CustomerController::class, 'forPendingOrders'])->name('customers.pending_orders');
+    Route::get('orders/deliveryRetrieval', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.delivery_retrieval');
+    Route::get('orders/pickupRetrieval', [CustomerController::class, 'forPickupRetrieval'])->name('customers.pickup_retrieval');
+    Route::get('orders/unpaidOrders', [CustomerController::class, 'forUnpaidOrders'])->name('customers.unpaid_orders');
+});

@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\ShopController;
 
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('counting', [InventoryController::class, 'criticalProducts'])->name('inventories.criticalProducts');
 Route::get('/selectedItems/count', [SelectedItemsController::class, 'packageCount'])->name('selectedItems.count');
 Route::get('/selectedItems/notify', [SelectedItemsController::class, 'notification'])->name('selectedItems.notification')->middleware('web');
 Route::get('/test', [ShopController::class, 'test']);

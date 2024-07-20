@@ -37,8 +37,10 @@
                             <input type="text" name="phone" required>
                         </div>
                         <div class="checkout__input">
+
                             <p>Facebook Name/Link<span></span></p>
                             <textarea name="fb_link" id="fb_link" class="form-control" placeholder="Optional"></textarea>
+
                         </div>
 
                         <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-bottom: 20px;">

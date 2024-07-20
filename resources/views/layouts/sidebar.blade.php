@@ -104,23 +104,83 @@
       </a>
     </li>
     <li id="tables" class="menu-item">
-      <a href="{{ route('selectedItems.orders') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-list-ul"></i>
-        <div data-i18n="Tables">Orders</div>
+      <a href="{{ route('customers.unpaid_orders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-currency-dollar"></i>
+        <div data-i18n="Tables">Unpaid Orders</div>
+        <span id="forUnpaidOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
-      <a href="{{ route('customers.pendingOrders') }}" class="menu-link">
+      <a href="{{ route('customers.pending_orders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>
         <div data-i18n="Tables">Pending Orders</div>
+        <span id="forPendingOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
     <li id="tables" class="menu-item">
       <a href="{{ route('customers.delivery_retrieval') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-truck"></i>
-        <div data-i18n="Tables">Orders to deliver</div>
+        <div data-i18n="Tables">Orders to Delivery</div>
+        <span id="forDeliveryOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('customers.pickup_retrieval') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-bag"></i>
+        <div data-i18n="Tables">Orders to Pickup</div>
+        <span id="forPickupOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 195px;"></span>
+      </a>
+    </li>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function ordersCount() {
+          fetch("{{ route('customers.countOrders') }}", {
+              method: 'GET',
+              headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              credentials: 'same-origin'
+            })
+            .then(response => {
+              return response.json();
+            }).then(data => {
+              const forPendingOrders = document.getElementById('forPendingOrders');
+              const forDeliveryOrders = document.getElementById('forDeliveryOrders');
+              const forPickupOrders = document.getElementById('forPickupOrders');
+              const forUnpaidOrders = document.getElementById('forUnpaidOrders');
+
+              if (data.status == 200) {
+                if (forPendingOrders) {
+                  forPendingOrders.textContent = data.count1;
+                  forPendingOrders.style.display = data.count1 ? 'block' : 'none';
+                }
+                if (forDeliveryOrders) {
+                  forDeliveryOrders.textContent = data.count2;
+                  forDeliveryOrders.style.display = data.count2 ? 'block' : 'none';
+                  forPickupOrders.textContent = data.count3;
+                }
+                if (forPickupOrders) {
+                  forPickupOrders.style.display = data.count3 ? 'block' : 'none';
+                }
+
+                if (forUnpaidOrders) {
+                  forUnpaidOrders.textContent = data.count4;
+                  forUnpaidOrders.style.display = data.count4 ? 'block' : 'none';
+                }
+              }
+            })
+            .catch(error => console.error("Fetching errors: ", error))
+            .finally(() => {
+              setTimeout(ordersCount, 5000);
+            });
+
+        }
+        ordersCount();
+      })
+    </script>
+
     @endif
     @if(Auth::user()->role == 'Courier')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Courier Section</span></li>
@@ -128,17 +188,45 @@
       <a href="{{ route('selectedItems.courierDashboard') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-list-ul"></i>
         <div data-i18n="Tables">Delivery Request</div>
-        <span id="courierCount" class="badge badge-center rounded-pill bg-label-primary" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
+        <span id="courierCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 20%; left: 200px;"></span>
       </a>
     </li>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function courierTaskCount() {
+          fetch('{{ route("selectedItems.courierCount") }}', {
+              method: 'GET',
+              headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+              const courierCount = document.getElementById('courierCount');
+              if (courierCount) {
+                courierCount.textContent = data.deliveryRequest;
+                courierCount.style.display = data.deliveryRequest ? 'block' : 'none';
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching counts:', error);
+            }).finally(() => {
+              setTimeout(courierTaskCount, 5000)
+            });
+        }
+
+        courierTaskCount();
+      })
+    </script>
     @endif
   </ul>
 </aside>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    setInterval(updateCounts, 5000);
-
     function updateCounts() {
       fetch('{{ route("selectedItems.count") }}')
         .then(response => response.json())
@@ -166,33 +254,11 @@
             deniedOrders.textContent = data.count4;
             deniedOrders.style.display = data.count4 ? 'block' : 'none';
           }
-
-
         })
-
         .catch(error => {
           console.error('Error fetching count:', error);
-        });
-
-      fetch('{{ route("selectedItems.courierCount") }}', {
-          method: 'GET',
-          headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}",
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          credentials: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-          const courierCount = document.getElementById('courierCount');
-          if (courierCount) {
-            courierCount.textContent = data.deliveryRequest;
-            courierCount.style.display = data.deliveryRequest ? 'block' : 'none';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching counts:', error);
+        }).finally(count => {
+          setTimeout(count, 5000)
         });
     }
     updateCounts();

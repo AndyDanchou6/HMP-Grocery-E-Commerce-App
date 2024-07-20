@@ -49,7 +49,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     document.getElementById('deliveryRequest').textContent = data.deliveryRequest || '0';
                     document.getElementById('completeDelivery').textContent = data.delivered || '0';
                 })

@@ -52,7 +52,7 @@
                 if (value === "continueShopping") {
                     window.history.forward();
                 } else if (value === "dashboard") {
-                    window.location.href = "{{ route('selectedItems.orders') }}";
+                    window.location.href = "{{ route('customers.pending_orders') }}";
                 }
             });
         }

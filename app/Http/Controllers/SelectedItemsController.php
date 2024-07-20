@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\deliverySchedule;
-use App\Models\Inventory;
 use App\Models\SelectedItems;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;

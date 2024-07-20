@@ -7,9 +7,12 @@
   </div>
   <!-- ...Existing navbar code... -->
   <ul class="navbar-nav flex-row align-items-center ms-auto">
-    @if(Auth::user()->role != 'Courier')
+    @if(Auth::user()->role == 'Customer')
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
       <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
+    </a>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}">
+      <i class="bx bx-history bx-sm bx-tada-hover"></i>
     </a>
     @endif
     @if(Auth::user()->role == 'Admin')
@@ -121,7 +124,7 @@
                     positionClass: 'toast-top-right',
                     showDuration: '300',
                     hideDuration: '1000',
-                    timeOut: '15000',
+                    timeOut: '3000',
                     showEasing: 'swing',
                     hideEasing: 'linear',
                     showMethod: 'fadeIn',
@@ -223,13 +226,51 @@
           @endif
         </li>
         <li>
-          <a class="dropdown-item" href="#">
+          @if(Auth::user()->role == 'Customer')
+          <a class="dropdown-item" href="{{ route('customers.unpaid_orders') }}">
             <span class="d-flex align-items-center align-middle">
               <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
               <span class="flex-grow-1 align-middle">Billing</span>
-              <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+              <span id="unpaidOrders" class="badge badge-center rounded-pill bg-danger"></span>
             </span>
           </a>
+          @endif
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              function ordersCount() {
+                console.log("Fetching order counts..."); // Debug log
+
+                fetch("{{ route('customers.countOrders') }}", {
+                    method: 'GET',
+                    headers: {
+                      'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                  })
+                  .then(response => {
+                    console.log("Response received:", response); // Debug log
+                    return response.json();
+                  }).then(data => {
+                    console.log("Data received:", data); // Debug log
+
+                    const unpaidOrders = document.getElementById('unpaidOrders');
+                    if (data.status === 200) {
+                      if (unpaidOrders) {
+                        unpaidOrders.textContent = data.count4;
+                        unpaidOrders.style.display = data.count4 ? 'block' : 'none';
+                      }
+                    }
+                  })
+                  .catch(error => console.error("Fetching errors: ", error))
+                  .finally(() => {
+                    setTimeout(ordersCount, 5000);
+                  });
+              }
+              ordersCount();
+            });
+          </script>
         </li>
         <li>
           <div class="dropdown-divider"></div>
