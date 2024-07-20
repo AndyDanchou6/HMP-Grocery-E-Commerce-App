@@ -19,23 +19,26 @@
                             No payment proof available.
                         </div>
                         @endif
-
                     </div>
 
                 </div>
+                @if($item['payment_proof'])
                 <div class="row mb-3">
                     <label class="col-sm-3 col-form-label">Reference No.</label>
                     <div class="col-sm-9 text-center">
                         <input type="text" class="form-control text-info" name="referenceNo" id="" value="{{ $item['referenceNo'] }}" readonly>
                     </div>
                 </div>
+                @endif
                 <form id="paymentProofForm{{$user['referenceNo']}}" action="{{ route('selected-items.updatePaymentCondition', ['referenceNo' => $user['referenceNo']]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('POST')
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        @if($user['payment_proof'])
                         <input type="hidden" name="payment_condition" id="payment_condition" value="paid">
                         <button type="submit" class="btn btn-outline-success">Paid</button>
+                        @endif
                     </div>
                 </form>
             </div>

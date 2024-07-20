@@ -37,15 +37,15 @@ Route::get('/', function () {
 Auth::routes();
 
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.home');
 });
 
-Route::prefix('customer')->group(function () {
+Route::prefix('customer')->middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'customerDashboard'])->name('customer.home');
 });
 
-Route::prefix('courier')->group(function () {
+Route::prefix('courier')->middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'courierDashboard'])->name('courier.home');
 });
 
@@ -80,7 +80,6 @@ Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::c
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('inventories', InventoryController::class);
-
     Route::get('selectedItems/forPackaging', [SelectedItemsController::class, 'forPackaging'])->name('selectedItems.forPackaging');
     Route::get('selectedItems/forDelivery', [SelectedItemsController::class, 'forDelivery'])->name('selectedItems.forDelivery');
     Route::get('selectedItems/forPickup', [SelectedItemsController::class, 'forPickup'])->name('selectedItems.forPickup');
@@ -88,6 +87,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('selected-items/{referenceNo}/update', [SelectedItemsController::class, 'updateStatus'])->name('selected-items.update');
     Route::post('selected-items/{referenceNo}/updatePaymentCondition', [SelectedItemsController::class, 'updatePaymentCondition'])->name('selected-items.updatePaymentCondition');
     Route::get('selectedItems/history', [SelectedItemsController::class, 'show'])->name('selectedItems.history');
+
+    Route::get('selectedItems/forGcashPayments', [SelectedItemsController::class, 'forGcashPayments'])->name('selectedItems.forGcashPayments');
+    Route::get('selectedItems/forCODPayments', [SelectedItemsController::class, 'forCODPayments'])->name('selectedItems.forCODPayments');
+    Route::get('selectedItems/forInStorePayments', [SelectedItemsController::class, 'forInStorePayments'])->name('selectedItems.forInStorePayments');
 
     //--- Delivery Schedules ----!>
     Route::get('schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');

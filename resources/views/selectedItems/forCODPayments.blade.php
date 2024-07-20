@@ -1,12 +1,14 @@
 @extends('app')
 
 @section('content')
-@include('layouts.sweetalert')
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center mb-4">
-            <h4 style="margin: auto 0;">Package History</h4>
-            <form action="{{ route('selectedItems.history') }}" method="GET" class="d-flex">
+            <h4 style="margin: auto 0;">
+                <span class="badge bg-label-danger me-1">Cash on delivery [COD] Payment</span>
+            </h4>
+            <form action="{{ route('selectedItems.forCODPayments') }}" method="GET" class="d-flex">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">
@@ -21,12 +23,10 @@
                     <tr>
                         <th>#</th>
                         <th>Reference No.</th>
-                        <th>User Name</th>
-                        <th>Items</th>
+                        <th>User name</th>
                         <th>Order Type</th>
-                        <th>Payment Type</th>
                         <th>Payment Condition</th>
-                        <th>Status</th>
+                        <th>Items</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -38,10 +38,6 @@
                         <td><span class="badge bg-label-primary me-1">{{ $referenceNo }}</span></td>
                         <td>{{ $user['name'] }}</td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.info', ['user' => $user])
-                        </td>
-                        <td>
                             @if($user['order_retrieval'] == 'delivery')
                             <span class="badge bg-label-info me-1">Delivery</span>
                             @elseif($user['order_retrieval'] == 'pickup')
@@ -49,51 +45,34 @@
                             @endif
                         </td>
                         <td>
-                            @if($user['payment_type'] == 'COD')
-                            <span class="badge bg-label-primary me-1">{{ $user['payment_type'] }}</span>
-                            @elseif($user['payment_type'] == 'G-cash')
-                            <span class="badge bg-label-info me-1">{{ $user['payment_type'] }}</span>
-                            @else
-                            <span class="badge bg-label-secondary me-1">{{ $user['payment_type'] }}</span>
-                            @endif
-                        </td>
-                        <td>
                             @if($user['payment_condition'] == 'paid')
                             <span class="badge bg-label-success me-1">Paid</span>
+                            @elseif($user['payment_proof'])
+                            <span class="badge bg-label-warning me-1">Pending</span>
                             @else
                             <span class="badge bg-label-danger me-1">Unpaid</span>
                             @endif
                         </td>
                         <td>
-                            @if($user['status'] == 'forPackage')
-                            <span class="badge bg-label-primary me-1">Pending</span>
-                            @elseif($user['status'] == 'readyForRetrieval')
-                            <span class="badge bg-label-warning me-1">To receive</span>
-                            @elseif($user['status'] == 'delivered' || $user['status'] == 'pickedUp')
-                            <span class="badge bg-label-success me-1">Completed</span>
-                            @else
-                            <span class="badge bg-label-danger me-1">{{ $user['status'] }}</span>
-                            @endif
+                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.info', ['user' => $user])
                         </td>
                         <td>
-                            @if($user['proof_of_delivery'])
-                            @if($user['order_retrieval'] == 'delivery' && $user['payment_condition'] == 'paid')
-                            <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('selectedItems.modal.proof', ['user' => $user])
-                            @endif
-                            @endif
+                            <button type="button" class="btn btn-link p-0 m-0" data-bs-toggle="modal" data-bs-target="#paidConfirm{{ $referenceNo }}">
+                                <i class="bx bx-check details-button"></i>
+                            </button>
+                            @include('selectedItems.modal.paidConfirmation')
                         </td>
                     </tr>
                     @endforeach
                     @else
                     <tr>
-                        <td colspan="9" class="text-center">No package history available.</td>
+                        <td colspan="8" class="text-center">No orders available at the moment.</td>
                     </tr>
                     @endif
                 </tbody>
             </table>
         </div>
-        @include('selectedItems.pagination')
     </div>
 </div>
 </div>
@@ -102,6 +81,7 @@
 @section('customScript')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         var subTotalField = document.querySelectorAll('.item-sub-total');
         var totalContainer = {};
 
@@ -111,13 +91,6 @@
 
             var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
             var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
-
-            if (quantity < 0) {
-                alert('Quantity cannot be negative.');
-                quantity = 0;
-                document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value = 0;
-            }
-
             var userSubTotalField = document.querySelector('.item-sub-total[data-item-id="' + itemReferenceNo + '"]');
 
             var tempSubTotal = price * quantity;
@@ -144,4 +117,5 @@
         });
     });
 </script>
+
 @endsection

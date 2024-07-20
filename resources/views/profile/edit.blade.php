@@ -30,6 +30,7 @@
                         <div class="col mb-3">
                             <label for="edit_avatar_input" class="form-label">Avatar</label>
                             <input type="file" id="edit_avatar_input" name="avatar" class="form-control" />
+                            <small id="fileSizeErrorr" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row">
@@ -94,6 +95,19 @@
             editProfileForm.addEventListener('submit', function(event) {
                 uploadAvatarButton.disabled = true;
             });
+        }
+    });
+</script>
+<script>
+    document.getElementById('edit_avatar_input').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const errorMessage = document.getElementById('fileSizeErrorr');
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            errorMessage.style.display = 'block';
+            event.target.value = '';
+        } else {
+            errorMessage.style.display = 'none';
         }
     });
 </script>

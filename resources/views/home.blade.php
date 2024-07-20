@@ -172,6 +172,18 @@
             if (!tableBody) return;
             tableBody.innerHTML = '';
 
+            if (inventories.length === 0) {
+                const newRow = document.createElement('tr');
+                const noDataCell = document.createElement('td');
+                noDataCell.colSpan = 4;
+                noDataCell.classList.add('text-center');
+                noDataCell.textContent = 'No Critical Products Found';
+                newRow.appendChild(noDataCell);
+                tableBody.appendChild(newRow);
+                return;
+            }
+
+
             inventories.forEach((inventory, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -179,9 +191,9 @@
                     <td>${inventory.product_name}</td>
                     <td><span class="badge bg-label-danger me-1">${inventory.quantity}</span></td>
                     <td>
-                        <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal${inventory.id}"></a>
-                        <a href="{{ route('inventories.index') }}" class="bi bi-arrow-right-short me-1"></a>
-                        <i class="fas fa-trash"></i>
+                        <a href="{{ route('inventories.index') }}" class="bi bi-arrow-right-short me-1">
+                            <i class="fas fa-trash"></i>
+                        </a>
                     </td>
                 `;
                 tableBody.appendChild(row);
