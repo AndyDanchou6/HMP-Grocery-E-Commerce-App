@@ -60,6 +60,12 @@
         <div data-i18n="Tables">Category</div>
       </a>
     </li>
+    <li id="tables" class="menu-item">
+      <a href="{{ route('serviceFee.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-map"></i>
+        <div data-i18n="Tables">Service Fees</div>
+      </a>
+    </li>
     <li id="forPackaging" class="menu-item">
       <a href="{{ route('selectedItems.forPackaging') }}" class="menu-link" style="position: relative;">
         <i class="menu-icon tf-icons bi bi-box-seam"></i>

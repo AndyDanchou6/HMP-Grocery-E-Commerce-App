@@ -12,6 +12,7 @@ use App\Models\SelectedItems;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use App\Events\MyEvent;
+use App\Models\ServiceFee;
 use Illuminate\Support\Facades\Event;
 
 class ShopController extends Controller
@@ -27,11 +28,18 @@ class ShopController extends Controller
             $user = Auth::user(); // Assuming user is authenticated
             $carts = Cart::where('user_id', $user->id)->get();
             $admin = User::where('role', 'Admin')->get();
-            $inventory = Inventory::with('reviews')
-                ->orderBy('created_at', 'desc')
-                ->take(6)->get();
+            $inventory = Inventory::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('product_name');
+
             $category = Category::all();
+
             return view('shop.index', compact('category', 'inventory', 'admin', 'carts'));
+            // dd($inventory);
+
+            // return response()->json([
+            //     'data' => $inventory
+            // ]);
         }
     }
 
@@ -44,20 +52,24 @@ class ShopController extends Controller
             return redirect()->route('error404');
         } else {
             $query = $request->input('query');
-            $categoryFilter = $request->input('category');
+            $categoryFilter = $request->input('subCategory');
             $category = Category::all();
 
-            $inventory = Inventory::with('reviews', 'category')
+            $inventory = Inventory::with('category')
                 ->when($query, function ($queryBuilder) use ($query) {
                     $queryBuilder->where('product_name', 'LIKE', "%$query%");
                 })
                 ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
-                    $queryBuilder->where('category_id', $categoryFilter);
+                    $queryBuilder->where('product_name', $categoryFilter);
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate(9);
 
-            return view('shop.products', compact('inventory', 'category', 'query', 'categoryFilter'));
+            $subCategory = Inventory::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('product_name');
+
+            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter'));
         }
     }
 
@@ -86,6 +98,7 @@ class ShopController extends Controller
 
         $category = Category::all();
         $user = Auth::user();
+        $serviceFee = ServiceFee::all();
 
         $selectedItems = SelectedItems::with('inventory')
             ->where('user_id', $user->id)
@@ -108,7 +121,7 @@ class ShopController extends Controller
 
         $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'phone'));
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'phone', 'serviceFee'));
     }
 
     public function placeOrder(Request $request)
@@ -121,12 +134,20 @@ class ShopController extends Controller
                 ->where('status', 'forCheckout')
                 ->get();
 
+            $sampleData = $selectedItems->first();
+
+            if ($sampleData->order_retrieval === 'delivery' && !$request->has('service_fee_id')) {
+
+                return redirect()->back()->with('error', 'No Delivery Location Selected.');
+            }
+
             foreach ($selectedItems as $item) {
                 if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
+
                     $item->update([
                         'status' => 'forPackage',
                         'phone' => $request->input('phone'),
-                        'address' => $request->input('address'),
+                        'service_fee_id' => $request->input('service_fee_id'),
                         'fb_link' => $request->input('fb_link'),
                         'payment_type' => $request->input('payment_type')
                     ]);
@@ -144,6 +165,8 @@ class ShopController extends Controller
 
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
+
+        // dd($request);
     }
 
     public function cancelCheckout(Request $request)

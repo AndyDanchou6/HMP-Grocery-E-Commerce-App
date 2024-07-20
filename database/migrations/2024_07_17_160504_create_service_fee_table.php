@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('selected_items', function (Blueprint $table) {
-            $table->decimal('service_fee', 10, 2)->default(0.00);
+        Schema::create('service_fee', function (Blueprint $table) {
+            $table->id();
+            $table->string('location');
+            $table->string('fee_name')->nullable();
+            $table->decimal('fee');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('selected_items', function (Blueprint $table) {
-            $table->dropColumn('service_fee');
-        });
+        Schema::dropIfExists('service_fee');
     }
 };

@@ -34,7 +34,11 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user['name'] }}</td>
                         <td> <span class="badge bg-label-primary me-1">{{ $user['referenceNo'] }}</span></td>
+                        @if($user['fb_link'])
                         <td> <span class="badge bg-label-secondary me-1">{{ $user['fb_link'] }}</span></td>
+                        @else
+                        <td> <span class="badge bg-label-secondary me-1">N/A</span></td>
+                        @endif
                         <td> <span class="badge bg-label-secondary me-1">{{ $user['phone'] }}</span></td>
                         <td>
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#forPickUp{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}" data-item-id="{{ $user['id'] }}"></a>
