@@ -26,7 +26,6 @@
                         </div>
 
                         <input type="text" name="currentlyAdded" id="currentlyAdded" hidden>
-
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalTitle">{{ Auth::user()->name }}'s profile</h5>
+                <h5 class="modal-title text-wrap" id="editModalTitle">{{ Auth::user()->name }}'s profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -30,7 +30,7 @@
                         <div class="col mb-3">
                             <label for="edit_avatar" class="form-label">Change Avatar</label>
                             <input type="file" id="edit_avatar" name="avatar" class="form-control" accept="image/*" />
-                            <small id="fileSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                            <small id="fileSizeError" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row">
@@ -62,7 +62,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="updateAvatar" style="display: none;">Upload Avatar</button>
+                <button type="submit" class="btn btn-primary" id="updateAvatar">Save Changes</button>
             </div>
             </form>
         </div>
@@ -73,7 +73,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const editAvatarInput = document.getElementById('edit_avatar');
         const changeAvatarImg = document.getElementById('change_user_avatar');
-        const updateAvatar = document.getElementById('updateAvatar');
 
         if (editAvatarInput) {
             editAvatarInput.addEventListener('change', function(event) {
@@ -86,13 +85,6 @@
                 reader.readAsDataURL(file);
 
                 updateAvatar.style.display = 'inline-block';
-            });
-        }
-
-        const editProfileForm = document.getElementById('editProfileForm');
-        if (editProfileForm) {
-            editProfileForm.addEventListener('submit', function(event) {
-                event.target.querySelector('button[type="submit"]').disabled = true;
             });
         }
     });

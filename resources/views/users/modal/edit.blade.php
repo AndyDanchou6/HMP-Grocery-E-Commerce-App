@@ -25,7 +25,7 @@
                         <label for="avatar" class="col-sm-2 col-form-label">Avatar</label>
                         <div class="col-sm-10">
                             <input type="file" class="form-control" id="edit_user_avatarInput{{ $user->id }}" name="avatar">
-                            <small id="userAvatarFileError{{ $user->id }}" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                            <small id="userAvatarFileError{{ $user->id }}" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
 
                         </div>
                     </div>

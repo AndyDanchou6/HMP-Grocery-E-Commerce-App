@@ -116,13 +116,13 @@ Route::post('admin/service_fee/create', [ServiceFeeController::class, 'store'])-
 Route::put('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'update'])->name('serviceFee.update');
 Route::delete('admin/service_fee/{serviceFee}', [ServiceFeeController::class, 'destroy'])->name('serviceFee.destroy');
 
-Route::middleware('auth')->get('/selectedItems/countOrders', [CustomerController::class, 'orderCount'])->name('customers.countOrders');
-
 /* Customers Route Section */
 Route::prefix('customer')->middleware('auth')->group(function () {
+    Route::get('selectedItems/countOrders', [CustomerController::class, 'orderCount'])->name('customers.countOrders');
     Route::get('selectedItems/orders', [CustomerController::class, 'orders'])->name('customers.orders');
     Route::get('orders/pendingOrders', [CustomerController::class, 'forPendingOrders'])->name('customers.pending_orders');
     Route::get('orders/deliveryRetrieval', [CustomerController::class, 'forDeliveryRetrieval'])->name('customers.delivery_retrieval');
     Route::get('orders/pickupRetrieval', [CustomerController::class, 'forPickupRetrieval'])->name('customers.pickup_retrieval');
     Route::get('orders/unpaidOrders', [CustomerController::class, 'forUnpaidOrders'])->name('customers.unpaid_orders');
+    Route::get('orders/notification', [CustomerController::class, 'notificationUpdates'])->name('customers.userNotification');
 });

@@ -81,7 +81,7 @@ class ProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('update', 'Profile Updated Successfully');
+            return redirect()->back()->with('success', 'Profile Updated Successfully');
         } else {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $id,
@@ -107,7 +107,7 @@ class ProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('update', 'Profile Updated Successfully');
+            return redirect()->back()->with('success', 'Profile Updated Successfully');
         }
     }
 

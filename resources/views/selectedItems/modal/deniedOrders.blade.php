@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="categoryTitle">{{ $user['name'] }}'s purchases</h5>
+                <h5 class="modal-title text-wrap" id="categoryTitle">{{ $user['name'] }}'s purchases</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,7 +76,7 @@
                         <input type="text" class="form-control" value="{{ ucwords($user['order_retrieval']) }}" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="order_date" class="col-form-label">Date</label>
+                        <label for="order_date" class="col-form-label">Date Ordered</label>
                         <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>

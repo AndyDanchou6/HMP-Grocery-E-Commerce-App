@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="categoryTitle">{{ $user['name'] }}'s purchases</h5>
+                <h5 class="modal-title text-wrap" id="categoryTitle">{{ $user['name'] }}'s purchases</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="w-100 mb-3">
-                        <label for="order_date" class="col-form-label">Order Date</label>
+                        <label for="order_date" class="col-form-label">Date Ordered</label>
                         <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($user['created_at'])->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                     </div>
                 </div>
@@ -135,8 +135,10 @@
                             @if($user['delivery_date'] && $user['courier_id'])
                             <div class="col-12 mb-3" id="proof-of-delivery{{ $user['referenceNo'] }}">
                                 <label for="" class="col-form-label">Proof of Delivery:</label>
-                                <input type="file" id="proofOfDelivery" class="form-control" name="proof_of_delivery">
-                                <small id="proofSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+
+                                <input type="file" id="proofOfDeliveryy" class="form-control" name="proof_of_delivery">
+                                <small id="proofSizeError" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+
                             </div>
                             @endif
                         </div>

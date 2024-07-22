@@ -6,6 +6,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="row justify-content-center align-items-center" style="margin-bottom: 30px;">
+                    <div class="col-auto text-center">
+                        <img src="{{ $item->product_img ? asset('storage/' . $item->product_img) : asset('assets/img/category.png') }}" id="editImageInventory{{ $item->id }}" alt="Invenrtory Picture" class="rounded-circle" style="width: 200px; height: 200px; border-radius: 50%;">
+                    </div>
+                </div>
                 <form action="{{ route('inventories.update', $item->id) }}" method="POST" enctype="multipart/form-data" id="editFormElement">
                     @csrf
                     @method('PUT')
@@ -22,7 +27,8 @@
                     <div class="row mb-3">
                         <label for="edit_product_img" class="col-sm-3 col-form-label">Image</label>
                         <div class="col-sm-9">
-                            <input type="file" id="edit_product_img" name="product_img" class="form-control" />
+                            <input type="file" id="edit_product_img{{ $item->id }}" name="product_img" class="form-control" />
+                            <small id="editInventoryImageError{{ $item->id }}" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -70,3 +76,41 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInputs = document.querySelectorAll('input[type="file"][id^="edit_product_img"]');
+        const imageElements = document.querySelectorAll('img[id^="editImageInventory"]');
+
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const inventoryId = input.id.replace('edit_product_img', '');
+                const errorMessage = document.getElementById('editInventoryImageError' + inventoryId);
+                const imageElement = document.getElementById('editImageInventory' + inventoryId);
+
+                if (!file) return;
+
+                if (file.size > 2 * 1024 * 1024) {
+                    if (errorMessage) {
+                        errorMessage.textContent = 'The selected file exceeds 2 MB. Please choose a smaller file.';
+                        errorMessage.style.display = 'block';
+                    }
+                    event.target.value = '';
+                    return;
+                } else {
+                    if (errorMessage) {
+                        errorMessage.style.display = 'none';
+                    }
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (imageElement) {
+                        imageElement.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    });
+</script>

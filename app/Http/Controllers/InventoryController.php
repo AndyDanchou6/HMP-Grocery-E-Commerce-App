@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isEmpty;
-
 class InventoryController extends Controller
 {
     /**
@@ -20,20 +18,23 @@ class InventoryController extends Controller
         if (Auth::check() && Auth::user()->role == 'Admin') {
             $inventoryQuery = Inventory::query();
 
+            // Handle search functionality
             if ($request->has('search')) {
                 $search = $request->input('search');
-                $inventoryQuery->where('product_name', 'like', '%' . $search . '%')
-                    ->orWhere('variant', 'like', '%' . $search . '%')
-                    ->orWhere('price', 'like', '%' . $search . '%')
-                    ->orWhere('quantity', 'like', '%' . $search . '%');
 
-                $inventoryQuery->orWhereHas('category', function ($query) use ($search) {
+                $inventoryQuery->where(function ($query) use ($search) {
+                    $query->where('product_name', 'like', '%' . $search . '%')
+                        ->orWhere('price', 'like', '%' . $search . '%')
+                        ->orWhere('quantity', 'like', '%' . $search . '%');
+                })->orWhereHas('category', function ($query) use ($search) {
+                  
                     $query->where('category_name', 'like', '%' . $search . '%');
                 });
             }
 
             $categories = Category::pluck('category_name', 'id');
-            $inventories = $inventoryQuery->paginate(10);
+
+            $inventories = $inventoryQuery->orderByRaw("quantity > 10 ASC")->paginate(10);
 
             return view('inventories.index', compact('inventories', 'categories'));
         } elseif (Auth::check()) {
@@ -42,6 +43,7 @@ class InventoryController extends Controller
             return redirect()->route('error404');
         }
     }
+
 
     /**
      * Show the form for creating a new resource.

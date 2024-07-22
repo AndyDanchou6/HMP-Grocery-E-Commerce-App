@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SelectedItems;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -151,13 +151,15 @@ class CustomerController extends Controller
         if (Auth::user()->role == 'Customer') {
             $userId = $request->user()->id;
 
-            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
-                ->where('payment_condition', NULL)
+            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied'])
+                ->whereNull('payment_condition')
                 ->where('user_id', $userId)
+                ->orderByRaw("FIELD(payment_type, 'G-cash') DESC")
                 ->with('user')
                 ->with('inventory')
                 ->orderBy('created_at', 'desc')
                 ->get();
+
 
             $userByReference = [];
 
@@ -328,7 +330,7 @@ class CustomerController extends Controller
             ->where('order_retrieval', 'pickup')->where('user_id', $userId)
             ->distinct('referenceNo')
             ->count('referenceNo');
-        $countUnpaid = SelectedItems::where('status', '!=', 'forCheckout')
+        $countUnpaid = SelectedItems::whereNotIn('status', ['forCheckout', 'denied'])
             ->where('payment_condition', '=', NULL)->where('user_id', $userId)
             ->distinct('referenceNo')
             ->count('referenceNo');
@@ -342,13 +344,68 @@ class CustomerController extends Controller
             'count4' => $countUnpaid
         ]);
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request)
+
+    public function notificationUpdates()
     {
-        //
+        if (Auth::user()->role == 'Customer') {
+            $userId = Auth::id();
+            $notifications = [];
+
+            // Retrieve selected items that are not yet checked out and belong to the user
+            $selectedItems = SelectedItems::where('user_id', $userId)
+                ->where('status', '!=', 'forCheckout')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+
+            foreach ($selectedItems as $item) {
+                $reference = $item->referenceNo;
+                $courier = User::find($item->courier_id);
+                $courierName = $courier ? $courier->name : 'Unknown Courier';
+                $formattedDate = Carbon::parse($item->delivery_date)->timezone('Asia/Manila')->format('F j, Y');
+                $message = '';
+
+                if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery') {
+                    $message = "Ref #$reference has been moved to the delivery section";
+                } else if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'pickup') {
+                    $message = "Ref #$reference has been moved to the pickup section";
+                } else if ($item->status == 'delivered') {
+                    $message = "Ref #$reference has been delivered";
+                } else if ($item->status == 'pickedUp') {
+                    $message = "Ref #$reference has been picked up";
+                } else if ($item->status == 'denied') {
+                    $message = "Ref #$reference has been denied";
+                }
+
+                if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery' && $courierName != 'Unknown Courier') {
+                    $message = "Ref #$reference is out for delivery: Courier: $courierName";
+                }
+
+                if ($item->delivery_date && $item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery') {
+                    $message = "Ref #$reference is scheduled for delivery on $formattedDate";
+                }
+
+                if ($item->status == 'readyForRetrieval' && $item->delivery_date && $courierName != 'Unknown Courier') {
+                    $message = "Ref #$reference is scheduled for delivery on $formattedDate with Courier: $courierName";
+                }
+
+                if ($message) {
+                    $notifications[] = $message;
+                }
+            }
+
+            $notifications = array_reverse(array_unique($notifications));
+
+            return response()->json([
+                'notifications' => $notifications
+            ]);
+        } else {
+            return redirect()->route('error');
+        }
     }
+
+
+
+
 
     /**
      * Update the specified resource in storage.
