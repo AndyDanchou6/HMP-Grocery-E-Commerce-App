@@ -38,8 +38,16 @@
                         <td><span class="badge bg-label-primary me-1">{{ $referenceNo }}</span></td>
                         <td>{{ $user['name'] }}</td>
                         <td>
+                            @if($user['status'] == 'denied')
+                            <a class="bx bx-message-alt me-1 details-button text-danger bx-tada" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.info', ['user' => $user])
+                            @elseif($user['status'] == 'pickedUp' || $user['status'] == 'delivered')
+                            <a class="bx bx-message-alt me-1 details-button text-success" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.info', ['user' => $user])
+                            @else
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.info', ['user' => $user])
+                            @endif
                         </td>
                         <td>
                             @if($user['order_retrieval'] == 'delivery')

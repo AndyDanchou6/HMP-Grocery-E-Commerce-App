@@ -18,7 +18,7 @@
                         <div class="col mb-3">
                             <label for="editCategory{{ $category->id }}" class="form-label">Image</label>
                             <input type="file" name="category_img" id="editCategory{{ $category->id }}" class="form-control">
-                            <small id="userAvatarFileError{{ $category->id }}" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                            <small id="userAvatarFileError{{ $category->id }}" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row g-2">

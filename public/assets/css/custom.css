@@ -53,3 +53,35 @@
 #popup-close {
     margin-top: 10px;
 }
+@media (max-width: 767.98px) {
+    /* Adjust breakpoint as needed */
+    .dropdown-item {
+        word-break: break-word;
+        white-space: normal;
+        /* Ensure text wraps properly in mobile view */
+    }
+}
+.dropdown-menu {
+    width: 350px;
+    /* Adjust width as needed */
+    max-height: 400px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    /* Add scroll if content overflows */
+}
+
+.dropdown-item {
+    font-size: 14px;
+    /* Adjust font size as needed */
+    padding: 10px 15px;
+    /* Adjust padding as needed */
+}
+
+.dropdown-header {
+    font-size: 16px;
+    /* Adjust font size as needed */
+    padding: 10px 15px;
+    /* Adjust padding as needed */
+    background-color: #f8f9fa;
+    /* Optional: Background color */
+}

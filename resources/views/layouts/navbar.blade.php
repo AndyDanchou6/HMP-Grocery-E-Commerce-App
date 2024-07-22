@@ -74,9 +74,9 @@
           if (notificationList) {
             const html = previousNotificationMessages.map((msg, index) => {
               if (index === 0) {
-                return `<li><a class="dropdown-item text-danger new-notification" href="{{ route('selectedItems.forPackaging') }}">${msg}</a></li>`;
+                return `<li><a class="dropdown-item text-danger text-wrap new-notification" href="{{ route('selectedItems.forPackaging') }}">${msg}</a></li>`;
               } else {
-                return `<li><a class="dropdown-item" href="{{ route('selectedItems.forPackaging') }}">${msg}</a></li>`;
+                return `<li><a class="dropdown-item text-wrap" href="{{ route('selectedItems.forPackaging') }}">${msg}</a></li>`;
               }
             }).join('');
             notificationList.innerHTML = html;
@@ -91,8 +91,8 @@
             console.error('Error: notificationList element not found.');
           }
 
-          if (previousNotificationMessages == 0) {
-            notificationList.innerHTML += `<li><a class="dropdown-item">No notification found</a></li>`;
+          if (previousNotificationMessages.length === 0) {
+            notificationList.innerHTML += `<li><a class="dropdown-item">No notification found at the moment</a></li>`;
           }
         }
 
@@ -158,14 +158,15 @@
             })
             .catch(error => {
               console.error('Error fetching latest notifications:', error);
+            })
+            .finally(() => {
+              setTimeout(fetchAndDisplayNotifications, 5000);
             });
         }
 
         initializeNotificationState();
         showNotifications();
         fetchAndDisplayNotifications();
-
-        setInterval(fetchAndDisplayNotifications, 5000);
 
         notificationIcon.addEventListener('click', function() {
           sessionStorage.setItem('notificationBellState', 'inactive');
@@ -174,6 +175,20 @@
         });
       });
     </script>
+    @elseif(Auth::user()->role == 'Customer')
+    <li class="nav-item dropdown text-primary" id="notification-icon">
+      <a class="nav-link px-0 me-xl-4 navbar-icon notification-toggle nav-link-lg" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i id="notificationIcon" class="bx bx-bell bx-sm"></i>
+        <span id="notificationCount" class="badge bg-danger d-none">0</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end pullDown " aria-labelledby="notificationDropdown">
+        <div class="dropdown-header">Notifications</div>
+        <ul id="notificationList" class="list-unstyled mb-0">
+          <li><a class="dropdown-item">No notification found at the moment</a></li>
+        </ul>
+      </ul>
+    </li>
+    @include('layouts.script.customers.customerNotification')
     @endif
     <!-- User dropdown -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -231,39 +246,8 @@
               <span id="unpaidOrders" class="badge badge-center rounded-pill bg-danger"></span>
             </span>
           </a>
+          @include('layouts.script.customers.countOrders')
           @endif
-          <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              function ordersCount() {
-
-                fetch("{{ route('customers.countOrders') }}", {
-                    method: 'GET',
-                    headers: {
-                      'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json'
-                    },
-                    credentials: 'same-origin'
-                  })
-                  .then(response => {
-                    return response.json();
-                  }).then(data => {
-                    const unpaidOrders = document.getElementById('unpaidOrders');
-                    if (data.status === 200) {
-                      if (unpaidOrders) {
-                        unpaidOrders.textContent = data.count4;
-                        unpaidOrders.style.display = data.count4 ? 'block' : 'none';
-                      }
-                    }
-                  })
-                  .catch(error => console.error("Fetching errors: ", error))
-                  .finally(() => {
-                    setTimeout(ordersCount, 5000);
-                  });
-              }
-              ordersCount();
-            });
-          </script>
         </li>
         <li>
           <div class="dropdown-divider"></div>

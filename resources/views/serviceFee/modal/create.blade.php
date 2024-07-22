@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="fee_name" class="form-label">Fee Name</label>
-                        <input type="string" id="fee_name" name="fee_name" class="form-control" placeholder="Optional" required>
+                        <input type="string" id="fee_name" name="fee_name" class="form-control" placeholder="Optional">
                     </div>
                     <div class="mb-3">
                         <label for="location" class="form-label">Location</label>
