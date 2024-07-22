@@ -132,4 +132,60 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var deliveryAddresses = document.querySelectorAll('.delivery-address');
+
+        if (deliveryAddresses) {
+            deliveryAddresses.forEach(function(address) {
+
+                var userReference = address.getAttribute('data-user-reference');
+
+                var serviceFeeDiv = document.querySelector('#service-fee' + userReference);
+                var serviceFeeInput = serviceFeeDiv.querySelector('input');
+
+                var purchaseTotal = document.querySelector('#purchase-total' + userReference);
+                var trimmedValue = purchaseTotal.value.substring(1).trim();
+                var cleanPurchaseTotalValue = trimmedValue.replace(/,/g, '');
+                var floatPurchaseTotalValue = parseFloat(cleanPurchaseTotalValue);
+
+                var totalWithFeeField = document.querySelector('#total-with-fee' + userReference);
+
+                if (totalWithFeeField) {
+
+                    var totalWithFeeInput = totalWithFeeField.querySelector('input');
+
+                    var selectedAddress = address.options[address.selectedIndex];
+                    var selectedFee = selectedAddress.getAttribute('data-fee');
+
+                    if (selectedFee == null) {
+
+                        serviceFeeInput.value = '₱0.00';
+                        totalWithFeeInput.value = '₱0.00'
+                    } else {
+
+                        var floatFeeValue = parseFloat(selectedFee);
+                        serviceFeeInput.value = '₱' + floatFeeValue.toFixed(2);
+
+                        var totalWithFee = floatFeeValue + floatPurchaseTotalValue;
+                        totalWithFeeInput.value = '₱' + totalWithFee.toFixed(2);
+                    }
+                }
+
+                address.addEventListener('change', function() {
+
+                    var selectedAddress = address.options[address.selectedIndex];
+                    var selectedFee = selectedAddress.getAttribute('data-fee');
+                    var floatFeeValue = parseFloat(selectedFee);
+                    serviceFeeInput.value = '₱' + floatFeeValue.toFixed(2);
+
+                    var totalWithFee = floatFeeValue + floatPurchaseTotalValue;
+                    totalWithFeeInput.value = '₱' + totalWithFee.toFixed(2);
+                });
+            });
+        }
+    })
+</script>
+
 @endsection

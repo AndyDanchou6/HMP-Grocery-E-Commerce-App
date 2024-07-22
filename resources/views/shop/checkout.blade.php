@@ -18,9 +18,9 @@
                         <div class="checkout__input">
                             <p>Delivery Address<span></span></p>
                             <div class="dropOffPoint">
-                                <select class="w-100 mb-3" name="service_fee_id" id="dropOffPoint" required>
+                                <select class="w-100 mb-3" name="service_fee_id" id="dropOffPoint">
                                     @if($serviceFee->count() > 0)
-                                    <option disabled selected>Choose Drop-Off Location ---</option>
+                                    <option selected disabled>Choose Drop-Off Location ---</option>
                                     @foreach($serviceFee as $dropOff)
                                     <option value="{{ $dropOff->id }}" data-fee="{{ $dropOff->fee }}">{{ $dropOff->location }} --- ₱{{ $dropOff->fee }}</option>
                                     @endforeach
@@ -156,8 +156,9 @@
         var checkout__order__total = document.querySelector('.checkout__order__total');
         var total = checkout__order__total.querySelector('span');
         var totalValue = total.textContent;
-        var indexOfPeso = totalValue.indexOf('₱');
-        var stringTotalValue = totalValue.substring(indexOfPeso + 1).trim();
+        var cleanTotalValue = totalValue.replace(/,/g, '');
+        var indexOfPeso = cleanTotalValue.indexOf('₱');
+        var stringTotalValue = cleanTotalValue.substring(indexOfPeso + 1).trim();
         var floatTotalValue = parseFloat(stringTotalValue);
         var totalBeforeFee = floatTotalValue;
 

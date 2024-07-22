@@ -18,7 +18,7 @@ class ServiceFeeController extends Controller
                 $search = $request->input('search');
                 $serviceFeeQuery->where('location', 'like', '%' . $search . '%')
                     ->orWhere('fee_name', 'like', '%' . $search . '%')
-                    ->orWhere('fee', 'like', '%'. $search .'%');
+                    ->orWhere('fee', 'like', '%' . $search . '%');
             }
 
 
@@ -30,9 +30,10 @@ class ServiceFeeController extends Controller
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $existingFee = ServiceFee::where('location', $request->input('location'))
-        ->first();
+            ->first();
 
         if ($existingFee) {
             return redirect()->back()->with('error', 'Fee location exists. Please check your fees.');
@@ -40,9 +41,13 @@ class ServiceFeeController extends Controller
 
         $newFee = new ServiceFee();
 
-        $newFee->fee_name = $request->input('fee_name');
         $newFee->location = $request->input('location');
         $newFee->fee = $request->input('fee');
+
+        if ($request->has('fee_name')) {
+
+            $newFee->fee_name = $request->input('fee_name');
+        }
 
         if (!$newFee->save()) {
 
@@ -61,7 +66,8 @@ class ServiceFeeController extends Controller
         return redirect()->route('serviceFee.index')->with('success', 'Deleted successfully');
     }
 
-    public function update(Request $request, string $id) {
+    public function update(Request $request, string $id)
+    {
         $toBeUpdated = ServiceFee::findOrFail($id);
 
         if (!$toBeUpdated) {
@@ -70,10 +76,9 @@ class ServiceFeeController extends Controller
         }
 
 
-        $alreadyExists = ServiceFee::where('fee_name', $request->input('fee_name'))
-        ->where('location', $request->input('location'))
-        ->first();
-        
+        $alreadyExists = ServiceFee::where('location', $request->input('location'))
+            ->first();
+
         if ($alreadyExists) {
 
             return redirect()->back()->with('error', 'Service fee already exists!');

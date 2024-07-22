@@ -322,7 +322,6 @@ class SelectedItemsController extends Controller
                         'email' => $item->user->email,
                         'phone' => $item->phone,
                         'fb_link' => $item->fb_link,
-                        'address' => $item->serviceFee->location,
                         'order_retrieval' => $item->order_retrieval,
                         'quantity' => $item->quantity,
                         'reasonForDenial' => $item->reasonForDenial,
@@ -335,6 +334,10 @@ class SelectedItemsController extends Controller
                         'updated_at' => $item->updated_at,
                         'items' => []
                     ];
+
+                    if ($item->serviceFee) {
+                        $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+                    }
                 }
 
                 $userByReference[$item->referenceNo]['items'][] = $item;
@@ -530,6 +533,8 @@ class SelectedItemsController extends Controller
             } else {
                 if ($request->has('restore')) {
                     $item->status = 'forPackage';
+                    $item->order_retrieval = $request->input('order_retrieval');
+                    $item->payment_type = $request->input('payment_type');
                     $item->reasonForDenial = null;
                 } elseif ($request->has('deny')) {
                     $item->status = 'denied';
@@ -543,22 +548,11 @@ class SelectedItemsController extends Controller
                         $item->order_retrieval = $request->input('order_retrieval');
                     }
 
-                    // if ($request->has('payment_type')) {
-                    //     $item->payment_type = $request->input('payment_type');
-                    // }
-
-                    // $item->payment_condition = $request->input('payment_condition');
-
                     $item->status = 'readyForRetrieval';
                 } elseif ($item->status == 'readyForRetrieval') {
 
-                    if ($item->order_retrieval == 'pickup' && $request->input('order_retrieval') == 'pickup') {
-
-                        $pickedUp = $item->payment_type == $request->input('payment_type') && $item->payment_condition == $request->input('payment_condition');
-
-                        if ($pickedUp) {
-                            $item->status = 'pickedUp';
-                        }
+                    if ($request->has('pickedUp')) {
+                        $item->status = 'pickedUp';
                     }
 
                     if ($request->has('payment_condition')) {
@@ -655,6 +649,10 @@ class SelectedItemsController extends Controller
 
         if ($request->has('deny')) {
             return redirect()->back()->with('success', 'Order Has Been Denied.');
+        }
+
+        if ($request->has('pickedUp')) {
+            return redirect()->back()->with('success', 'Order Has Been Picked Up.');
         }
 
         return redirect()->back()->with('success', 'Order updated.');

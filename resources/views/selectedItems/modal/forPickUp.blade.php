@@ -87,7 +87,7 @@
                             <div class="mb-3">
                                 <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
                                 <div>
-                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $item->id }}">
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $item->id }}" data-user-reference="{{ $user['referenceNo'] }}">
                                         <option value="" selected disabled>Choose Order Retrieval</option>
                                         <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
                                         <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
@@ -98,7 +98,7 @@
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <div>
-                                    <select class="form-select payment_type" name="payment_type" data-item-id="{{ $item->id }}">
+                                    <select class="form-select payment_type" name="payment_type" id="payment_type{{ $user['referenceNo'] }}" data-item-id="{{ $item->id }}" data-user-reference="{{ $user['referenceNo'] }}">
                                         <option value="" selected disabled>Choose Payment</option>
                                         <option value="G-cash" {{ $user['payment_type'] == 'G-cash'  ? 'selected' : ''}}>G-Cash</option>
                                         <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD'  ? 'selected' : ''}}>Cash On Delivery</option>
@@ -108,7 +108,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Status</label>
-                                <select name="payment_condition" id="payment_condition" class="form-select payment_condition" data-item-id="{{ $item->id }}">
+                                <select name="payment_condition" id="payment_condition" class="form-select payment_condition" data-item-id="{{ $item->id }}" data-user-reference="{{ $user['referenceNo'] }}">
                                     <option value="" selected disabled>Choose Payment Type</option>
                                     <option value="paid" {{ $user['payment_condition'] == 'paid' ? 'selected' : ''}}>Paid</option>
                                     <option value="" {{ $user['payment_condition'] == '' ? 'selected' : ''}}>Unpaid</option>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 col-12 denial-reason" id="denial-reason{{ $user['id'] }}" style="display: none;">
+                        <div class="mb-3 col-12 denial-reason" id="denial-reason{{ $user['referenceNo'] }}" style="display: none;">
                             <label for="#" class="col-form-label">Reason for Denial</label>
                             <div>
                                 <textarea class="form-control col-12" rows="5" name="reasonForDenial" placeholder="Reason for denial of order ..."></textarea>
@@ -124,8 +124,10 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" data-item-id="{{ $user['id'] }}" value="true">Deny</button>
-                            <button type="submit" class="btn btn-outline-success me-2" id="finishedBtn{{ $user['id'] }}">Update</button>
+                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" data-user-reference="{{ $user['referenceNo'] }}" value="true">Deny</button>
+                            <button type="button" class="btn btn-outline-primary me-2" id="cancelDenyBtn{{ $user['referenceNo'] }}" style="display: none;">Cancel Deny</button>
+                            <button type="submit" class="btn btn-outline-success me-2" id="pickedUpBtn{{ $user['referenceNo'] }}" name="pickedUp" value="true">Picked Up</button>
+                            <button type="submit" class="btn btn-outline-primary me-2" id="updateBtn{{ $user['referenceNo'] }}" style="display: none;">Update</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
 
@@ -138,16 +140,17 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        function hideOptions(orderRetrieval) {
-            var options = document.querySelectorAll('.payment_type');
+        function hideOptions(userReference, orderRetrieval) {
+            var paymentTypeSelect = document.querySelector('#payment_type' + userReference);
+            var options = paymentTypeSelect.querySelectorAll('.payment_type');
 
             options.forEach(function(option) {
                 if (orderRetrieval == 'delivery') {
-                    if (option.classList.contains('in-store')) {
-                        option.style.display = 'none';
-                    }
                     if (option.classList.contains('cod')) {
                         option.style.display = 'block';
+                    }
+                    if (option.classList.contains('in-store')) {
+                        option.style.display = 'none';
                     }
                 } else if (orderRetrieval == 'pickup') {
                     if (option.classList.contains('cod')) {
@@ -157,24 +160,62 @@
                         option.style.display = 'block';
                     }
                 }
-            });
+            })
         }
 
-
+        var paymentTypes = document.querySelectorAll('.payment_type');
+        var paymentConditions = document.querySelectorAll('.payment_condition');
         var orderRetrievals = document.querySelectorAll('.order_retrieval');
 
         orderRetrievals.forEach(function(orderRetrieval) {
 
-            hideOptions(orderRetrieval.value);
+            let userReference = orderRetrieval.getAttribute('data-user-reference');
+            var paymentTypeSelect = document.querySelector('#payment_type' + userReference);
+
+            hideOptions(userReference, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
-                hideOptions(orderRetrieval.value);
+                // change buttons (update data or change status to picked up)
+                document.querySelector('#pickedUpBtn' + userReference).style.display = 'none';
+                document.querySelector('#updateBtn' + userReference).style.display = 'block';
 
+                // change payment options based on retrieval
+                hideOptions(userReference, orderRetrieval.value);
+
+                // Warn if retrieval is changed
+                paymentTypeSelect.classList.add('text-danger');
+                paymentTypeSelect.classList.add('border-danger');
+
+                paymentTypeSelect.addEventListener('change', function() {
+
+                    paymentTypeSelect.classList.remove('text-danger');
+                    paymentTypeSelect.classList.remove('border-danger');
+                });
             });
         });
 
+        paymentConditions.forEach(function(paymentCondition) {
 
+            let userReference = paymentCondition.getAttribute('data-user-reference');
+            paymentCondition.addEventListener('change', function() {
+
+                // change buttons (update data or change status to picked up)
+                document.querySelector('#pickedUpBtn' + userReference).style.display = 'none';
+                document.querySelector('#updateBtn' + userReference).style.display = 'block';
+            })
+        })
+
+        paymentTypes.forEach(function(paymentType) {
+
+            let userReference = paymentType.getAttribute('data-user-reference');
+            paymentType.addEventListener('change', function() {
+
+                // change buttons (update data or change status to picked up)
+                document.querySelector('#pickedUpBtn' + userReference).style.display = 'none';
+                document.querySelector('#updateBtn' + userReference).style.display = 'block';
+            })
+        })
 
         var subTotalField = document.querySelectorAll(".item-sub-total");
         var totalContainer = {};
@@ -232,33 +273,66 @@
         });
 
         var denyBtns = document.querySelectorAll('.denyBtn');
+        var clickedDeny = false;
 
         denyBtns.forEach(function(deny) {
 
+            var userReference = deny.getAttribute('data-user-reference');
+            var denialInputs = document.querySelector('#denial-reason' + userReference);
+            var pickedUpBtn = document.querySelector('#pickedUpBtn' + userReference);
+            var updateBtn = document.querySelector('#updateBtn' + userReference);
+            var cancelDenyBtn = document.querySelector('#cancelDenyBtn' + userReference);
+
             deny.addEventListener('click', function() {
 
-                var itemId = deny.getAttribute('data-item-id');
-                var denialInputs = document.querySelector('#denial-reason' + itemId);
-                var finishedBtn = document.querySelector('#finishedBtn' + itemId);
+                if (clickedDeny == false) {
+                    denialInputs.style.display = 'block';
+                    denialInputs.setAttribute('required', 'required');
 
-                denialInputs.style.display = 'block';
-                denialInputs.setAttribute('required', 'required');
+                    if (pickedUpBtn) {
 
-                var reasonNotNull = denialInputs.querySelector('textarea');
+                        pickedUpBtn.style.display = 'none';
+                    } else if (updateBtn) {
 
-                reasonNotNull.addEventListener('change', function() {
-                    deny.setAttribute('type', 'submit');
-                    finishedBtn.style.display = 'none';
-
-                    if (reasonNotNull.value == '') {
-                        deny.setAttribute('type', 'button');
-                        finishedBtn.style.display = 'block';
-                        denialInputs.removeAttribute('required');
-                        denialInputs.style.display = 'none';
+                        updateBtn.style.display = 'none';
                     }
-                })
-            })
-        })
 
+                    if (cancelDenyBtn) {
+
+                        cancelDenyBtn.style.display = 'block';
+                    }
+
+                    clickedDeny = true;
+                } else {
+
+                    var reasonNotNull = denialInputs.querySelector('textarea');
+
+                    if (reasonNotNull.value.trim() !== '') {
+
+                        deny.setAttribute('type', 'submit');
+                    }
+                }
+            })
+
+            if (cancelDenyBtn) {
+                cancelDenyBtn.addEventListener('click', function() {
+
+                    denialInputs.style.display = 'none';
+                    denialInputs.removeAttribute('required');
+                    deny.setAttribute('type', 'button');
+                    cancelDenyBtn.style.display = 'none';
+
+                    if (pickedUpBtn) {
+
+                        pickedUpBtn.style.display = 'block';
+                    } else if (updateBtn) {
+
+                        updateBtn.style.display = 'block'
+                    }
+
+                    clickedDeny = false;
+                })
+            }
+        })
     });
 </script>
