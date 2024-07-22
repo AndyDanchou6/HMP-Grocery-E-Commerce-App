@@ -57,7 +57,7 @@ class DeliveryScheduleController extends Controller
 
         if ($existing) {
             foreach ($existing as $day) {
-                if ($startTime < strtotime($day->start_time) && strtotime($day->start_time) < $endTime) {
+                if ($startTime <= strtotime($day->start_time) && strtotime($day->start_time) <= $endTime) {
                     // echo 'overlap1';
                     return redirect()->back()->with('error', 'Schedule overlaps with ' . $day->day . ' schedule');
                 } elseif ($startTime > strtotime($day->start_time) && $startTime < strtotime($day->end_time)) {

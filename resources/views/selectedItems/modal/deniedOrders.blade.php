@@ -19,12 +19,16 @@
                         <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
                     </div>
                 </div>
+
+                @if(isset($user['address']))
                 <div class="row mb-3">
                     <label for="address" class="col-sm-2 col-form-label">Address</label>
                     <div class="col-sm-10">
                         <textarea class="form-control" rows="3" readonly>{{ $user['address'] }}</textarea>
                     </div>
                 </div>
+                @endif
+
                 <div>
                     <h5>Purchased Items</h5>
                 </div>
@@ -92,7 +96,7 @@
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Payment Type</label>
                                 <div>
-                                    <select class="form-select payment_type" name="payment_type" data-item-id="{{ $item->id }}">
+                                    <select class="form-select payment_type" name="payment_type" id="payment_type{{ $user['referenceNo'] }}" data-item-id="{{ $item->id }}">
                                         <option value="" selected disabled>Choose Payment</option>
                                         <option value="G-cash" {{ $user['payment_type'] == 'G-cash'  ? 'selected' : ''}}>G-Cash</option>
                                         <option class="payment_type cod" value="COD" {{ $user['payment_type'] == 'COD'  ? 'selected' : ''}}>Cash On Delivery</option>
@@ -104,7 +108,7 @@
                             <div class="mb-3">
                                 <label for="order_retrieval" class="col-form-label">Order Retrieval</label>
                                 <div>
-                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}">
+                                    <select class="form-select order_retrieval" name="order_retrieval" data-item-id="{{ $user['id'] }}" data-user-reference="{{ $user['referenceNo'] }}">
                                         <option value="" selected disabled>Choose Order Retrieval</option>
                                         <option value="pickup" {{ $user['order_retrieval'] == 'pickup'  ? 'selected' : ''}}>Pick Up</option>
                                         <option value="delivery" {{ $user['order_retrieval'] == 'delivery'  ? 'selected' : ''}}>Delivery</option>
@@ -134,8 +138,9 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        function hideOptions(orderRetrieval) {
-            var options = document.querySelectorAll('.payment_type');
+        function hideOptions(userReference, orderRetrieval) {
+            var paymentTypeSelect = document.querySelector('#payment_type' + userReference);
+            var options = paymentTypeSelect.querySelectorAll('.payment_type');
 
             options.forEach(function(option) {
                 if (orderRetrieval == 'delivery') {
@@ -145,9 +150,7 @@
                     if (option.classList.contains('in-store')) {
                         option.style.display = 'none';
                     }
-                }
-
-                if (orderRetrieval == 'pickup') {
+                } else if (orderRetrieval == 'pickup') {
                     if (option.classList.contains('cod')) {
                         option.style.display = 'none';
                     }
@@ -155,7 +158,7 @@
                         option.style.display = 'block';
                     }
                 }
-            });
+            })
         }
 
 
@@ -163,14 +166,23 @@
 
         orderRetrievals.forEach(function(orderRetrieval) {
 
-            let itemId = orderRetrieval.getAttribute('data-item-id');
+            let userReference = orderRetrieval.getAttribute('data-user-reference');
+            var paymentTypeSelect = document.querySelector('#payment_type' + userReference);
 
-            hideOptions(orderRetrieval.value);
+            hideOptions(userReference, orderRetrieval.value);
 
             orderRetrieval.addEventListener('change', function() {
 
-                hideOptions(orderRetrieval.value);
-                // console.log(itemId);
+                hideOptions(userReference, orderRetrieval.value);
+
+                paymentTypeSelect.classList.add('text-danger');
+                paymentTypeSelect.classList.add('border-danger');
+
+                paymentTypeSelect.addEventListener('change', function() {
+
+                    paymentTypeSelect.classList.remove('text-danger');
+                    paymentTypeSelect.classList.remove('border-danger');
+                });
             });
         });
 

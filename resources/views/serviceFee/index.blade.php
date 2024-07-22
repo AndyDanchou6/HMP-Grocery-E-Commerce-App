@@ -39,7 +39,11 @@
                     @foreach ($serviceFee as $fee)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
+                        @if($fee->fee_name)
                         <td>{{ $fee->fee_name }}</td>
+                        @else
+                        <td>Not Specified</td>
+                        @endif
                         <td>{{ $fee->location }}</td>
                         <td>₱ {{ $fee->fee }}</td>
                         @if(Auth::user()->role == 'Admin')

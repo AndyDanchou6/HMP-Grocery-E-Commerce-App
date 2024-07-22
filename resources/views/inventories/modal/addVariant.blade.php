@@ -12,7 +12,7 @@
                     </div>
                     <div class="container" id="variantProduct">
                         <div>
-                            <p class="fs-3 text-align-justify">New product matches existing old products.</p>
+                            <p class="fs-3 text-align-justify">New product matches existing old products. Add as variant?</p>
                         </div>
                         <div class="mb-3">
                             <label for="subCategory">Add as variant of:</label>
@@ -30,10 +30,18 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary" id="closeBtn" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="proceedBtn">Proceed</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    var closeBtn = document.querySelector('#closeBtn');
+
+    closeBtn.addEventListener('click', function() {
+        location.reload();
+    })
+</script>

@@ -136,9 +136,11 @@ class ShopController extends Controller
 
             $sampleData = $selectedItems->first();
 
-            if ($sampleData->order_retrieval === 'delivery' && !$request->has('service_fee_id')) {
+            if ($sampleData->order_retrieval === 'delivery') {
+                if (!$request->has('service_fee_id') || $request->input('service_fee_id') == 'null') {
 
-                return redirect()->back()->with('error', 'No Delivery Location Selected.');
+                    return redirect()->back()->with('error', 'No Delivery Location Selected.');
+                }
             }
 
             foreach ($selectedItems as $item) {
@@ -165,7 +167,6 @@ class ShopController extends Controller
 
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
-
         // dd($request);
     }
 

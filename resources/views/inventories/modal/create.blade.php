@@ -48,6 +48,12 @@
               <input type="number" class="form-control" id="quantity" name="quantity">
             </div>
           </div>
+          <div class="pt-3 my-3">
+            <hr>
+          </div>
+          <div class="text-center">
+            <p class="text-danger mb-0">Clicking the create button automatically stores the new product!</p>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
@@ -100,11 +106,13 @@
 
           var data = await response.json();
 
+          console.log(data);
           if (data.status == 200) {
 
             var addedSuccessfully = document.querySelector('#addedSuccessfully');
             var variantProduct = document.querySelector('#variantProduct');
             var proceedBtn = document.querySelector('#proceedBtn');
+            var closeBtn = document.querySelector('#closeBtn');
 
             showVariantModal();
 
@@ -117,7 +125,10 @@
 
               addedSuccessfully.style.display = 'none';
               proceedBtn.style.display = 'block';
-              variantProduct.style.display = 'block'
+              closeBtn.textContent = 'Cancel';
+              closeBtn.classList.remove('btn-outline-secondary');
+              closeBtn.classList.add('btn-outline-danger');
+              variantProduct.style.display = 'block';
 
               var subCategory = document.querySelector('#subCategory');
               var variantName = document.querySelector('#variantName');
@@ -129,12 +140,16 @@
 
               subCategory.innerHTML = '';
 
-              existingProducts.forEach(function(product) {
+              variantName.value = data.addedVariant;
 
-                var option = '<option value="' + product.id + '">' + product.product_name + '</option>';
+              for (let productName in existingProducts) {
+                if (existingProducts.hasOwnProperty(productName)) {
 
-                subCategory.innerHTML += option;
-              })
+                  var option = '<option value="' + existingProducts[productName][0].id + '">' + productName + '</option>';
+
+                  subCategory.innerHTML += option;
+                }
+              }
 
               const newVariantForm = document.querySelector('#newVariantForm');
 

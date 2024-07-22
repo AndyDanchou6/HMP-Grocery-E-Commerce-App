@@ -23,6 +23,7 @@ class InventoryController extends Controller
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $inventoryQuery->where('product_name', 'like', '%' . $search . '%')
+                    ->orWhere('variant', 'like', '%' . $search . '%')
                     ->orWhere('price', 'like', '%' . $search . '%')
                     ->orWhere('quantity', 'like', '%' . $search . '%');
 
@@ -114,6 +115,7 @@ class InventoryController extends Controller
         $item->category_id = $request->input('category_id');
         $item->variant = $request->input('variant');
 
+
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
             $item->product_img = $avatarPath;
@@ -132,8 +134,8 @@ class InventoryController extends Controller
 
         $sameProduct = Inventory::where('id', '!=', $newlyAdded->id)
             ->where('product_name', 'like', '%' . $request->input('product_name') . '%')
-            ->orWhere('variant', 'like', '%' . $request->input('product_name') . '%')
-            ->get();
+            ->get()
+            ->groupBy('product_name');
 
         if (!$sameProduct->isEmpty()) {
             return response()->json([
@@ -141,6 +143,7 @@ class InventoryController extends Controller
                 'message' => 'New product has match.',
                 'matches' => $sameProduct,
                 'addedProductId' => $newlyAdded->id,
+                'addedVariant' => $newlyAdded->variant,
             ]);
         }
 
