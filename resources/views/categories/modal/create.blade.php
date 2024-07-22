@@ -16,7 +16,7 @@
           <div class="mb-3">
             <label for="category_img" class="form-label">Image</label>
             <input type="file" id="category_img" name="category_img" class="form-control" placeholder="Enter Category Image">
-            <small id="categoryFileSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+            <small id="categoryFileSizeError" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
           </div>
           <div class="mb-3">
             <label for="category_name" class="form-label">Category Name</label>

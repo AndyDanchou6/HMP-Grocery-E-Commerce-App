@@ -47,7 +47,10 @@
                         <td><span class="badge bg-label-primary me-1">{{ $referenceNo }}</span></td>
                         <td>
                             @if($user['status'] == 'denied')
-                            <a class="bx bx-message-alt me-1 bx-tada details-button" style="color: red;" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            <a class="bx bx-message-alt me-1 text-danger bx-tada details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
+                            @include('selectedItems.modal.info', ['user' => $user])
+                            @elseif($user['status'] == 'pickedUp' || $user['status'] == 'delivered')
+                            <a class="bx bx-message-alt me-1 details-button text-success" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.info', ['user' => $user])
                             @else
                             <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#messages{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
@@ -95,18 +98,6 @@
                             @if($user['order_retrieval'] == 'delivery')
                             <a class="bi bi-eye me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#proof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
                             @include('selectedItems.modal.proof')
-                            @endif
-                            @endif
-
-                            @if($user['status'] != 'denied')
-                            @if($user['payment_condition'] != 'paid')
-                            @if($user['payment_proof'])
-                            <a class="bi bi-receipt me-1 details-button text-warning" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('customers.modal.customerPaymentProof')
-                            @elseif($user['payment_type'] == 'G-cash' && $user['payment_condition'] != 'paid')
-                            <a class="bi bi-receipt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#paymentProof{{ $referenceNo }}" data-user-id="{{ $referenceNo }}"></a>
-                            @include('customers.modal.customerPaymentProof')
-                            @endif
                             @endif
                             @endif
                         </td>

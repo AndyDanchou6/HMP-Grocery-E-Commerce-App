@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalTitle">{{ Auth::user()->name }}'s profile</h5>
+                <h5 class="modal-title text-wrap" id="editModalTitle">{{ Auth::user()->name }}'s profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -30,7 +30,7 @@
                         <div class="col mb-3">
                             <label for="edit_avatar_input" class="form-label">Avatar</label>
                             <input type="file" id="edit_avatar_input" name="avatar" class="form-control" />
-                            <small id="fileSizeErrorr" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                            <small id="fileSizeErrorr" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="row">

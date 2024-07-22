@@ -73,7 +73,7 @@
                                 <input type="text" class="form-control" name="order_retrieval" value="{{ ucwords($item->order_retrieval) }}" readonly>
                             </div>
                             <div class="mb-3">
-                                <label for="order_date" class="col-form-label">Date</label>
+                                <label for="order_date" class="col-form-label">Date Ordered</label>
                                 <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}" readonly>
                             </div>
                         </div>
@@ -99,10 +99,8 @@
                                         <img id="paymentProofImage{{$user['referenceNo']}}" src="{{ asset('storage/' . $item->proof_of_delivery) }}" class="img-fluid mx-auto d-block img-thumbnail d-none" alt="Current Payment Proof" style="max-width: 100%; max-height: 400px; border: 2px solid #696cff;">
                                         <label for="courier_id" class="col-form-label">Proof of Delivery:</label>
                                         <input type="file" class="form-control" name="proof_of_delivery" id="payment_proof{{$user['referenceNo']}}" required>
-                                        <small id="proofDeliveryFileSizeError" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                                        <small id="proofDeliveryFileSizeError" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                                     </div>
-
-
                                 </div>
                                 @if($item->payment_type == 'COD' || $item->payment_type == 'In-store')
                                 @if($item->payment_condition == NULL)

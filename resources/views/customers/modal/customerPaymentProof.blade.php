@@ -28,7 +28,7 @@
                         <label for="payment_proof{{$user['referenceNo']}}" class="col-sm-3 col-form-label">Upload New Proof:</label>
                         <div class="col-sm-9">
                             <input type="file" class="form-control" id="payment_proof{{$user['referenceNo']}}" name="payment_proof" accept="image/*">
-                            <small id="fileErrorSize" class="form-text text-danger" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
+                            <small id="fileErrorSize" class="form-text text-danger text-wrap" style="display: none;">The selected file exceeds 2 MB. Please choose a smaller file.</small>
                         </div>
                     </div>
                     <div class="modal-footer">

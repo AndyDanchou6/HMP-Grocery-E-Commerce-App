@@ -679,7 +679,7 @@ class SelectedItemsController extends Controller
                 $avatarPath = $request->file('payment_proof')->store('proof', 'public');
                 $item->payment_proof = $avatarPath;
                 $icon = 'success';
-                $message = 'Payment proof updated successfully.';
+                $message = 'Payment proof uploaded successfully.';
             }
 
             $item->save();
@@ -791,10 +791,11 @@ class SelectedItemsController extends Controller
                     ->get();
 
                 $itemCount = $selectedItems->count();
+                $reference = $selectedItems->first()->referenceNo;
                 $userName = $selectedItems->first()->user->name ?? 'Customer';
 
                 if ($itemCount > 0) {
-                    $userNotifications[] = "$userName just bought {$itemCount} products.";
+                    $userNotifications[] = "Ref No: {$reference} - {$userName} purchased {$itemCount} items.";
                 }
             }
 
