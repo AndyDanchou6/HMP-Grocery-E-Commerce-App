@@ -110,7 +110,9 @@ class DeliveryScheduleController extends Controller
 
         $startTime = strtotime($request->input('start_time'));
         $endTime = strtotime($request->input('end_time'));
-        $existing = deliverySchedule::where('day', $request->input('day'))->get();
+        $existing = deliverySchedule::where('day', $request->input('day'))
+        ->where('id', '!=', $id)
+        ->get();
 
         if ($endTime <= $startTime) {
             return redirect()->back()->with('error', 'Invalid Schedule.');

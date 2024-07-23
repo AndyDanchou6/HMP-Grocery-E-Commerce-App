@@ -78,6 +78,19 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // update form event listener
+        // var editFormElement = document.querySelector('#editFormElement');
+
+        // editFormElement.addEventListener('submit', async function(event) {
+        //     event.preventDefault();
+
+        //     var updateFormDetails = new FormData();
+
+        //     updateFormDetails.append('category_id') = editFormElement.querySelector('#edit_category_id')
+        // })
+        // console.log(editFormElement)
+
         const fileInputs = document.querySelectorAll('input[type="file"][id^="edit_product_img"]');
         const imageElements = document.querySelectorAll('img[id^="editImageInventory"]');
 

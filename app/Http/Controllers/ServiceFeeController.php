@@ -75,8 +75,8 @@ class ServiceFeeController extends Controller
             return redirect()->back()->with('error', 'Service fee does not exist!');
         }
 
-
         $alreadyExists = ServiceFee::where('location', $request->input('location'))
+            ->where('id', '!=', $toBeUpdated->id)
             ->first();
 
         if ($alreadyExists) {
