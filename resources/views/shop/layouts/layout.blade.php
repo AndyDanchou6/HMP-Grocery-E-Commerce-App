@@ -233,59 +233,6 @@
             return 0;
         }
 
-        function stashItemsSelected(itemPrice, itemId, operation, quantity) {
-            var key = 'item_' + itemId;
-
-            var storeItem = {
-                [key]: {
-                    'item_id': itemId,
-                    'item_price': itemPrice,
-                    'item_quantity': 1
-                }
-            };
-
-            var alreadySelected = sessionStorage.getItem('selectedItems');
-
-            // Store in session storage an object with items selected (converted to string)
-            // Check if there are selected items
-            if (alreadySelected == null) {
-                sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
-            } else {
-
-                var parsedSelected = JSON.parse(alreadySelected);
-
-                if (parsedSelected[key] != null) {
-                    if (parsedSelected[key].item_quantity > quantity - 1 && operation != 'decrement') {
-                        parsedSelected[key].item_quantity = parseFloat(quantity);
-                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                    } else {
-
-                        // Check if item is selected already and increment
-                        if (operation == 'increment') {
-                            parsedSelected[key].item_quantity += 1;
-                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                        }
-
-                        // Check if item is selected already and decrement
-                        if (operation == 'decrement') {
-                            parsedSelected[key].item_quantity -= 1;
-                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                        }
-                    }
-                } else {
-                    if (operation == 'increment') {
-
-                        // If item is already selected
-                        parsedSelected[key] = {
-                            'item_id': itemId,
-                            'item_price': itemPrice,
-                            'item_quantity': 1
-                        };
-                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
-                    }
-                }
-            }
-        }
 
         function updateAmountSelected(quantityFields) {
             quantityFields.forEach(function(fields) {
@@ -323,27 +270,99 @@
             })
         }
 
-        function outOfStockBanner(outOfStockBanners) {
+        function outOfStockBanner(outOfStockBanner, operation = null) {
 
-            outOfStockBanners.forEach(function(outOfStock) {
-                var dataQuantity = outOfStock.getAttribute('data-quantity');
-                var dataIdentifier = outOfStock.getAttribute('data-item-id');
-                var quantityFields = document.querySelector('.quantity[data-item-id="' + dataIdentifier + '"]');
+            var itemId = outOfStockBanner.getAttribute('data-item-id');
+            var quantityField = document.querySelector('#quantity' + itemId);
+            var productAdjustBtn = document.querySelector('.productAdjustButton[data-item-id="' + itemId + '"]')
 
-                if (dataQuantity == 0) {
+            var productOnDisplay = document.querySelector('.product_onDisplay[data-item-id="' + itemId + '"]');
+            var stock = productOnDisplay.getAttribute('data-quantity');
+            var quantityFieldValue = parseInt(quantityField.value);
 
-                    outOfStock.style.display = 'block';
+            if (operation == 'decrement') {
+                quantityFieldValue -= 1;
+            } else if (operation == 'increment') {
+                quantityFieldValue += 1;
+            }
 
-                    quantityFields.style.display = "none";
+            if (quantityFieldValue >= parseInt(stock) || parseInt(stock) == 0) {
+                outOfStockBanner.style.display = 'block';
+
+                if (parseInt(stock) == 0) {
+                    productAdjustBtn.style.display = "none";
                 }
-            })
+            } else {
+
+                outOfStockBanner.style.display = "none"
+            }
+        }
+
+
+        function stashItemsSelected(itemPrice, itemId, operation) {
+
+            var key = 'item_' + itemId;
+            var storeItem = {
+                [key]: {
+                    'item_id': itemId,
+                    'item_price': itemPrice,
+                    'item_quantity': 1
+                }
+            };
+
+            var alreadySelected = sessionStorage.getItem('selectedItems');
+            var selectedQuantity = document.querySelector('#quantity' + itemId);
+
+            // Store in session storage an object with items selected (converted to string)
+            // Check if there are selected items
+            if (alreadySelected == null) {
+                sessionStorage.setItem('selectedItems', JSON.stringify(storeItem));
+            } else { // If item is stashed already
+
+                var parsedSelected = JSON.parse(alreadySelected);
+                if (parsedSelected[key] != null) {
+
+                    var stocksAvailable = parseInt(selectedQuantity.value) + 1;
+                    if (parsedSelected[key].item_quantity >= stocksAvailable && operation != 'decrement') {
+                        parsedSelected[key].item_quantity = stocksAvailable;
+                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        // console.log(parseFloat(selectedQuantity.value) + 1);
+                    } else {
+
+                        // Check if item is selected already and increment
+                        if (operation == 'increment') {
+                            parsedSelected[key].item_quantity += 1;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                            // console.log(parseFloat(selectedQuantity.value) + 1);
+                        }
+
+                        // Check if item is selected already and decrement
+                        if (operation == 'decrement') {
+                            parsedSelected[key].item_quantity -= 1;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                            // console.log(parseFloat(selectedQuantity.value) - 1);
+                        }
+                    }
+                } else { // Item not stashed
+                    if (operation == 'increment') {
+
+                        parsedSelected[key] = {
+                            'item_id': itemId,
+                            'item_price': itemPrice,
+                            'item_quantity': 1
+                        };
+                        sessionStorage.setItem('selectedItems', JSON.stringify(parsedSelected));
+                        // console.log(parseFloat(selectedQuantity.value) + 1);
+                    }
+                }
+            }
         }
 
         async function updateStocks() {
             const availableStocksApi = '/availableStocks';
 
             try {
-                const response = await fetch(availableStocksApi); // Replace '/data' with your endpoint
+                const response = await fetch(availableStocksApi);
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
@@ -362,123 +381,128 @@
 
                     var product_onDisplay = document.querySelector('.product_onDisplay[data-item-id="' + itemId + '"]');
 
-                    product_onDisplay.setAttribute('data-quantity', quantity);
+                    if (product_onDisplay) {
+                        var dataQuantity = product_onDisplay.getAttribute('data-quantity');
+                        product_onDisplay.setAttribute('data-quantity', quantity.toString());
+                    }
+
                     console.log(product_onDisplay);
                 })
 
-                setTimeout(updateStocks, 8000);
+                var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
+                outOfStockBanners.forEach(function(outOfStock) {
+
+                    outOfStockBanner(outOfStock);
+                })
+
+                setTimeout(updateStocks, 5000);
             } catch (error) {
                 console.error('Error fetching data:', error.message);
-                await new Promise(resolve => setTimeout(resolve, 8000));
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 updateStocks();
             }
         }
 
-
         document.addEventListener('DOMContentLoaded', function() {
 
-            // updateStocks();
+            updateStocks();
 
             var totalField = document.querySelector('#floating-total input');
-
             if (totalField) {
-
                 // Loads the Total cost
                 totalField.value = totalItemCost();
             }
 
-
+            // Loads the amount of selected items
             const itemQuantityFields = document.querySelectorAll('.quantityInput');
-
             updateAmountSelected(itemQuantityFields);
-
             onCartBanner();
 
             // Display Out of Stock Products
             var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
+            outOfStockBanners.forEach(function(outOfStock) {
 
-            outOfStockBanner(outOfStockBanners);
+                outOfStockBanner(outOfStock);
+            })
 
-            // clicks on image adds on cart
-                // const clickedItems = document.querySelectorAll('.product_onDisplay');
+            // Clicks on image adds to cart
+            const clickedItems = document.querySelectorAll('.product_onDisplay');
+            clickedItems.forEach(function(clickedItem) {
+                // Listens to every click on items
+                clickedItem.addEventListener('click', function() {
 
-                // clickedItems.forEach(function(clickedItem) {
+                    var itemId = clickedItem.getAttribute('data-item-id');
+                    var itemPrice = clickedItem.getAttribute('data-price');
+                    var itemSelected = clickedItem.querySelector('product_onDisplay[data-item-quantity="' + itemId + '"]');
+                    var quantity = clickedItem.getAttribute('data-quantity');
 
-                //     var quantityAvailable = clickedItem.getAttribute('data-quantity');
+                    var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
+                    var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
 
-                //     if (quantityAvailable != 0) {
+                    if (quantity != 0 && currentAmount <= quantity) {
 
-                //         // Listens to every click on items
-                //         clickedItem.addEventListener('click', function() {
+                        outOfStockBanner(outOfStock, 'increment');
+                        if (currentAmount > parseInt(quantity)) {
 
-                //             var itemId = clickedItem.getAttribute('data-item-id');
-                //             var itemPrice = clickedItem.getAttribute('data-price');
-
-                //             var currentAmount = parseFloat(document.querySelector(".quantityInput[data-item-id='" + itemId + "']").value) + 1;
-                //             var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
-
-                //             if (currentAmount > quantityAvailable) {
-                //                 currentAmount = currentAmount;
-                //                 outOfStock.style.display = 'block';
-                //             } else {
-
-                //                 // Stores the selected item
-                //                 stashItemsSelected(itemPrice, itemId, 'increment', quantityAvailable);
-
-                //                 // Loads a new total after clicking item
-                //                 totalField.value = totalItemCost();
-                //                 updateAmountSelected(itemQuantityFields);
-                //                 onCartBanner();
-
-                //             }
-                //         });
-                //     }
-                // });
+                            currentAmount = currentAmount;
+                        } else {
+                            // Stores the selected item
+                            stashItemsSelected(itemPrice, itemId, 'increment');
+                            // Loads a new total after clicking item
+                            totalField.value = totalItemCost();
+                            updateAmountSelected(itemQuantityFields);
+                            onCartBanner();
+                        }
+                    }
+                });
+            });
 
             // Adjust selected items with buttons
             const quantityButton = document.querySelectorAll('.productAdjustButton');
-
             quantityButton.forEach(function(quantity) {
 
                 var itemId = quantity.getAttribute('data-item-id');
                 var itemPrice = quantity.getAttribute('data-item-price');
-                var itemDataQuantity = quantity.getAttribute('data-quantity');
-                var quantityAdjustButton = quantity.querySelectorAll('.qtybtn');
 
-                quantityAdjustButton.forEach(function(buttons) {
+                var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
+                var operation = '';
 
-                    // Listens and stores selected items via buttons (need to change)
-                    buttons.addEventListener('click', function(event) {
+                var incrementBtn = quantity.querySelector('.inc');
+                var decrementBtn = quantity.querySelector('.dec');
 
-                        var outOfStock = document.querySelector('.outOfStockBanner[data-item-id="' + itemId + '"]');
-                        var inputValue = document.querySelector('#quantity' + itemId);
-                        var itemQuantity = 0;
+                incrementBtn.addEventListener('click', function() {
 
-                        // increment quantity by button
-                        if (buttons.classList.contains('inc')) {
+                    var inputValue = document.querySelector('#quantity' + itemId);
+                    var itemDisplay = document.querySelector('.product_onDisplay[data-item-id="' + itemId + '"]');
+                    var itemDataQuantity = itemDisplay.getAttribute('data-quantity');
 
-                            if (inputValue.value >= parseFloat(itemDataQuantity)) {
-                                itemQuantity = parseFloat(itemDataQuantity);
-                                inputValue.value = itemQuantity - 1;
-                                outOfStock.style.display = 'block';
-                            } else {
-                                itemQuantity = JSON.parse(inputValue.value) + 1;
+                    if (parseInt(inputValue.value) + 1 <= itemDataQuantity) {
 
-                                stashItemsSelected(itemPrice, itemId, 'increment', itemDataQuantity);
-                                onCartBanner();
-                            }
-                        }
+                        stashItemsSelected(itemPrice, itemId, 'increment');
+                        outOfStockBanner(outOfStock, 'increment');
+                        onCartBanner();
+                    } else {
 
-                        // decrement quantity by button
-                        if (buttons.classList.contains('dec') && inputValue.value != 0) {
-                            itemQuantity = JSON.parse(inputValue.value) - 1;
-                            stashItemsSelected(itemPrice, itemId, 'decrement', itemDataQuantity);
-                            onCartBanner();
-                            outOfStock.style.display = 'none';
-                        }
+                        inputValue.value = parseFloat(itemDataQuantity) - 1;
+                    }
 
-                        totalField.value = totalItemCost();
-                    });
+                    totalField.value = totalItemCost(); // total field is defined globally above
+                })
+
+                decrementBtn.addEventListener('click', function() {
+                    var input = document.querySelector('#quantity' + itemId);
+                    var currentInputValue = parseInt(input.value) - 1;
+
+                    var itemDisplay = document.querySelector('.product_onDisplay[data-item-id="' + itemId + '"]');
+                    var itemDataQuantity = itemDisplay.getAttribute('data-quantity');
+
+                    if (currentInputValue >= 0) {
+
+                        stashItemsSelected(itemPrice, itemId, 'decrement');
+                        outOfStockBanner(outOfStock, 'decrement');
+                        onCartBanner();
+                        totalField.value = totalItemCost(); // total field is defined globally above
+                    }
                 });
             });
 

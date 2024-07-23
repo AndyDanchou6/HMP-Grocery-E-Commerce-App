@@ -27,7 +27,7 @@ class InventoryController extends Controller
                         ->orWhere('price', 'like', '%' . $search . '%')
                         ->orWhere('quantity', 'like', '%' . $search . '%');
                 })->orWhereHas('category', function ($query) use ($search) {
-                  
+
                     $query->where('category_name', 'like', '%' . $search . '%');
                 });
             }
@@ -187,6 +187,15 @@ class InventoryController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        // $productNameMatched = Inventory::where('product_name', $request->input('product_name'))
+        //     ->where('id', '!=', $id)
+        //     ->first();
+
+        // if ($productNameMatched) {
+
+        //     return redirect()->back()->with('error', 'Product has match');
+        // }
 
         $item = Inventory::findOrFail($id);
 

@@ -598,12 +598,13 @@ class SelectedItemsController extends Controller
                         $today = Carbon::now()->format('l');
                         $currentDay = $numericValues[$today];
 
-                        $didNotMakeIt = strtotime(Carbon::now()->format('H:i:s')) > strtotime($scheduleOfDelivery->start_time);
-                        $forNextWeek = $selectedSchedule < $currentDay;
+                        $timeNowGreaterThanSchedule = strtotime(Carbon::now()->format('H:i:s')) >= strtotime($scheduleOfDelivery->start_time);
+                        $dayNowGreaterThanSchedule = $selectedSchedule < $currentDay;
+                        $alsoForNextWeek = $selectedSchedule == $currentDay && $timeNowGreaterThanSchedule;
 
                         $offset = '';
 
-                        if ($forNextWeek || $didNotMakeIt) {
+                        if ($dayNowGreaterThanSchedule || $alsoForNextWeek) {
                             $less = count($numericValues) - $currentDay;
                             $offset = $selectedSchedule + $less;
                         } else {
