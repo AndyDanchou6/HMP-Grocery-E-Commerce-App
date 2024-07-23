@@ -27,14 +27,14 @@ class InventoryController extends Controller
                         ->orWhere('price', 'like', '%' . $search . '%')
                         ->orWhere('quantity', 'like', '%' . $search . '%');
                 })->orWhereHas('category', function ($query) use ($search) {
-                  
+
                     $query->where('category_name', 'like', '%' . $search . '%');
                 });
             }
 
             $categories = Category::pluck('category_name', 'id');
 
-            $inventories = $inventoryQuery->orderByRaw("quantity > 10 ASC")->paginate(10);
+            $inventories = $inventoryQuery->orderByRaw("quantity > 10 ASC")->orderByRaw("product_name ASC")->paginate(10);
 
             return view('inventories.index', compact('inventories', 'categories'));
         } elseif (Auth::check()) {

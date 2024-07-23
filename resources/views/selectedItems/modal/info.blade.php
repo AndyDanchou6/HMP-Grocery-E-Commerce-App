@@ -81,7 +81,13 @@
                         @if($item->serviceFee != null)
                         <div class="col-md-6">
                             <label for="" class="col-form-label">Service Fee:</label>
-                            <input type="text" class="form-control" value="{{ $item->serviceFee->fee }}" readonly>
+                            <input type="text" class="form-control" id="service_fee{{ $user['referenceNo'] }}" value="{{ $item->serviceFee->fee }}" readonly>
+                        </div>
+                        @endif
+                        @if($user['order_retrieval'] == 'delivery')
+                        <div class="mb-3 total-with-fee">
+                            <label for="" class="col-form-label">Total w/ Fee</label>
+                            <input type="text" class="form-control text-danger" step="0.01" id="total-with-fee{{ $user['referenceNo'] }}" min="0.01" placeholder="0.00" value="0.00" readonly>
                         </div>
                         @endif
                     </div>
@@ -114,3 +120,58 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var subTotalFields = document.querySelectorAll('.item-sub-total');
+        var totalContainer = {};
+
+        subTotalFields.forEach(function(subtotalField) {
+            var itemReferenceNo = subtotalField.getAttribute('data-item-id');
+            var [referenceNo] = itemReferenceNo.split('_');
+
+            var price = parseFloat(document.querySelector('.item-price[data-item-id="' + itemReferenceNo + '"]').value.replace(/[^0-9.-]+/g, ""));
+            var quantity = parseInt(document.querySelector('.item-quantity[data-item-id="' + itemReferenceNo + '"]').value);
+            var tempSubTotal = price * quantity;
+
+            subtotalField.value = tempSubTotal.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+
+            if (!totalContainer[referenceNo]) {
+                totalContainer[referenceNo] = tempSubTotal;
+            } else {
+                totalContainer[referenceNo] += tempSubTotal;
+            }
+        });
+
+        var totals = document.querySelectorAll('.purchase-total');
+
+        totals.forEach(function(totalField) {
+            var totalId = totalField.getAttribute('data-total-id');
+            var totalValue = totalContainer[totalId] || 0;
+
+            totalField.value = totalValue.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP'
+            });
+
+            var serviceFeeElement = document.querySelector('#service_fee' + totalId);
+            var totalWithFeeField = document.querySelector('#total-with-fee' + totalId);
+
+            var serviceFee = 0;
+            if (serviceFeeElement) {
+                serviceFee = parseFloat(serviceFeeElement.value.replace(/[^0-9.-]+/g, "")) || 0;
+            }
+
+            if (totalWithFeeField) {
+                var totalWithFee = totalValue + serviceFee;
+
+                totalWithFeeField.value = totalWithFee.toLocaleString('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP'
+                });
+            }
+        });
+    });
+</script>
