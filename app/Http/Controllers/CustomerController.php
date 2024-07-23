@@ -350,8 +350,9 @@ class CustomerController extends Controller
         if (Auth::user()->role == 'Customer') {
             $userId = Auth::id();
             $notifications = [];
+            $deliveredReferences = [];
+            $today = Carbon::now()->startOfDay();
 
-            // Retrieve selected items that are not yet checked out and belong to the user
             $selectedItems = SelectedItems::where('user_id', $userId)
                 ->where('status', '!=', 'forCheckout')
                 ->orderBy('updated_at', 'desc')
@@ -361,39 +362,63 @@ class CustomerController extends Controller
                 $reference = $item->referenceNo;
                 $courier = User::find($item->courier_id);
                 $courierName = $courier ? $courier->name : 'Unknown Courier';
-                $formattedDate = Carbon::parse($item->delivery_date)->timezone('Asia/Manila')->format('F j, Y');
+                $date = Carbon::parse($item->delivery_date)->timezone('Asia/Manila')->format('F j, Y');
                 $message = '';
+                $type = 'info'; // Default type
+                $isToday = $item->delivery_date ? Carbon::parse($item->delivery_date)->startOfDay()->equalTo($today) : false;
 
-                if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery') {
-                    $message = "Ref #$reference has been moved to the delivery section";
-                } else if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'pickup') {
-                    $message = "Ref #$reference has been moved to the pickup section";
-                } else if ($item->status == 'delivered') {
-                    $message = "Ref #$reference has been delivered";
-                } else if ($item->status == 'pickedUp') {
-                    $message = "Ref #$reference has been picked up";
-                } else if ($item->status == 'denied') {
+                if ($item->status == 'readyForRetrieval') {
+                    if (!in_array($reference, $deliveredReferences)) {
+                        if ($item->order_retrieval == 'delivery') {
+                            if ($isToday) {
+                                $message = "Ref #$reference is out for delivery today with Courier: $courierName.";
+                                $type = 'info';
+                            } elseif ($item->delivery_date && $courierName != 'Unknown Courier') {
+                                $message = "Ref #$reference is scheduled for delivery on $date with Courier: $courierName.";
+                                $type = 'info';
+                            } elseif ($item->delivery_date) {
+                                $message = "Ref #$reference is scheduled for delivery on $date.";
+                                $type = 'info';
+                            } elseif ($courierName != 'Unknown Courier') {
+                                $message = "Ref #$reference is assigned to Courier: $courierName.";
+                                $type = 'info';
+                            } else {
+                                $message = "Ref #$reference has been moved to the delivery section";
+                                $type = 'success';
+                            }
+                        }
+                        $deliveredReferences[] = $reference;
+                    }
+                    if ($item->order_retrieval == 'pickup') {
+                        $message = "Ref #$reference has been moved to the pickup section. You are now authorized to take it.";
+                        $type = 'success';
+                    }
+                } elseif ($item->status == 'delivered') {
+                    if (!in_array($reference, $deliveredReferences)) {
+                        $message = "Ref #$reference has been successfully delivered" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
+                        $type = 'success';
+                        $deliveredReferences[] = $reference;
+                    }
+                } elseif ($item->status == 'pickedUp') {
+                    if (!in_array($reference, $deliveredReferences)) {
+                        $message = "Ref #$reference has been successfully picked up" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
+                        $type = 'success';
+                        $deliveredReferences[] = $reference;
+                    }
+                } elseif ($item->status == 'denied') {
                     $message = "Ref #$reference has been denied";
-                }
-
-                if ($item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery' && $courierName != 'Unknown Courier') {
-                    $message = "Ref #$reference is out for delivery: Courier: $courierName";
-                }
-
-                if ($item->delivery_date && $item->status == 'readyForRetrieval' && $item->order_retrieval == 'delivery') {
-                    $message = "Ref #$reference is scheduled for delivery on $formattedDate";
-                }
-
-                if ($item->status == 'readyForRetrieval' && $item->delivery_date && $courierName != 'Unknown Courier') {
-                    $message = "Ref #$reference is scheduled for delivery on $formattedDate with Courier: $courierName";
+                    $type = 'error';
                 }
 
                 if ($message) {
-                    $notifications[] = $message;
+                    $notifications[] = [
+                        'message' => $message,
+                        'type' => $type
+                    ];
                 }
             }
 
-            $notifications = array_reverse(array_unique($notifications));
+            $notifications = array_reverse(array_unique($notifications, SORT_REGULAR));
 
             return response()->json([
                 'notifications' => $notifications
@@ -402,8 +427,6 @@ class CustomerController extends Controller
             return redirect()->route('error');
         }
     }
-
-
 
 
 

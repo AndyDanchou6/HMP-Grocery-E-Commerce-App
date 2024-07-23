@@ -34,7 +34,7 @@ class InventoryController extends Controller
 
             $categories = Category::pluck('category_name', 'id');
 
-            $inventories = $inventoryQuery->orderByRaw("quantity > 10 ASC")->paginate(10);
+            $inventories = $inventoryQuery->orderByRaw("quantity > 10 ASC")->orderByRaw("product_name ASC")->paginate(10);
 
             return view('inventories.index', compact('inventories', 'categories'));
         } elseif (Auth::check()) {

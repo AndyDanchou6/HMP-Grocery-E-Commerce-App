@@ -85,3 +85,102 @@
     background-color: #f8f9fa;
     /* Optional: Background color */
 }
+/* Modern styles for Toastr notifications with a white background */
+#toast-container > .toast {
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #333;
+    background-color: #ffffff; /* White background for toast body */
+    border: 1px solid #e0e0e0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+}
+
+#toast-container > .toast-success {
+    border-left: 5px solid #28a745;
+}
+
+#toast-container > .toast-info {
+    border-left: 5px solid #17a2b8;
+}
+
+#toast-container > .toast-warning {
+    border-left: 5px solid #ffc107;
+}
+
+#toast-container > .toast-error {
+    border-left: 5px solid #dc3545;
+}
+
+#toast-container > .toast .toast-progress {
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.custom-toast-icon {
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    position: relative;
+}
+
+.custom-toast-icon.success {
+    background-color: #28a745; /* Green background for success */
+    color: #ffffff; /* White color for checkmark */
+}
+
+.custom-toast-icon.success::before {
+    content: "✓"; /* Checkmark symbol */
+    font-size: 1.5rem;
+}
+
+.custom-toast.modern-toast.toast-success {
+    border-color: #28a745;
+}
+
+.custom-toast.modern-toast.toast-info {
+    border-color: #17a2b8;
+}
+
+.custom-toast.modern-toast.toast-warning {
+    border-color: #ffc107;
+}
+
+.custom-toast.modern-toast.toast-error {
+    border-color: #dc3545;
+}
+
+/* Add animation for toast enter and exit */
+.toast-enter {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.toast-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+}
