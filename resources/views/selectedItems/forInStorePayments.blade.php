@@ -74,6 +74,7 @@
                 </tbody>
             </table>
         </div>
+        @include('selectedItems.pagination')
     </div>
 </div>
 </div>

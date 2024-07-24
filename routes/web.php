@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('landingPage');
+    return view('auth.login');
 })->name('welcome');
 
 Auth::routes();
@@ -49,30 +49,29 @@ Route::prefix('courier')->middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'courierDashboard'])->name('courier.home');
 });
 
-Route::get('/error', [AuthController::class, 'error'])->name('error');
+Route::middleware('auth')->group(function () {
+    Route::get('/error', [AuthController::class, 'error'])->name('error');
+    Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
+    Route::resource('profile', ProfileController::class);
+    Route::resource('admin/users', AdminController::class)->middleware('admin');
+    Route::resource('reviews', ReviewController::class);
+    Route::resource('carts', CartController::class);
+    Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
+    Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
+    Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
+});
 
-Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
-
-Route::resource('profile', ProfileController::class);
-
-Route::resource('admin/users', AdminController::class)->middleware('admin');
-
-Route::resource('reviews', ReviewController::class);
-
-Route::resource('carts', CartController::class);
-
-Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
-Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
-Route::delete('/carts/deleteAll/{id}', [CartController::class, 'destroyAll'])->name('carts.destroyAll');
-
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
-Route::get('/shop/carts', [ShopController::class, 'carts'])->name('shop.carts');
-Route::get('/shop/products', [ShopController::class, 'shop'])->name('shop.products');
-Route::get('/shop/products/details/{id}', [ShopController::class, 'details'])->name('shop.details');
-Route::get('/shop/products/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
-Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])->name('shop.placeOrder');
-Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
-Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
+Route::middleware('auth')->group(function () {
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+    Route::get('/shop/carts', [ShopController::class, 'carts'])->name('shop.carts');
+    Route::get('/shop/products', [ShopController::class, 'shop'])->name('shop.products');
+    Route::get('/shop/products/details/{id}', [ShopController::class, 'details'])->name('shop.details');
+    Route::get('/shop/products/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
+    Route::post('/shop/products/placeOrder', [ShopController::class, 'placeOrder'])->name('shop.placeOrder');
+    Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
+    Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
+    Route::get('/shop/check/checkOrders', [ShopController::class, 'countOrders'])->name('shop.count');
+});
 
 Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');
 
@@ -98,8 +97,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('schedules/{schedule}', [DeliveryScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::put('schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
 });
-
-
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
 

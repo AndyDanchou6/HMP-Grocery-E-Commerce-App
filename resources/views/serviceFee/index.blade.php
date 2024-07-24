@@ -45,7 +45,7 @@
                         <td>Not Specified</td>
                         @endif
                         <td>{{ $fee->location }}</td>
-                        <td>₱ {{ $fee->fee }}</td>
+                        <td>₱{{ $fee->fee }}</td>
                         @if(Auth::user()->role == 'Admin')
                         <td>
 
@@ -66,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-
+        @include('serviceFee.pagination')
     </div>
 </div>
 @include('layouts.sweetalert')

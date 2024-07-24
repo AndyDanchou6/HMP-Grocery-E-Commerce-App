@@ -69,6 +69,11 @@ class CustomerController extends Controller
                         'updated_at' => $item->updated_at,
                         'items' => []
                     ];
+
+
+                    if ($item->serviceFee) {
+                        $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+                    }
                 }
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
