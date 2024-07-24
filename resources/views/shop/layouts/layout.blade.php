@@ -436,8 +436,22 @@
                         product_onDisplay.setAttribute('data-quantity', quantity.toString());
                     }
 
-                    console.log(product_onDisplay);
-                })
+                    var stashedSelected = sessionStorage.getItem('selectedItems');
+                    var parsedStashedItems = JSON.parse(stashedSelected);
+                    var parsedKey = 'item_' + itemId;
+
+                    if (parsedStashedItems && parsedStashedItems[parsedKey]) {
+
+                        if (quantity <= parsedStashedItems[parsedKey].item_quantity) {
+
+                            parsedStashedItems[parsedKey].item_quantity = quantity;
+                            sessionStorage.setItem('selectedItems', JSON.stringify(parsedStashedItems));
+                        }
+                    }
+                });
+
+                const itemQuantityFields = document.querySelectorAll('.quantityInput');
+                updateAmountSelected(itemQuantityFields);
 
                 var outOfStockBanners = document.querySelectorAll('.outOfStockBanner');
                 outOfStockBanners.forEach(function(outOfStock) {
@@ -445,10 +459,16 @@
                     outOfStockBanner(outOfStock);
                 })
 
+                var totalField = document.querySelector('#floating-total input');
+                if (totalField) {
+                    // Loads the Total cost
+                    totalField.value = totalItemCost();
+                }
+
                 setTimeout(updateStocks, 5000);
             } catch (error) {
                 console.error('Error fetching data:', error.message);
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 updateStocks();
             }
         }

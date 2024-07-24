@@ -48,16 +48,16 @@
                                         ₱{{ number_format($item->inventory->price, 2) }}
                                     </td>
                                     @if($item->quantity != 0)
-                                    <td class="shoping__cart__quantity">
+                                    <td class="shoping__cart__quantity" data-item-id="cart_{{ $item->inventory->id }}" data-price="{{ $item->inventory->price }}">
                                         <div class="quantity">
                                             <div class="pro-qty cartAdjustButton" data-item-id="cart_{{ $item->inventory->id }}">
-                                                <input type="text" name="quantities[{{ $item->id }}]" id="cartQuantity{{$item->inventory->id}}" value="{{ $item->quantity }}" min="1" class="item-quantity" data-price="{{ $item->inventory->price }}" data-quantity="{{ $item->inventory->quantity }}" readonly>
+                                                <input type="text" name="quantities[{{ $item->id }}]" id="cartQuantity{{$item->inventory->id}}" value="{{ $item->quantity }}" min="1" max="{{ $item->inventory->quantity }}" class="item-quantity" data-price="{{ $item->inventory->price }}" data-quantity="{{ $item->inventory->quantity }}" readonly>
                                             </div>
                                         </div>
                                     </td>
                                     @endif
 
-                                    <td class="shoping__cart__total">
+                                    <td class="shoping__cart__total" data-item-id="cart_{{ $item->inventory->id }}">
                                         ₱<span class="item-subtotal">{{ number_format($item->inventory->price * $item->quantity, 2) }}</span>
                                     </td>
                                     <td>
@@ -323,6 +323,10 @@
             })
         })
 
+        var originalQuantities = [];
+        var currentValues = [];
+        var untouched = true;
+
         // Limit purchase based on available stock
         quantityButtons.forEach(function(qButton) {
 
@@ -330,29 +334,34 @@
             var cartItemId = qButton.getAttribute('data-item-id')
             let idNumber = cartItemId.substring(5);
 
-            qtyBtn2.forEach(function(qtyBtn1) {
+            originalQuantities[cartItemId] = qButton.querySelector('input').value;
 
-                var originalNumber = document.querySelector('#cartQuantity' + idNumber).value;
+            qtyBtn2.forEach(function(qtyBtn1) {
 
                 qtyBtn1.addEventListener('click', function() {
 
                     var inputField = document.querySelector('#cartQuantity' + idNumber)
                     var availableStock = inputField.getAttribute('data-quantity')
 
-                    var currentValue;
-
                     if (qtyBtn1.classList.contains('inc')) {
                         if (parseFloat(inputField.value) >= parseFloat(availableStock) - 1) {
 
                             inputField.value = availableStock - 1
-
                         }
-                        currentValue = parseFloat(inputField.value) + 1;
+                        currentValues[cartItemId] = parseFloat(inputField.value) + 1;
                     } else {
-                        currentValue = parseFloat(inputField.value) - 1;
+                        currentValues[cartItemId] = parseFloat(inputField.value) - 1;
                     }
 
-                    if (currentValue == originalNumber) {
+                    Object.keys(currentValues).forEach(function(key) {
+                        if (currentValues[cartItemId] == originalQuantities[key]) {
+                            untouched = true;
+                        } else {
+                            untouched = false;
+                        }
+                    })
+
+                    if (untouched == true) {
                         let buttonUpdate = document.querySelector('.updateCartBtn');
                         buttonUpdate.removeAttribute('style');
                     } else {
@@ -360,11 +369,48 @@
                         buttonUpdate.style.color = 'white';
                         buttonUpdate.style.backgroundColor = '#696cff';
                     }
-
                 })
-
             })
         });
+
+        // Automatic total if item quantity is changed
+        var shoping__cart__quantity = document.querySelectorAll('.shoping__cart__quantity');
+
+        shoping__cart__quantity.forEach(function(individualItemQuantity) {
+
+            var itemQuantityInput = individualItemQuantity.querySelector('input');
+            var itemId = individualItemQuantity.getAttribute('data-item-id');
+            var itemPrice = individualItemQuantity.getAttribute('data-price');
+            var buttons = individualItemQuantity.querySelectorAll('.qtybtn');
+
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function() {
+
+                    var itemQuantityValue = parseInt(itemQuantityInput.value);
+                    var totalField = document.querySelector('.shoping__cart__total[data-item-id="' + itemId + '"] span')
+                    if (button.classList.contains('inc')) {
+
+                        var incrementedValue = itemQuantityValue + 1;
+                        var incrementedTotal = incrementedValue * parseFloat(itemPrice);
+                        totalField.textContent = incrementedTotal.toFixed(2);
+                    }
+                    if (button.classList.contains('dec')) {
+
+                        var decrementedValue = itemQuantityValue - 1;
+                        if (decrementedValue >= 1) {
+
+                            var decrementedTotal = decrementedValue * parseFloat(itemPrice);
+                            totalField.textContent = decrementedTotal.toFixed(2);
+                        } else {
+
+                            itemQuantityInput.value = 2;
+                        }
+                    }
+                    updateTotal();
+                })
+            })
+
+        })
     });
 </script>
 

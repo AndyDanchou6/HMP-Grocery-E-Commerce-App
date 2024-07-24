@@ -71,7 +71,9 @@
                                 </tbody>
                             </table>
                             <div class="checkout__order__subtotal">Subtotal <span>₱{{ number_format($subtotal, 2) }}</span></div>
+                            @if($selectedItems->first()->order_retrieval == 'delivery')
                             <div class="checkout__order__subtotal" id="checkoutDeliveryFee">Delivery Fee <span>₱0.00</span></div>
+                            @endif
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
                             <p>Choose your payment</p>
                             @if($selectedItems->first()->order_retrieval == 'delivery')
@@ -163,25 +165,27 @@
         var totalBeforeFee = floatTotalValue;
 
         var checkout__order__fee = document.querySelector('#checkoutDeliveryFee');
-        var feeField = checkout__order__fee.querySelector('span');
 
-        options.forEach(function(selected) {
-            selected.addEventListener('click', function() {
+        if (checkout__order__fee) {
+            var feeField = checkout__order__fee.querySelector('span');
 
-                var index = selected.textContent.indexOf('₱');
-                var stringFeeValue = selected.textContent.substring(index + 1).trim();
+            options.forEach(function(selected) {
+                selected.addEventListener('click', function() {
 
-                if (parseFloat(stringFeeValue)) {
+                    var index = selected.textContent.indexOf('₱');
+                    var stringFeeValue = selected.textContent.substring(index + 1).trim();
 
-                    var floatFeeValue = parseFloat(stringFeeValue);
-                    var newTotalValue = floatFeeValue + totalBeforeFee;
+                    if (parseFloat(stringFeeValue)) {
 
-                    total.textContent = '₱' + newTotalValue.toFixed(2);
-                    feeField.textContent = '₱' + floatFeeValue.toFixed(2);
-                }
+                        var floatFeeValue = parseFloat(stringFeeValue);
+                        var newTotalValue = floatFeeValue + totalBeforeFee;
+
+                        total.textContent = '₱' + newTotalValue.toFixed(2);
+                        feeField.textContent = '₱' + floatFeeValue.toFixed(2);
+                    }
+                })
             })
-        })
-
+        }
     })
 </script>
 @endsection

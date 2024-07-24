@@ -11,7 +11,11 @@
 
                     <div class="col-12 col-sm-6 col-md-4 mb-3">
                         <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
+                        @if(isset($item->inventory->variant))
+                        <span><input type="text" class="form-control" value="{{ $item->inventory->product_name }} [{{ $item->inventory->variant }}]" readonly></span>
+                        @else
                         <span><input type="text" class="form-control" value="{{ $item->inventory->product_name }}" readonly></span>
+                        @endif
                     </div>
 
                     <div class="col-6 col-sm-3 col-md-2 mb-3">
