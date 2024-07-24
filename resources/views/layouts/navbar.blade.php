@@ -5,19 +5,11 @@
     </a>
   </div>
   <ul class="navbar-nav flex-row align-items-center ms-auto">
-    @if(Auth::user()->role == 'Customer')
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}">
-      <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
-    </a>
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}" id="active-state">
-      <i class="bx bx-history bx-sm bx-tada-hover"></i>
-    </a>
-    @endif
     @if(Auth::user()->role == 'Admin')
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('selectedItems.history') }}">
-      <i class="bx bx-history bx-sm bx-tada-hover"></i>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('selectedItems.history') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-box bx-tada mb-1'></i> <span>Package History</span>">
+      <i class="bx bx-box bx-sm bx-tada-hover"></i>
     </a>
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('schedules.index') }}">
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('schedules.index') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-calendar bx-tada mb-1'></i> <span>Delivery Schedules</span>">
       <i class="bx bx-calendar bx-sm bx-tada-hover"></i>
     </a>
     <li class="nav-item dropdown text-primary" id="notification-icon">
@@ -26,19 +18,29 @@
         <span id="notificationCount" class="badge bg-danger d-none">0</span>
       </a>
       <ul class="dropdown-menu dropdown-menu-end pullDown" aria-labelledby="notificationDropdown">
-        <div class="dropdown-header">Notifications</div>
+        <div class="dropdown-header">
+          <i class="bx bx-bell bx-tada mb-1"></i> Notifications
+        </div>
         <ul id="notificationList" class="list-unstyled mb-0"></ul>
       </ul>
     </li>
     @include('layouts.script.admin.adminNotification')
     @elseif(Auth::user()->role == 'Customer')
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bi bi-shop bx-fade-up'></i> <span>Shop</span>">
+      <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
+    </a>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}" id="active-state" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-box bx-tada mb-1'></i> <span>Order History</span>">
+      <i class="bx bx-box bx-sm bx-tada-hover"></i>
+    </a>
     <li class="nav-item dropdown text-primary" id="notification-icon">
       <a class="nav-link px-0 me-xl-4 navbar-icon notification-toggle nav-link-lg" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i id="notificationIcon" class="bx bx-bell bx-sm"></i>
         <span id="notificationCount" class="badge bg-danger d-none">0</span>
       </a>
-      <ul class="dropdown-menu dropdown-menu-end pullDown " aria-labelledby="notificationDropdown">
-        <div class="dropdown-header">Notifications</div>
+      <ul class="dropdown-menu dropdown-menu-end pullDown" aria-labelledby="notificationDropdown">
+        <div class="dropdown-header">
+          <i class="bx bx-bell bx-tada mb-1"></i> Notifications
+        </div>
         <ul id="notificationList" class="list-unstyled mb-0">
           <li><a class="dropdown-item">No notification found at the moment</a></li>
         </ul>

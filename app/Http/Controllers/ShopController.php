@@ -11,9 +11,8 @@ use App\Models\Cart;
 use App\Models\SelectedItems;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
-use App\Events\MyEvent;
 use App\Models\ServiceFee;
-use Illuminate\Support\Facades\Event;
+
 
 class ShopController extends Controller
 {
@@ -53,6 +52,7 @@ class ShopController extends Controller
         } else {
             $query = $request->input('query');
             $categoryFilter = $request->input('subCategory');
+            $category_filter = $request->input('category');
             $category = Category::all();
 
             $inventory = Inventory::with('category')
@@ -62,14 +62,17 @@ class ShopController extends Controller
                 ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
                     $queryBuilder->where('product_name', $categoryFilter);
                 })
+                ->when($category_filter, function ($queryBuilder) use ($category_filter) {
+                    $queryBuilder->where('category_id', $category_filter);
+                })
                 ->orderBy('created_at', 'desc')
-                ->paginate(9);
+                ->paginate(10);
 
             $subCategory = Inventory::orderBy('created_at', 'desc')
                 ->get()
                 ->groupBy('product_name');
 
-            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter'));
+            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter', 'category_filter'));
         }
     }
 
@@ -145,7 +148,6 @@ class ShopController extends Controller
 
             foreach ($selectedItems as $item) {
                 if ($item->order_retrieval === 'delivery' || $item->order_retrieval === 'pickup') {
-
                     $item->update([
                         'status' => 'forPackage',
                         'phone' => $request->input('phone'),
@@ -167,7 +169,6 @@ class ShopController extends Controller
 
             return redirect()->back()->with('error', 'An error occurred during order placement.');
         }
-        // dd($request);
     }
 
     public function cancelCheckout(Request $request)
@@ -256,8 +257,17 @@ class ShopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function countOrders()
     {
-        //
+        $userId = Auth::id();
+        $cartOrders = Cart::where('user_id', $userId)->select('product_id')
+            ->count();
+        $pendingOrders = SelectedItems::where('user_id', $userId)->where('status', 'forPackage')
+            ->pluck('referenceNo')->unique()->count();
+
+        return response()->json([
+            'cartsCount' => $cartOrders,
+            'pendingOrders' => $pendingOrders
+        ]);
     }
 }

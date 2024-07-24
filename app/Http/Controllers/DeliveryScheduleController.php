@@ -24,8 +24,6 @@ class DeliveryScheduleController extends Controller
                     ->orWhere('status', 'like', '%' . $search . '%');
             }
 
-
-
             $schedules = $scheduleQuery->orderBy('created_at', 'desc')->paginate(5);
             return view('schedules.index', compact('schedules'));
         } else {
@@ -111,8 +109,8 @@ class DeliveryScheduleController extends Controller
         $startTime = strtotime($request->input('start_time'));
         $endTime = strtotime($request->input('end_time'));
         $existing = deliverySchedule::where('day', $request->input('day'))
-        ->where('id', '!=', $id)
-        ->get();
+            ->where('id', '!=', $id)
+            ->get();
 
         if ($endTime <= $startTime) {
             return redirect()->back()->with('error', 'Invalid Schedule.');

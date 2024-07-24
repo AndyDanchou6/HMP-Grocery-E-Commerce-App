@@ -122,12 +122,11 @@
                             <h4 class="text-success m-3" style="display: none;" id="restore{{ $user['id'] }}">Are you sure you want to restore this order?</h4>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 deleteBtn" id="delete-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="delete" value="true">Delete</button>
-                            <button type="button" class="btn btn-outline-success me-2 restoreBtn" id="restore-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="restore" value="true">Restore</button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="d-flex flex-wrap justify-content-end">
+                            <button type="button" class="btn btn-outline-danger me-2 mb-2 deleteBtn" id="delete-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="delete" value="true">Delete</button>
+                            <button type="button" class="btn btn-outline-success me-2 mb-2 w-auto restoreBtn" id="restore-btn{{ $user['id'] }}" data-item-id="{{ $user['id'] }}" name="restore" value="true">Restore</button>
+                            <button type="button" class="btn btn-outline-secondary me-2 mb-2 w-auto" data-bs-dismiss="modal">Close</button>
                         </div>
-
                     </form>
                 </div>
 

@@ -72,6 +72,7 @@
                 </tbody>
             </table>
         </div>
+        @include('schedules.pagination')
     </div>
 </div>
 @include('layouts.sweetalert')

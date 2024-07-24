@@ -876,8 +876,15 @@ class SelectedItemsController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
             return view('selectedItems.forGcashPayments', [
-                'userByReference' => $userByReference,
+                'userByReference' => $paginatedItems,
                 'search' => $search
             ]);
         } else {
@@ -939,9 +946,16 @@ class SelectedItemsController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
+
             // dd($userByReference);
             return view('selectedItems.forCODPayments', [
-                'userByReference' => $userByReference,
+                'userByReference' => $paginatedItems,
                 'search' => $search
             ]);
         } else {
@@ -1002,10 +1016,15 @@ class SelectedItemsController extends Controller
                 }
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
+            $perPage = 10;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+            ]);
 
-            // dd($userByReference);
             return view('selectedItems.forInStorePayments', [
-                'userByReference' => $userByReference,
+                'userByReference' => $paginatedItems,
                 'search' => $search
             ]);
         } else {

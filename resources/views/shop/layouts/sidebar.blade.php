@@ -26,11 +26,11 @@
                             <button type="submit" class="site-btn" style="background-color: #696cff;">SEARCH</button>
                         </form>
                     </div>
-                    <div class=" hero__search__phone">
+                    <div class=" hero__search__phone flex-wrap w-auto">
                         <div class="hero__search__phone__icon">
                             <i class="fa fa-phone" style="color: #696cff;"></i>
                         </div>
-                        <div class="hero__search__phone__text">
+                        <div class="hero__search__phone__text flex-wrap w-auto">
                             <h5>+63 963 875 3244</h5>
                             <span>8:00 AM - 7:00 PM</span>
                         </div>
