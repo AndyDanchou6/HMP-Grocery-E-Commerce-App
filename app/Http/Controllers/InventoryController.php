@@ -180,7 +180,7 @@ class InventoryController extends Controller
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'quantity' => 'required|integer|min:0',
-            'variant' => 'string|max:128',
+            'variant' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -201,16 +201,21 @@ class InventoryController extends Controller
 
         $item->product_name = $request->input('product_name');
         $item->price = $request->input('price');
-        $item->variant = $request->input('variant');
         $item->category_id = $request->input('category_id');
-        $item->quantity = $request->input('quantity');
+        $item->quantity = $request->input('quantity');  
+
+        if ($request->input('variant') != null) {
+            $item->variant = $request->input('variant');
+        }
 
         if ($request->hasFile('product_img')) {
             $avatarPath = $request->file('product_img')->store('products', 'public');
             $item->product_img = $avatarPath;
         }
 
-        $item->save();
+        if (!$item->save()) {
+            return redirect()->back()->with('error', 'Update failed');
+        }
 
         return redirect()->back()->with('success', 'Updated successfully.');
     }

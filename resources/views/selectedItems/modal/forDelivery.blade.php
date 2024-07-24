@@ -34,7 +34,11 @@
 
                     <div class="col-12 mb-3">
                         <label for="item_name" class="col-12 col-sm-6 col-md-4 col-form-label">Item Name</label>
+                        @if(isset($item->inventory->variant))
+                        <input type="text" class="form-control" value="{{ $item->inventory->product_name }} [{{ $item->inventory->variant }}]" readonly>
+                        @else
                         <input type="text" class="form-control" value="{{ $item->inventory->product_name }}" readonly>
+                        @endif
                     </div>
 
                     <div class="col-8 col-sm-4 mb-3">

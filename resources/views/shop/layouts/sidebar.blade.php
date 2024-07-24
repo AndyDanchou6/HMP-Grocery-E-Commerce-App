@@ -27,8 +27,8 @@
                         </form>
                     </div>
                     <div class=" hero__search__phone">
-                        <div class="hero__search__phone__icon">
-                            <i class="fa fa-phone" style="color: #696cff;"></i>
+                        <div class="hero__search__phone__icon" style="display: flex; justify-content: center; align-items: center;">
+                            <i class="fa fa-phone" style="color: black;"></i>
                         </div>
                         <div class="hero__search__phone__text">
                             <h5>+63 963 875 3244</h5>
