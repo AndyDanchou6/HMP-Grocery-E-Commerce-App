@@ -3587,3 +3587,52 @@ ol {
     font-weight: normal;
 }
 
+.hero__search__phone {
+    display: flex;
+    align-items: center;
+}
+
+.hero__search__phone__icon {
+    margin-right: 10px;
+}
+
+.hero__search__phone__text h5,
+.hero__search__phone__text span {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .hero__search__phone {
+        flex-direction: row;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero__search__phone__icon {
+        margin-right: 5px;
+    }
+
+    .hero__search__phone__text {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero__search__phone {
+        flex-direction: wordwrap;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .hero__search__phone__icon {
+        margin-bottom: 5px;
+    }
+
+    .hero__search__phone__text h5 {
+        font-size: 16px;
+    }
+
+    .hero__search__phone__text span {
+        font-size: 14px;
+    }
+}

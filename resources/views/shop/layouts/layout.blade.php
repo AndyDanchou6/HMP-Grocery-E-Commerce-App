@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
+
 </head>
 
 <body>
@@ -43,10 +44,15 @@
         </div>
         <div class="humberger__menu__cart">
             <ul>
-                <li><a href="{{ route('customers.pending_orders') }}"><i class="fa fa-list"></i> <span style="background-color: #696cff;"></span></a></li>
-                <li><a href="{{ route('shop.carts') }}"><i class="fa fa-shopping-cart"></i> <span style="background-color: #696cff;"></span></a></li>
+                <li data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='fa fa-cube'></i><span> Pending Orders</span>">
+                    <a href="{{ route('customers.pending_orders') }}"><i class="fa fa-cube"></i> <span style="background-color: #696cff;" id="forPendingOrdersCount1" class="d-none"></span>
+                    </a>
+                </li>
+                <li data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='fa fa-cart-plus'></i><span> Carts</span>">
+                    <a href="{{ route('shop.carts') }}"><i class="fa fa-cart-plus"></i> <span style="background-color: #696cff;" id="cartsCounting1" class="d-none"></span>
+                    </a>
+                </li>
             </ul>
-            <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
         </div>
         <div class="humberger__menu__widget">
             @if(Auth::check())
@@ -171,7 +177,6 @@
                                 </script> e-Mart Grocery | All Rights Reserved
                             </p>
                         </div>
-                        <div class="footer__copyright__payment"><img src="img/payment-item.png" alt="meow"></div>
                     </div>
                 </div>
             </div>
@@ -181,6 +186,15 @@
 
     <!-- Js Plugins -->
     @include('layouts.sweetalert')
+    <!-- Initialize tooltips -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
     <script src="{{ asset('index/js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('index/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('index/js/jquery.nice-select.min.js') }}"></script>
@@ -198,7 +212,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch("{{ route('shop.count') }}")
+                .then(response => response.json())
+                .then(data => {
+                    var pendingOrdersCount = document.getElementById('forPendingOrdersCount');
+                    if (data.pendingOrders > 0) {
+                        pendingOrdersCount.textContent = data.pendingOrders;
+                        pendingOrdersCount.classList.remove('d-none');
+                    } else {
+                        pendingOrdersCount.classList.add('d-none');
+                    }
 
+                    var cartsCounting = document.getElementById('cartsCounting');
+                    if (data.cartsCount > 0) {
+                        cartsCounting.textContent = data.cartsCount;
+                        cartsCounting.classList.remove('d-none');
+                    } else {
+                        cartsCounting.classList.add('d-none');
+                    }
+
+                    var pendingOrdersCount1 = document.getElementById('forPendingOrdersCount1');
+                    if (data.pendingOrders > 0) {
+                        pendingOrdersCount1.textContent = data.pendingOrders;
+                        pendingOrdersCount1.classList.remove('d-none');
+                    } else {
+                        pendingOrdersCount1.classList.add('d-none');
+                    }
+
+                    var cartsCounting1 = document.getElementById('cartsCounting1');
+                    if (data.cartsCount > 0) {
+                        cartsCounting1.textContent = data.cartsCount;
+                        cartsCounting1.classList.remove('d-none');
+                    } else {
+                        cartsCounting1.classList.add('d-none');
+                    }
+                })
+        })
     </script>
     <script>
         $(document).ready(function() {

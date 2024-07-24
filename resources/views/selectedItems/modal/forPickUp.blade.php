@@ -127,12 +127,12 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" data-user-reference="{{ $user['referenceNo'] }}" value="true">Deny</button>
-                            <button type="button" class="btn btn-outline-primary me-2" id="cancelDenyBtn{{ $user['referenceNo'] }}" style="display: none;">Cancel Deny</button>
-                            <button type="submit" class="btn btn-outline-success me-2" id="pickedUpBtn{{ $user['referenceNo'] }}" name="pickedUp" value="true">Picked Up</button>
-                            <button type="submit" class="btn btn-outline-primary me-2" id="updateBtn{{ $user['referenceNo'] }}" style="display: none;">Update</button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="d-flex flex-wrap justify-content-end">
+                            <button type="button" class="btn btn-outline-danger me-2 mb-2 denyBtn" name="deny" data-user-reference="{{ $user['referenceNo'] }}" value="true">Deny</button>
+                            <button type="button" class="btn btn-outline-primary me-2 mb-2 w-auto" id="cancelDenyBtn{{ $user['referenceNo'] }}" style="display: none;">Cancel Deny</button>
+                            <button type="submit" class="btn btn-outline-success me-2 mb-2 w-auto" id="pickedUpBtn{{ $user['referenceNo'] }}" name="pickedUp" value="true">Picked Up</button>
+                            <button type="submit" class="btn btn-outline-primary me-2 mb-2 w-auto" id="updateBtn{{ $user['referenceNo'] }}" style="display: none;">Update</button>
+                            <button type="button" class="btn btn-outline-secondary me-2 mb-2 w-auto" data-bs-dismiss="modal">Close</button>
                         </div>
 
                     </form>

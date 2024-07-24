@@ -146,13 +146,12 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-danger me-2 denyBtn" name="deny" value="true" data-user-reference="{{ $user['referenceNo'] }}">Deny</button>
-                            <button type="button" class="btn btn-outline-primary me-2" id="cancelDenyBtn{{ $user['referenceNo'] }}" style="display: none;">Cancel Deny</button>
-                            <button type="submit" class="btn btn-outline-primary me-2" id="finishedBtn{{ $user['referenceNo'] }}">Finished</button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="d-flex flex-wrap justify-content-end">
+                            <button type="button" class="btn btn-outline-danger me-2 mb-2 denyBtn" name="deny" value="true" data-user-reference="{{ $user['referenceNo'] }}">Deny</button>
+                            <button type="button" class="btn btn-outline-primary me-2 mb-2 w-auto" id="cancelDenyBtn{{ $user['referenceNo'] }}" style="display: none;">Cancel Deny</button>
+                            <button type="submit" class="btn btn-outline-primary me-2 mb-2 w-auto" id="finishedBtn{{ $user['referenceNo'] }}">Finished</button>
+                            <button type="button" class="btn btn-outline-secondary me-2 mb-2 w-auto" data-bs-dismiss="modal">Close</button>
                         </div>
-
                     </form>
                 </div>
 

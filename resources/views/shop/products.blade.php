@@ -35,9 +35,9 @@
                         </ul>
                     </div>
                     <div class="d-md-none" id="productSidebarToggle">
-                        <div class="bg-primary px-5 py-3 rounded text-light">
+                        <div class="px-5 py-3 rounded text-light" style="background-color: #696cff;">
                             <i class="fa fa-bars mr-2"></i>
-                            <span>Products</span>
+                            <span><strong>Products</strong></span>
                             <span style="position: absolute; right: 50px; top: 20px;"><i class="fa fa-caret-down "></i></span>
                         </div>
                         <ul>
