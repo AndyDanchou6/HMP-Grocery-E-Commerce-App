@@ -27,8 +27,8 @@
                         </form>
                     </div>
 
-                    <div class=" hero__search__phone flex-wrap w-auto">
-                        <div class="hero__search__phone__icon">
+                    <div class=" hero__search__phone">
+                        <div class="hero__search__phone__icon" style="display: flex; justify-content: center; align-items: center;">
                             <i class="fa fa-phone" style="color: #696cff;"></i>
 
                         </div>
