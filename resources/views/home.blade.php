@@ -140,11 +140,21 @@
     </div>
 </div>
 
+<div id="restock-modals"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let currentPage = 1;
 
         function fetchCriticalProducts(page) {
+
+            const openModals = document.querySelectorAll('.modal.show');
+            openModals.forEach(modal => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
             fetch(`{{ route('inventories.criticalProducts') }}?page=${page}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
@@ -157,14 +167,14 @@
                     updatePagination(data.inventories);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 5000);
+                    }, 10000);
                 })
                 .catch(error => {
                     console.error('Error fetching critical products:', error);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 5000);
-                });
+                    }, 10000);
+                })
         }
 
         function updateTable(inventories) {
@@ -191,12 +201,48 @@
                     <td>${inventory.product_name}</td>
                     <td><span class="badge bg-label-danger me-1">${inventory.quantity}</span></td>
                     <td>
-                        <a href="{{ route('inventories.index') }}" class="bi bi-arrow-right-short me-1">
-                            <i class="fas fa-trash"></i>
+                        <a href="#" class="bx bx-plus me-1" data-bs-toggle="modal" data-bs-target="#restock${inventory.id}">
                         </a>
                     </td>
                 `;
                 tableBody.appendChild(row);
+
+                const restockModalsContainer = document.querySelector('#restock-modals');
+
+                if (restockModalsContainer) {
+                    var modalId = `restock${inventory.id}`;
+                    var restockAPI = `/restock/${inventory.id}`;
+                    var newRestockModal = `
+                        <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content">
+                                    <form action="${restockAPI}" method="POST" enctype="multipart/form-data" id="editFormElement">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">${inventory.product_name}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="column">
+                                                    <label for="restock-quantity-${inventory.id}" class="mb-3">Quantity</label>
+                                                    <input type="number" name="quantity" id="restock-quantity-${inventory.id}" class="form-control" placeholder="Add decided amount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-outline-success">Restock</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+
+                    restockModalsContainer.innerHTML += newRestockModal;
+                }
             });
         }
 

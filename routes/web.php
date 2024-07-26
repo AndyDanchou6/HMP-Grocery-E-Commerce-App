@@ -104,6 +104,7 @@ Route::get('/showMorning', [SelectedItemsController::class, 'showMorning']);
 Route::get('/availableStocks', [InventoryController::class, 'availableStocks']);
 Route::get('/productByName', [InventoryController::class, 'test']);
 Route::post('/addAsVariant', [InventoryController::class, 'addAsVariant']);
+Route::put('restock/{itemId}', [InventoryController::class, 'restock'])->name('inventories.restock');
 
 Route::middleware('auth')->get('/selectedItems/courierCount', [SelectedItemsController::class, 'courierTask'])->name('selectedItems.courierCount');
 
@@ -123,3 +124,6 @@ Route::prefix('customer')->middleware('auth')->group(function () {
     Route::get('orders/unpaidOrders', [CustomerController::class, 'forUnpaidOrders'])->name('customers.unpaid_orders');
     Route::get('orders/notification', [CustomerController::class, 'notificationUpdates'])->name('customers.userNotification');
 });
+
+// Change password
+Route::post('changePass', [ProfileController::class, 'changePass'])->name('profile.changePass');

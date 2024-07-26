@@ -59,6 +59,7 @@
                             <textarea id="editAddress" name="address" class="form-control" rows="3" placeholder="Enter Address">{{ Auth::user()->address }}</textarea>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#changePassword{{ Auth::user()->id }}">Change Password</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
@@ -68,6 +69,8 @@
         </div>
     </div>
 </div>
+
+@include('profile.changePassword')
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
