@@ -30,6 +30,7 @@
                                 <a href="{{ route('shop.products', ['subCategory' => $product]) }}" class="category-link {{ request('subCategory') == $product ? 'active' : '' }}" data-category-id="{{ $product }}">
                                     {{ $product }}
                                 </a>
+                                <hr>
                             </li>
                             @endforeach
                         </ul>

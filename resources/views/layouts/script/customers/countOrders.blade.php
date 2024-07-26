@@ -18,7 +18,7 @@
                      if (data.status === 200) {
                          if (unpaidOrders) {
                              unpaidOrders.textContent = data.count4;
-                             unpaidOrders.style.display = data.count4 ? 'block' : 'none';
+                             unpaidOrders.style.display = data.count4 ? 'flex' : 'none';
                          }
                      }
                  })
@@ -54,21 +54,21 @@
                      if (data.status == 200) {
                          if (forPendingOrders) {
                              forPendingOrders.textContent = data.count1;
-                             forPendingOrders.style.display = data.count1 ? 'block' : 'none';
+                             forPendingOrders.style.display = data.count1 ? 'flex' : 'none';
                          }
                          if (forDeliveryOrders) {
                              forDeliveryOrders.textContent = data.count2;
-                             forDeliveryOrders.style.display = data.count2 ? 'block' : 'none';
+                             forDeliveryOrders.style.display = data.count2 ? 'flex' : 'none';
                          }
 
                          if (forPickupOrders) {
                              forPickupOrders.textContent = data.count3;
-                             forPickupOrders.style.display = data.count3 ? 'block' : 'none';
+                             forPickupOrders.style.display = data.count3 ? 'flex' : 'none';
                          }
 
                          if (forUnpaidOrders) {
                              forUnpaidOrders.textContent = data.count4;
-                             forUnpaidOrders.style.display = data.count4 ? 'block' : 'none';
+                             forUnpaidOrders.style.display = data.count4 ? 'flex' : 'none';
                          }
                      }
                  })

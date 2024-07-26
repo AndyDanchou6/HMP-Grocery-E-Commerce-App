@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('landingPage');
 })->name('welcome');
 
 Auth::routes();
@@ -123,3 +123,6 @@ Route::prefix('customer')->middleware('auth')->group(function () {
     Route::get('orders/unpaidOrders', [CustomerController::class, 'forUnpaidOrders'])->name('customers.unpaid_orders');
     Route::get('orders/notification', [CustomerController::class, 'notificationUpdates'])->name('customers.userNotification');
 });
+
+
+Route::get('blank', [AuthController::class, 'blankPage'])->name('generate-invoice');

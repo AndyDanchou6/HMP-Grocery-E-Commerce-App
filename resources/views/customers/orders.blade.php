@@ -3,28 +3,17 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="card-header row justify-content-between align-items-center">
-            <h4 class="col-md-3">Order History</h4>
-            <div class="col-md-8 alert alert-primary alert-sm" role="alert" style="margin-right: 10px; text-align: justify; animation: fadeEffect 5s ease-in-out 10s infinite;" id="timer">
-                Reminder: For GCash payments, kindly remit your payment to <strong>{{ $admin->phone }}</strong>
-                and include your <strong>order reference number</strong> in the message. Please provide a screenshot
-                or receipt of your payment. You can easily access this by clicking on the receipt icon below. Thank you!
-            </div>
-        </div>
-        <form action="{{ route('customers.orders') }}" method="GET" class="w-100 mb-3">
-            <div class="container-fluid">
-                <div class="row justify-content-end">
-                    <div class="col-md-5" style="margin-right: 10px;">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-primary">
-                                <i class='bx bx-search-alt-2'></i>
-                            </button>
-                        </div>
-                    </div>
+        <div class="card-header d-flex justify-content-between align-items-center mb-4">
+            <h4 style="margin: auto 0;">Order History</h4>
+            <form action="{{ route('customers.orders') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search......" value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-search-alt-2'></i>
+                    </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>

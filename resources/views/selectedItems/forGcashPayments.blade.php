@@ -15,6 +15,18 @@
                 </div>
             </form>
         </div>
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-style1">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Payments</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Gcash</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
