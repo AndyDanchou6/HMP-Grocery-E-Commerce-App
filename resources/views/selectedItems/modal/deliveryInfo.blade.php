@@ -15,7 +15,11 @@
                     <div class="row mb-3">
                         <label for="fb_link" class="col-sm-2 col-form-label">Facebook</label>
                         <div class="col-sm-10">
+                            @if($user['fb_link'])
                             <input type="text" class="form-control" value="{{ $user['fb_link'] }}" readonly>
+                            @else
+                            <input type="text" class="form-control" value="No information" readonly>
+                            @endif
                         </div>
                     </div>
                     <div class="row mb-3">

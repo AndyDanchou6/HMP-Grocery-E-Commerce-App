@@ -42,7 +42,11 @@
                                 <tr class="itemsRow">
                                     <td class="shoping__cart__item">
                                         <img src="{{ asset('storage/' . $item->inventory->product_img) }}" alt="" style="width: 100px; height: 100px">
+                                        @if($item->inventory->variant)
+                                        <h5>{{ $item->inventory->product_name }} [{{ $item->inventory->variant }}]</h5>
+                                        @else
                                         <h5>{{ $item->inventory->product_name }}</h5>
+                                        @endif
                                     </td>
                                     <td class="shoping__cart__price">
                                         ₱{{ number_format($item->inventory->price, 2) }}

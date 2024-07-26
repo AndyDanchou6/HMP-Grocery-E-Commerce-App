@@ -21,7 +21,7 @@
                         <th>#</th>
                         <th>User Name</th>
                         <th>Reference No.</th>
-                        <th>Facebook</th>
+                        <th>Phone No.</th>
                         <th>Address</th>
                         <th>Items</th>
                     </tr>
@@ -34,10 +34,10 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user['name'] }}</td>
                         <td><span class="badge bg-label-primary me-1">{{ $user['referenceNo'] }}</span></td>
-                        <td><span class="badge bg-label-secondary me-1">{{ $user['fb_link'] }}</td>
+                        <td><span class="badge bg-label-secondary me-1">{{ $user['phone'] }}</td>
                         <td><span class="badge bg-label-info me-1">{{ $user['address'] }}</td>
                         <td>
-                            <a class="bx bx-message-alt me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#deliverInfo{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
+                            <a class="bx bx-box me-1 details-button" href="#" data-bs-toggle="modal" data-bs-target="#deliverInfo{{$user['referenceNo']}}" data-user-id="{{ $user['referenceNo'] }}"></a>
                             @include('selectedItems.modal.deliveryInfo')
                         </td>
                     </tr>

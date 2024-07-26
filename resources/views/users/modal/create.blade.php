@@ -17,7 +17,14 @@
                     <div class="row mb-3">
                         <label for="role" class="col-sm-2 col-form-label">Role</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="role" name="role" value="Courier" readonly>
+                            <select class="form-select" name="role" id="user-role">
+                                <option value="Courier">Courier</option>
+                                <option value="Customer">Customer</option>
+                                <!-- If User is super admin (First two admin accounts which is seeded) -->
+                                @if($currentUser->id == 1 || $currentUser->id == 2) 
+                                <option value="Admin">Admin</option>
+                                @endif
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -43,6 +50,12 @@
                         <label for="password" class="col-sm-2 col-form-label">Password</label>
                         <div class="col-sm-10">
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="password_confirmation" class="col-sm-2 col-form-label">Confirm Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Enter Password">
                         </div>
                     </div>
             </div>
