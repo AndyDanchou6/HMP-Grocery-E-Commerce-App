@@ -147,7 +147,6 @@
         let currentPage = 1;
 
         function fetchCriticalProducts(page) {
-
             const openModals = document.querySelectorAll('.modal.show');
             openModals.forEach(modal => {
                 const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -155,6 +154,7 @@
                     modalInstance.hide();
                 }
             });
+
             fetch(`{{ route('inventories.criticalProducts') }}?page=${page}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
@@ -174,7 +174,7 @@
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
                     }, 10000);
-                })
+                });
         }
 
         function updateTable(inventories) {
@@ -193,26 +193,25 @@
                 return;
             }
 
-
             inventories.forEach((inventory, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${inventory.product_name}</td>
-                    <td><span class="badge bg-label-danger me-1">${inventory.quantity}</span></td>
-                    <td>
-                        <a href="#" class="bx bx-plus me-1" data-bs-toggle="modal" data-bs-target="#restock${inventory.id}">
-                        </a>
-                    </td>
-                `;
+                <td>${index + 1}</td>
+                <td>${inventory.product_name}</td>
+                <td><span class="badge bg-label-danger me-1">${inventory.quantity}</span></td>
+                <td>
+                    <a href="#" class="bx bx-plus me-1" data-bs-toggle="modal" data-bs-target="#restock${inventory.id}">
+                    </a>
+                </td>
+            `;
                 tableBody.appendChild(row);
 
                 const restockModalsContainer = document.querySelector('#restock-modals');
-
                 if (restockModalsContainer) {
-                    var modalId = `restock${inventory.id}`;
-                    var restockAPI = `/restock/${inventory.id}`;
-                    var newRestockModal = `
+                    if (!document.getElementById(`restock${inventory.id}`)) {
+                        var modalId = `restock${inventory.id}`;
+                        var restockAPI = `/restock/${inventory.id}`;
+                        var newRestockModal = `
                         <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-md" role="document">
                                 <div class="modal-content">
@@ -239,9 +238,9 @@
                                 </div>
                             </div>
                         </div>
-                        `;
-
-                    restockModalsContainer.innerHTML += newRestockModal;
+                    `;
+                        restockModalsContainer.innerHTML += newRestockModal;
+                    }
                 }
             });
         }
@@ -261,7 +260,7 @@
             const prevLi = document.createElement('li');
             const prevLink = document.createElement('a');
             prevLink.className = 'page-link disabled';
-            prevLink.innerHTML = '<i class="tf-icon bx bx" style="background-color: black;"></i>';
+            prevLink.innerHTML = '<i class="tf-icon bx bx-chevron-left"></i>';
             prevLi.appendChild(prevLink);
             linksContainer.appendChild(prevLi);
 
@@ -270,7 +269,7 @@
                 pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
                 const pageLink = document.createElement('a');
                 pageLink.className = 'page-link';
-                pageLink.href = `{{ route('inventories.criticalProducts') }}?page=${i}`;
+                pageLink.href = '#';
                 pageLink.setAttribute('data-page', i.toString());
                 pageLink.innerHTML = i.toString();
                 pageLi.appendChild(pageLink);
@@ -280,7 +279,7 @@
             const nextLi = document.createElement('li');
             const nextLink = document.createElement('a');
             nextLink.className = 'page-link disabled';
-            nextLink.innerHTML = '<i class="tf-icon bx bx-chevron"></i>';
+            nextLink.innerHTML = '<i class="tf-icon bx bx-chevron-right"></i>';
             nextLi.appendChild(nextLink);
             linksContainer.appendChild(nextLi);
         }
@@ -326,5 +325,4 @@
         fetchCriticalProducts(currentPage);
     });
 </script>
-
 @endsection
