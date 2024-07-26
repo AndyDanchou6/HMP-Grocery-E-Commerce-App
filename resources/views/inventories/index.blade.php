@@ -30,7 +30,6 @@
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Status</th>
-                        <th>More Info</th>
                         @if(Auth::user()->role == 'Admin')
                         <th>Actions</th>
                         @endif
@@ -60,18 +59,17 @@
                             <span class="badge bg-label-danger me-1">Out of stock</span>
                             @endif
                         </td>
-                        <td>
-                            <a class="bx bx-message-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#messages{{$item->id}}">
-                            </a>
-                            @include('inventories.modal.information')
-                        </td>
                         @if(Auth::user()->role == 'Admin')
                         <td>
+                            <a class="bx bx-plus me-1" href="#" data-bs-toggle="modal" data-bs-target="#restock{{$item->id}}">
+                            </a>
+                            @include('inventories.modal.restock')
+
                             <a class="bx bx-edit-alt me-1" href="#" data-bs-toggle="modal" data-bs-target="#editModal{{$item->id}}">
                             </a>
                             @include('inventories.modal.edit')
+
                             <a href="#" class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{$item->id}}">
-                                <i class="fas fa-trash"></i>
                             </a>
                             @include('inventories.modal.delete')
                         </td>

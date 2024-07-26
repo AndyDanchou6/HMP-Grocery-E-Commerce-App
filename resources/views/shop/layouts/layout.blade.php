@@ -341,10 +341,11 @@
 
                 if (parseInt(stock) == 0) {
                     productAdjustBtn.style.display = "none";
-                }
+                } 
             } else {
 
-                outOfStockBanner.style.display = "none"
+                outOfStockBanner.style.display = "none";
+                productAdjustBtn.style.display = "block";
             }
         }
 
@@ -464,6 +465,8 @@
                     // Loads the Total cost
                     totalField.value = totalItemCost();
                 }
+
+                onCartBanner();
 
                 setTimeout(updateStocks, 5000);
             } catch (error) {

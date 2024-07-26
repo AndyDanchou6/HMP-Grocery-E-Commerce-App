@@ -191,7 +191,7 @@
             var dropOff = document.querySelector('#dropOff' + userReference);
             var totalWithFee = document.querySelector('#total-with-fee' + userReference);
             var serviceFee = document.querySelector('#service-fee' + userReference);
-            var serviceFeeInput = serviceFee.querySelector('input');
+            // var dropOffInput = dropOff.querySelector('select');
 
             if (retrievalValue == 'delivery') {
 
@@ -199,16 +199,16 @@
                 dropOff.style.display = 'block';
                 dropOff.querySelector('select').setAttribute('required', 'required');
                 serviceFee.style.display = 'block';
-                serviceFeeInput.setAttribute('required', 'required');
+                // dropOffInput.setAttribute('required', 'required');
             }
 
             if (retrievalValue == 'pickup') {
 
                 totalWithFee.style.display = 'none';
-                dropOff.style.display = 'none';
                 dropOff.querySelector('select').removeAttribute('required');
+                dropOff.style.display = 'none';
                 serviceFee.style.display = 'none';
-                serviceFeeInput.removeAttribute('required');
+                // dropOffInput.removeAttribute('required');
             }
         }
 
@@ -274,10 +274,10 @@
 
         // Deny order
         var denyBtns = document.querySelectorAll('.denyBtn');
-        var clickedDeny = false;
 
         denyBtns.forEach(function(deny) {
 
+            var secondDenyClick = false;
             var userReference = deny.getAttribute('data-user-reference');
             var denialInputs = document.querySelector('#denial-reason' + userReference);
             var finishedBtn = document.querySelector('#finishedBtn' + userReference);
@@ -286,14 +286,13 @@
 
             deny.addEventListener('click', function() {
 
-                if (clickedDeny == false) {
+                if (secondDenyClick == false) {
                     denialInputs.style.display = 'block';
                     denialInputs.setAttribute('required', 'required');
                     finishedBtn.style.display = 'none';
 
                     if (serviceFee) {
 
-                        serviceFee.querySelector('input').removeAttribute('required');
                         serviceFee.style.display = 'none';
                     }
 
@@ -302,7 +301,7 @@
                         cancelDenyBtn.style.display = 'block';
                     }
 
-                    clickedDeny = true;
+                    secondDenyClick = true;
                 } else {
 
                     var reasonNotNull = denialInputs.querySelector('textarea');
@@ -317,19 +316,18 @@
             if (cancelDenyBtn) {
                 cancelDenyBtn.addEventListener('click', function() {
 
-                    denialInputs.style.display = 'none';
                     denialInputs.removeAttribute('required');
+                    denialInputs.style.display = 'none';
                     finishedBtn.style.display = 'block';
                     deny.setAttribute('type', 'button');
                     cancelDenyBtn.style.display = 'none';
 
                     if (serviceFee) {
 
-                        serviceFee.querySelector('input').setAttribute('required', 'required');
                         serviceFee.style.display = 'block';
                     }
 
-                    clickedDeny = false;
+                    secondDenyClick = false;
                 })
             }
         })

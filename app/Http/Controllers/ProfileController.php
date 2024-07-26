@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -56,10 +58,10 @@ class ProfileController extends Controller
         if (auth()->user()->role == 'Admin') {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email,' . $id,
-                'name' => 'required',
-                'phone' => 'required',
-                'fb_link' => 'required',
-                'address' => 'required',
+                'name' => 'string|max:255',
+                'phone' => 'string|nullable',
+                'fb_link' => 'string|nullable',
+                'address' => 'string|nullable',
                 'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
@@ -117,5 +119,36 @@ class ProfileController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function changePass(Request $request)
+    {
+        $validatedPassword = Validator::make($request->all(), [
+            'lastPassword' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if ($validatedPassword->fails()) {
+
+            return redirect()->back()->with('error', 'Please check if the new password had atleast 8 characters and matches with the confirm input.');
+        }
+
+        $user = User::findOrFail($request->input('userId'));
+        $originalPassword = $user->password;
+
+        if (!Hash::check($request->input('lastPassword'), $originalPassword)) {
+
+            return redirect()->back()->with('error', 'Last password does not match!');
+        }
+
+        $user->password = Hash::make($request->input('password'));
+
+        if (!$user->save()) {
+
+            return redirect()->back()->with('error', 'Password change failed!');
+        }
+
+        return redirect()->back()->with('success', 'Password change successful!');
+        // dd($user);
     }
 }

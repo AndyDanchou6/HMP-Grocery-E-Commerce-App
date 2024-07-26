@@ -277,10 +277,10 @@
         });
 
         var denyBtns = document.querySelectorAll('.denyBtn');
-        var clickedDeny = false;
 
         denyBtns.forEach(function(deny) {
 
+            var secondDenyClick = false;
             var userReference = deny.getAttribute('data-user-reference');
             var denialInputs = document.querySelector('#denial-reason' + userReference);
             var pickedUpBtn = document.querySelector('#pickedUpBtn' + userReference);
@@ -289,7 +289,7 @@
 
             deny.addEventListener('click', function() {
 
-                if (clickedDeny == false) {
+                if (secondDenyClick == false) {
                     denialInputs.style.display = 'block';
                     denialInputs.setAttribute('required', 'required');
 
@@ -306,7 +306,7 @@
                         cancelDenyBtn.style.display = 'block';
                     }
 
-                    clickedDeny = true;
+                    secondDenyClick = true;
                 } else {
 
                     var reasonNotNull = denialInputs.querySelector('textarea');
@@ -334,7 +334,7 @@
                         updateBtn.style.display = 'block'
                     }
 
-                    clickedDeny = false;
+                    secondDenyClick = false;
                 })
             }
         })

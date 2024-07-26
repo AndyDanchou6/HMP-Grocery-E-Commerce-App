@@ -25,6 +25,7 @@ class InventoryController extends Controller
                 $inventoryQuery->where(function ($query) use ($search) {
                     $query->where('product_name', 'like', '%' . $search . '%')
                         ->orWhere('price', 'like', '%' . $search . '%')
+                        ->orWhere('variant', 'like', '%' . $search . '%')
                         ->orWhere('quantity', 'like', '%' . $search . '%');
                 })->orWhereHas('category', function ($query) use ($search) {
 
@@ -202,7 +203,7 @@ class InventoryController extends Controller
         $item->product_name = $request->input('product_name');
         $item->price = $request->input('price');
         $item->category_id = $request->input('category_id');
-        $item->quantity = $request->input('quantity');  
+        $item->quantity = $request->input('quantity');
 
         if ($request->input('variant') != null) {
             $item->variant = $request->input('variant');
@@ -281,5 +282,22 @@ class InventoryController extends Controller
         $productByName = Inventory::all()->groupBy('product_name');
 
         dd($productByName);
+    }
+
+    public function restock(Request $request, string $itemId) {
+
+        $restockItem = Inventory::findOrFail($itemId);
+
+        if (empty($restockItem)) {
+
+            return redirect()->back()->with('error', 'Product not found!');
+        }
+
+        $restockItem->quantity += $request->quantity;
+        if (!$restockItem->save()) {
+            return redirect()->back()->with('error', 'Restocking failed!');
+        }
+
+        return redirect()->back()->with('success', 'Restocking successful');
     }
 }

@@ -29,7 +29,6 @@
                 icon: sessionType,
                 title: sessionMessage,
                 showConfirmButton: false,
-                timer: 1500,
             });
         } else if (sessionTypeInputs && sessionMessageInputs) {
             let sessionType = sessionTypeInputs.value;

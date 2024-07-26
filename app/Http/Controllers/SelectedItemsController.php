@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\deliverySchedule;
+use App\Models\Inventory;
 use App\Models\SelectedItems;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
@@ -159,11 +160,21 @@ class SelectedItemsController extends Controller
                 ->orderBy('delivery_date', 'asc');
 
             if ($search) {
-                $selectedItems->where(function ($query) use ($search) {
-                    $query->whereHas('user', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    })->orWhere('referenceNo', 'like', "%{$search}%");
-                });
+
+                if (strtolower($search) == 'today') {
+                    $selectedItems->where(function ($query) use ($search) {
+                        $query->whereHas('user', function ($query) use ($search) {
+                            $query->whereDate('delivery_date', now()->toDateString());
+                        });
+                    });
+                } else {
+
+                    $selectedItems->where(function ($query) use ($search) {
+                        $query->whereHas('user', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        })->orWhere('referenceNo', 'like', "%{$search}%");
+                    });
+                }
             }
 
             $selectedItems = $selectedItems->get();
@@ -553,6 +564,7 @@ class SelectedItemsController extends Controller
             $selectedItems = SelectedItems::where('selected_items.status', 'readyForRetrieval')
                 ->where('selected_items.order_retrieval', 'delivery')
                 ->where('selected_items.courier_id', $courier->id)
+                ->whereDate('delivery_date', now()->toDateString())
                 ->with('user')
                 ->with('inventory')
                 ->orderBy('created_at', 'desc');
@@ -634,6 +646,13 @@ class SelectedItemsController extends Controller
     public function updateStatus(Request $request, string $referenceNo)
     {
         $selectedItems = SelectedItems::where('referenceNo', $referenceNo)->get();
+        $couldntRestore = false;
+        $restoredOrders = false;
+        $existingRefs = SelectedItems::pluck('referenceNo')->toArray();
+        do {
+            $newReferenceNo = rand(100000, 999999);
+        } while (in_array($newReferenceNo, $existingRefs));
+
 
         foreach ($selectedItems as $item) {
 
@@ -643,16 +662,55 @@ class SelectedItemsController extends Controller
                 $item->delete();
             } else {
                 if ($request->has('restore')) {
-                    $item->status = 'forPackage';
-                    $item->order_retrieval = $request->input('order_retrieval');
-                    $item->payment_type = $request->input('payment_type');
-                    $item->reasonForDenial = null;
+
+                    $subtractQuantity = $item->quantity;
+                    $itemId = $item->item_id;
+                    $inventoryItem = Inventory::findOrFail($itemId);
+
+                    if ($inventoryItem) {
+
+                        $item->order_retrieval = $request->input('order_retrieval');
+                        $item->payment_type = $request->input('payment_type');
+
+                        if ($inventoryItem->quantity != 0) {
+
+                            if ($inventoryItem->quantity <= $subtractQuantity) {
+
+                                $item->quantity = $inventoryItem->quantity;
+                                $inventoryItem->quantity = 0;
+                            } else {
+
+                                $inventoryItem->quantity -= $subtractQuantity;
+                            }
+
+                            $inventoryItem->save();
+
+                            $item->referenceNo = $newReferenceNo;
+                            $item->reasonForDenial = null;
+                            $item->status = 'forPackage';
+
+                            $restoredOrders = true;
+                        } else {
+                            $couldntRestore = true;
+                        }
+                        $item->save();
+                    }
                 } elseif ($request->has('deny')) {
                     $item->status = 'denied';
                     $item->courier_id = null;
                     $item->delivery_date = null;
                     $item->service_fee_id = null;
                     $item->reasonForDenial = $request->input('reasonForDenial');
+
+                    $returnQuantity = $item->quantity;
+                    $itemId = $item->item_id;
+                    $inventoryItem = Inventory::findOrFail($itemId);
+
+                    if ($inventoryItem) {
+
+                        $inventoryItem->quantity += $returnQuantity;
+                        $inventoryItem->save();
+                    }
                 } elseif ($item->status == 'forPackage') {
 
                     if ($request->has('order_retrieval')) {
@@ -756,7 +814,14 @@ class SelectedItemsController extends Controller
         }
 
         if ($request->has('restore')) {
-            return redirect()->back()->with('success', 'Order Has Been Restored.');
+            if ($couldntRestore && $restoredOrders) {
+
+                return redirect()->back()->with('error', 'Some orders were out of stock and not restored. New ref.# ' . $newReferenceNo);
+            } elseif ($couldntRestore && !$restoredOrders) {
+
+                return redirect()->back()->with('error', 'Orders were out of stock and not restored.');
+            }
+            return redirect()->back()->with('success', 'Order Has Been Restored. New ref.# ' . $newReferenceNo);
         }
 
         if ($request->has('deny')) {
@@ -865,6 +930,7 @@ class SelectedItemsController extends Controller
         $deliveryRequest = SelectedItems::where('order_retrieval', 'delivery')
             ->where('courier_id', $user)
             ->where('status', 'readyForRetrieval')
+            ->whereDate('delivery_date', now()->toDateString())
             ->distinct('referenceNo')
             ->count('referenceNo');
 
