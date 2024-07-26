@@ -22,7 +22,6 @@
 
                     if (notificationAtIndex0 && hasNewNotifications) {
                         toastr.options = {
-                            closeButton: true,
                             progressBar: true,
                             positionClass: 'toast-top-right',
                             showDuration: '300',
@@ -33,23 +32,21 @@
                             hideEasing: 'linear',
                             showMethod: 'fadeIn',
                             hideMethod: 'fadeOut',
-                            newestOnTop: true,
                             preventDuplicates: true,
-                            iconClass: 'custom-toast-icon',
-                            toastClass: 'custom-toast modern-toast'
+                            closeButton: true,
                         };
 
                         const notificationType = notificationAtIndex0.type;
                         if (notificationType === 'success') {
-                            toastr.success(notificationAtIndex0.message);
+                            toastr.success(`<div><i class="bx bx-bell bx-tada"> </i> <strong> Notification Alert </strong><br>${notificationAtIndex0.message}</div>`);
                         } else if (notificationType === 'info') {
-                            toastr.info(notificationAtIndex0.message);
+                            toastr.info(`<div><i class="bx bx-bell bx-tada"> </i> <strong> Notification Alert </strong><br>${notificationAtIndex0.message}</div>`);
                         } else if (notificationType === 'warning') {
-                            toastr.warning(notificationAtIndex0.message);
+                            toastr.warning(`<div><i class="bx bx-bell bx-tada"> </i> <strong> Notification Alert </strong><br>${notificationAtIndex0.message}</div>`);
                         } else if (notificationType === 'error') {
-                            toastr.error(notificationAtIndex0.message);
+                            toastr.error(`<div><i class="bx bx-bell bx-tada"> </i> <strong> Notification Alert </strong><br>${notificationAtIndex0.message}</div>`);
                         } else {
-                            toastr.info(notificationAtIndex0.message);
+                            toastr.info(`<div><i class="bx bx-bell bx-tada"> </i> <strong> Notification Alert </strong><br>${notificationAtIndex0.message}</div>`);
                         }
                     }
 

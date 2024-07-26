@@ -376,42 +376,45 @@ class CustomerController extends Controller
                     if (!in_array($reference, $deliveredReferences)) {
                         if ($item->order_retrieval == 'delivery') {
                             if ($isToday) {
-                                $message = "Ref #$reference is out for delivery today with Courier: $courierName.";
-                                $type = 'info';
+                                $message = "Ref #<strong>$reference</strong> is out for delivery today with Courier: <strong>$courierName</strong>.";
+                                $type = 'infoDelivery';
                             } elseif ($item->delivery_date && $courierName != 'Unknown Courier') {
-                                $message = "Ref #$reference is scheduled for delivery on $date with Courier: $courierName.";
+                                $message = "Ref #<strong>$reference</strong> is scheduled for delivery on <strong>$date</strong> with Courier: <strong>$courierName</strong>.";
                                 $type = 'info';
                             } elseif ($item->delivery_date) {
-                                $message = "Ref #$reference is scheduled for delivery on $date.";
+                                $message = "Ref #<strong>$reference</strong> is scheduled for delivery on <strong>$date</strong>.";
                                 $type = 'info';
                             } elseif ($courierName != 'Unknown Courier') {
-                                $message = "Ref #$reference is assigned to Courier: $courierName.";
+                                $message = "Ref #<strong>$reference</strong> is assigned to Courier: <strong>$courierName</strong>.";
                                 $type = 'info';
                             } else {
-                                $message = "Ref #$reference has been moved to the delivery section";
+                                $message = "Ref #<strong>$reference</strong> has been moved to the delivery section";
                                 $type = 'success';
                             }
                         }
                         $deliveredReferences[] = $reference;
                     }
                     if ($item->order_retrieval == 'pickup') {
-                        $message = "Ref #$reference has been moved to the pickup section. You are now authorized to take it.";
-                        $type = 'success';
+                        if (!in_array($reference, $deliveredReferences)) {
+                            $message = "Ref #<strong>$reference</strong> has been moved to the pickup section. You are now authorized to take it.";
+                            $type = 'success';
+                            $deliveredReferences[] = $reference;
+                        }
                     }
                 } elseif ($item->status == 'delivered') {
                     if (!in_array($reference, $deliveredReferences)) {
-                        $message = "Ref #$reference has been successfully delivered" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
+                        $message = "Ref #<strong>$reference</strong> has been successfully <strong>delivered</strong>" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
                         $type = 'success';
                         $deliveredReferences[] = $reference;
                     }
                 } elseif ($item->status == 'pickedUp') {
                     if (!in_array($reference, $deliveredReferences)) {
-                        $message = "Ref #$reference has been successfully picked up" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
+                        $message = "Ref #<strong>$reference</strong> has been successfully <strong>picked up</strong>" . ($item->payment_condition == 'paid' ? " and payment is confirmed." : ".");
                         $type = 'success';
                         $deliveredReferences[] = $reference;
                     }
                 } elseif ($item->status == 'denied') {
-                    $message = "Ref #$reference has been denied";
+                    $message = "Ref #<strong>$reference</strong> has been <strong>denied</strong>";
                     $type = 'error';
                 }
 

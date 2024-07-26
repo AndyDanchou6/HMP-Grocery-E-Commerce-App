@@ -48,3 +48,48 @@
         padding: 5px 10px;
     }
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.toast {
+    border: 2px solid black;
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 10px;
+    animation: fadeIn 0.5s, fadeOut 0.5s 5s !important;
+}
+
+.toast-close-button {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    background: none;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer !important;
+    color: black !important;
+}
+
+.toast-close-button i {
+    font-size: 16px;
+}

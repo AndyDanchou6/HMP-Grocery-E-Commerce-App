@@ -370,10 +370,99 @@ class SelectedItemsController extends Controller
         }
     }
 
+    // public function show(Request $request)
+    // {
+    //     if (Auth::user()->role == 'Admin') {
+    //         $search = $request->input('search');
+
+    //         $selectedItemsQuery = SelectedItems::where('status', '!=', 'forCheckout')
+    //             ->whereIn('order_retrieval', ['delivery', 'pickup'])
+    //             ->with('user')
+    //             ->with('inventory')
+    //             ->orderByRaw("FIELD(status, 'delivered', 'pickedUp') ASC");
+
+    //         if ($search) {
+    //             $selectedItemsQuery->where(function ($query) use ($search) {
+    //                 $query->whereHas('user', function ($query) use ($search) {
+    //                     $query->where('name', 'like', "%{$search}%");
+    //                 })->orWhere('referenceNo', 'like', "%{$search}%")
+    //                     ->orWhere('payment_condition', 'like', "%{$search}%");
+    //             });
+    //         }
+
+    //         $selectedItems = $selectedItemsQuery->orderBy('created_at', 'desc')->get();
+
+    //         $userByReference = [];
+
+    //         foreach ($selectedItems as $item) {
+    //             if (!isset($userByReference[$item->referenceNo])) {
+    //                 $courier = User::find($item->courier_id);
+    //                 $userByReference[$item->referenceNo] = [
+    //                     'id' => $item->user->id,
+    //                     'referenceNo' => $item->referenceNo,
+    //                     'name' => $item->user->name,
+    //                     'role' => $item->user->role,
+    //                     'email' => $item->user->email,
+    //                     'phone' => $item->phone,
+    //                     'fb_link' => $item->fb_link,
+    //                     'order_retrieval' => $item->order_retrieval,
+    //                     'quantity' => $item->quantity,
+    //                     'status' => $item->status,
+    //                     'courier_id' => $courier ? $courier->name : 'Unknown',
+    //                     'payment_type' => $item->payment_type,
+    //                     'payment_condition' => $item->payment_condition,
+    //                     'proof_of_delivery' => $item->proof_of_delivery ? asset('storage/' . $item->proof_of_delivery) : null,
+    //                     'payment_proof' => $item->payment_proof ? asset('storage/' . $item->payment_proof) : null,
+    //                     'delivery_date' => $item->delivery_date,
+    //                     'reasonForDenial' => $item->reasonForDenial,
+    //                     'created_at' => $item->created_at,
+    //                     'updated_at' => $item->updated_at,
+    //                     'items' => []
+    //                 ];
+
+    //                 if ($item->serviceFee) {
+    //                     $userByReference[$item->referenceNo]['address'] = $item->serviceFee->location;
+    //                 }
+    //             }
+    //             $userByReference[$item->referenceNo]['items'][] = $item;
+    //         }
+
+    //         $perPage = 10;
+    //         $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    //         $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
+    //         $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
+    //             'path' => LengthAwarePaginator::resolveCurrentPath(),
+    //         ]);
+
+    //         return view('selectedItems.history', [
+    //             'userByReference' => $paginatedItems,
+    //             'search' => $search,
+    //         ]);
+    //     } else {
+    //         return redirect()->route('error');
+    //     }
+    // }
+
     public function show(Request $request)
     {
         if (Auth::user()->role == 'Admin') {
             $search = $request->input('search');
+            $selectedMonth = $request->input('month');
+            $selectedType = $request->input('type');
+
+            $firstData = SelectedItems::where('status', '!=', 'forCheckout')->min('created_at');
+            $lastData = SelectedItems::where('status', '!=', 'forCheckout')->max('created_at');
+
+            $months = [];
+            if ($firstData && $lastData) {
+                $start = Carbon::parse($firstData)->startOfMonth();
+                $end = Carbon::parse($lastData)->endOfMonth();
+
+                while ($start->lte($end)) {
+                    $months[] = $start->format('Y-m');
+                    $start->addMonth();
+                }
+            }
 
             $selectedItemsQuery = SelectedItems::where('status', '!=', 'forCheckout')
                 ->whereIn('order_retrieval', ['delivery', 'pickup'])
@@ -381,15 +470,27 @@ class SelectedItemsController extends Controller
                 ->with('inventory')
                 ->orderByRaw("FIELD(status, 'delivered', 'pickedUp') ASC");
 
+
             if ($search) {
                 $selectedItemsQuery->where(function ($query) use ($search) {
                     $query->whereHas('user', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
                     })->orWhere('referenceNo', 'like', "%{$search}%")
-                        ->orWhere('payment_condition', 'like', "%{$search}%");
+                        ->orWhere('payment_condition', 'like', "%{$search}%")
+                        ->orWhere('order_retrieval', 'like', "%{$search}%")
+                        ->orWhere('payment_type', 'like', "%{$search}%");
                 });
             }
 
+            if ($selectedMonth && $selectedMonth !== 'all') {
+                $selectedItemsQuery->whereMonth('created_at', Carbon::parse($selectedMonth)->month);
+            }
+
+            if ($selectedType && $selectedType !== 'both') {
+                $selectedItemsQuery->where('order_retrieval', $selectedType);
+            }
+
+            // Get selected items
             $selectedItems = $selectedItemsQuery->orderBy('created_at', 'desc')->get();
 
             $userByReference = [];
@@ -427,16 +528,26 @@ class SelectedItemsController extends Controller
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
 
+            // Pagination logic
             $perPage = 10;
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = array_slice($userByReference, ($currentPage - 1) * $perPage, $perPage, true);
-            $paginatedItems = new LengthAwarePaginator($currentItems, count($userByReference), $perPage, $currentPage, [
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-            ]);
+            $paginatedItems = new LengthAwarePaginator(
+                $currentItems,
+                count($userByReference),
+                $perPage,
+                $currentPage,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                ]
+            );
 
             return view('selectedItems.history', [
                 'userByReference' => $paginatedItems,
                 'search' => $search,
+                'selectedMonth' => $selectedMonth,
+                'selectedType' => $selectedType,
+                'months' => $months,
             ]);
         } else {
             return redirect()->route('error');

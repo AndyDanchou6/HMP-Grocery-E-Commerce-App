@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SelectedItems;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,10 +19,14 @@ class AuthController extends Controller
         return view('layouts.auth.notFound');
     }
 
-    public function customerDashboard()
+    public function customerDashboard(Request $request)
     {
         if (Auth::user()->role == 'Customer') {
-            return view('customer_home');
+            $user = Auth::user();
+
+            $totalOrders = SelectedItems::where('user_id', $user->id)->whereNotIn('status', ['forCheckout', 'denied'])->count();
+
+            return view('customer_home', compact('user', 'totalOrders'));
         } else {
             return redirect()->route('error404');
         }
@@ -33,5 +39,10 @@ class AuthController extends Controller
         } else {
             return redirect()->route('error404');
         }
+    }
+
+    public function blankPage()
+    {
+        return view('blank_page');
     }
 }

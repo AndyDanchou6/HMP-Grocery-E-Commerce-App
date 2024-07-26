@@ -14,7 +14,34 @@
                     </button>
                 </div>
             </form>
+            <a href="{{ route('generate-invoice') }}" class="btn btn-primary my-auto ms-2">Generate Report</a>
         </div>
+        <div class="card-body">
+            <div class="d-flex">
+                <form action="{{ route('selectedItems.history') }}" method="GET" class="d-flex mb-4">
+                    <div class="form-group me-1">
+                        <label for="monthSelect" class="visually-hidden">Choose a month:</label>
+                        <select name="month" id="monthSelect" class="form-select" onchange="this.form.submit()">
+                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>All Months</option>
+                            @foreach ($months as $month)
+                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::parse($month)->format('F Y') }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group me-1">
+                        <select name="type" class="form-select" onchange="this.form.submit()">
+                            <option value="both" {{ request('type') == 'both' ? 'selected' : '' }}>Both</option>
+                            <option value="delivery" {{ request('type') == 'delivery' ? 'selected' : '' }}>Delivery</option>
+                            <option value="pickup" {{ request('type') == 'pickup' ? 'selected' : '' }}>Pickup</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
@@ -99,8 +126,18 @@
                 </tbody>
             </table>
         </div>
-        @include('selectedItems.pagination')
+        @include('selectedItems.pagination2')
     </div>
 </div>
 </div>
+<script>
+    document.querySelectorAll('.btn-group').forEach(group => {
+        const button = group.querySelector('.dropdown-toggle');
+        group.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                button.textContent = this.textContent;
+            });
+        });
+    });
+</script>
 @endsection

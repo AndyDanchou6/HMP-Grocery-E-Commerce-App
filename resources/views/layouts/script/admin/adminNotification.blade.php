@@ -84,7 +84,6 @@
                          const msg = currentNotificationMessages[0];
                          if (!previousNotificationMessages.includes(msg)) {
                              toastr.options = {
-                                 closeButton: true,
                                  progressBar: true,
                                  positionClass: 'toast-top-right',
                                  showDuration: '300',
@@ -95,13 +94,11 @@
                                  hideEasing: 'linear',
                                  showMethod: 'fadeIn',
                                  hideMethod: 'fadeOut',
-                                 newestOnTop: true,
                                  preventDuplicates: true,
-                                 iconClass: 'custom-toast-icon',
-                                 toastClass: 'custom-toast modern-toast'
+                                 closeButton: true,
                              };
 
-                             toastr.info(`<strong>${msg}</strong>`);
+                             toastr.info(`<div><i class="bx bx-bell bx-tada"> </i> <strong> New Purchase Alert</strong><br>${msg}</div>`);
 
                              if (msg.includes('Finished packaging')) {
                                  sessionStorage.setItem('notificationBellState', 'active');
