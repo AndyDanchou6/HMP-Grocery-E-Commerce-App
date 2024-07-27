@@ -14,7 +14,7 @@
                     </button>
                 </div>
             </form>
-            <a href="{{ route('generate-invoice') }}" class="btn btn-primary my-auto ms-2">Generate Report</a>
+            <a href="{{ route('generate-invoice', ['month' => request('month'), 'type' => request('type')]) }}" class="btn btn-primary my-auto ms-2">Generate Report</a>
         </div>
         <div class="card-body">
             <div class="d-flex">

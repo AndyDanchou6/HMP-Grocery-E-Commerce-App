@@ -90,6 +90,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('selectedItems/forGcashPayments', [SelectedItemsController::class, 'forGcashPayments'])->name('selectedItems.forGcashPayments');
     Route::get('selectedItems/forCODPayments', [SelectedItemsController::class, 'forCODPayments'])->name('selectedItems.forCODPayments');
     Route::get('selectedItems/forInStorePayments', [SelectedItemsController::class, 'forInStorePayments'])->name('selectedItems.forInStorePayments');
+    Route::get('selectedItems/generate-report', [SelectedItemsController::class, 'generateReport'])->name('generate-invoice');
 
     //--- Delivery Schedules ----!>
     Route::get('schedules', [DeliveryScheduleController::class, 'index'])->name('schedules.index');
@@ -126,7 +127,5 @@ Route::prefix('customer')->middleware('auth')->group(function () {
 });
 
 
-Route::get('blank', [AuthController::class, 'blankPage'])->name('generate-invoice');
 // Change password
 Route::post('changePass', [ProfileController::class, 'changePass'])->name('profile.changePass');
-

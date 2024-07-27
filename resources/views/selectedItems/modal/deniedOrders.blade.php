@@ -128,8 +128,8 @@
 
                         </div>
                         <div>
-                            <h4 class="text-danger m-3" style="display: none;" id="delete{{ $user['id'] }}">Are you sure you want to delete this order?</h4>
-                            <h4 class="text-success m-3" style="display: none;" id="restore{{ $user['id'] }}">Are you sure you want to restore this order?</h4>
+                            <h4 class="text-danger m-3 text-wrap" style="display: none;" id="delete{{ $user['id'] }}">Are you sure you want to delete this order?</h4>
+                            <h4 class="text-success m-3 text-wrap" style="display: none;" id="restore{{ $user['id'] }}">Are you sure you want to restore this order?</h4>
                         </div>
 
                         <div class="d-flex flex-wrap justify-content-end">

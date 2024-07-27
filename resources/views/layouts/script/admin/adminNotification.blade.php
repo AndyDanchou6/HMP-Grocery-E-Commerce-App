@@ -145,3 +145,15 @@
          });
      });
  </script>
+ <style>
+     .toast-close-button {
+         position: absolute !important;
+         top: 10px !important;
+         right: 10px !important;
+         background: none;
+         border-radius: 50%;
+         padding: 5px;
+         cursor: pointer !important;
+         color: black !important;
+     }
+ </style>

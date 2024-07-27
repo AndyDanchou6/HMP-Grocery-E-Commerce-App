@@ -40,9 +40,4 @@ class AuthController extends Controller
             return redirect()->route('error404');
         }
     }
-
-    public function blankPage()
-    {
-        return view('blank_page');
-    }
 }
