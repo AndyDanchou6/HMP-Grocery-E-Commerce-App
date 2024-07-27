@@ -1208,4 +1208,30 @@ class SelectedItemsController extends Controller
             return redirect()->route('error');
         }
     }
+
+    public function generateReport(Request $request)
+    {
+        $orderRetrievalType = $request->input('type', 'both');
+        $month = $request->input('month', 'all');
+
+        $query = SelectedItems::query();
+
+        if ($month !== 'all') {
+            $parsedMonth = \Carbon\Carbon::parse($month);
+            $query->whereMonth('created_at', $parsedMonth->month)
+                ->whereYear('created_at', $parsedMonth->year);
+        }
+
+        if ($orderRetrievalType !== 'both') {
+            $query->where('order_retrieval', $orderRetrievalType);
+        }
+
+        $fetchReport = $query->with('user')
+            ->whereNotIn('status', ['denied', 'forCheckout'])
+            ->orderBy('referenceNo', 'desc')
+            ->get();
+
+
+        return view('selectedItems.generate-report', compact('fetchReport', 'month', 'orderRetrievalType'));
+    }
 }
