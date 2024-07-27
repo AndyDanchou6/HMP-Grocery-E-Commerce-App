@@ -325,4 +325,6 @@
         fetchCriticalProducts(currentPage);
     });
 </script>
+
 @endsection
+

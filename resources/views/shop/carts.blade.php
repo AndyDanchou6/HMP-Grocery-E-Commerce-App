@@ -85,7 +85,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
-                    <a href="{{ route('shop.products') }}" class="primary-btn cart-btn" style="background-color: #696cff; color: white;">CONTINUE SHOPPING</a>
+                    <a href="{{ route('shop.products') }}" class="primary-btn cart-btn continue-shop-btn" style="background-color: #696cff; color: white;">CONTINUE SHOPPING</a>
                     <button type="submit" form="update-cart-form" class="primary-btn cart-btn cart-btn-right updateCartBtn">
                         <span class="icon_loading"></span> Update Cart
                     </button>
@@ -412,10 +412,51 @@
                     }
                     updateTotal();
                 })
-            })
-
+            });
         })
-    });
+
+        // Continue shopping unfinished cart
+        if (shoping__cart__quantity.length > 0) {
+
+            var continueShopBtn = document.querySelector('.continue-shop-btn');
+
+            continueShopBtn.addEventListener('click', function(event) {
+
+                var shopingCartQuantities = document.querySelectorAll('.shoping__cart__quantity');
+                shopingCartQuantities.forEach(function(shopingCartQuantity) {
+
+                    var stashedSelectedItems = JSON.parse(sessionStorage.getItem('selectedItems'));
+
+                    var itemId = shopingCartQuantity.getAttribute('data-item-id');
+                    var rawId = itemId.substring(5).trim();
+                    var stashedId = 'item_' + rawId;
+                    var itemPrice = shopingCartQuantity.getAttribute('data-price');
+                    var quantity = shopingCartQuantity.querySelector('input').value;
+
+                    // Stashed unfinished carts
+                    if (!stashedSelectedItems) {
+                        var continueShop = {
+                            [stashedId]: {
+                                'item_id': rawId,
+                                'item_quantity': quantity,
+                                'item_price': itemPrice,
+                            }
+                        }
+
+                        sessionStorage.setItem('selectedItems', JSON.stringify(continueShop));
+                    } else {
+                        stashedSelectedItems[stashedId] = {
+                            'item_id': rawId,
+                            'item_quantity': quantity,
+                            'item_price': itemPrice,
+                        }
+
+                        sessionStorage.setItem('selectedItems', JSON.stringify(stashedSelectedItems));
+                    }
+                })
+            })
+        }
+    })
 </script>
 
 @endsection
