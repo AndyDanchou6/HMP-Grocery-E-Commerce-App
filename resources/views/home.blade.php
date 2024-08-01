@@ -114,7 +114,7 @@
                                         <nav aria-label="Page navigation">
                                             <ul class="pagination">
                                                 <li class="page-item {{ $inventories->onFirstPage() ? 'disabled' : '' }}">
-                                                    <a class="page-link" href="{{ $inventories->url(1) }}"> <i class="tf-icon bx bx-chevron-left"></i> </a>
+                                                    <a class="page-link" href="{{ $inventories->url(1) }}"> <i class="tf-icon bx bx-chevron-left d-none"></i> </a>
                                                 </li>
                                                 <li class="page-item {{ $inventories->previousPageUrl() ? '' : 'disabled' }}">
                                                     <a class="page-link" href="#" data-page="prev"><i class="tf-icon bx bx-chevron-left"></i></a>
@@ -257,12 +257,12 @@
 
             linksContainer.innerHTML = '';
 
-            const prevLi = document.createElement('li');
-            const prevLink = document.createElement('a');
-            prevLink.className = 'page-link disabled';
-            prevLink.innerHTML = '<i class="tf-icon bx bx-chevron-left"></i>';
-            prevLi.appendChild(prevLink);
-            linksContainer.appendChild(prevLi);
+            // const prevLi = document.createElement('li');
+            // const prevLink = document.createElement('a');
+            // prevLink.className = 'page-link disabled';
+            // prevLink.innerHTML = '<i class="tf-icon bx bx-chevron-left"></i>';
+            // prevLi.appendChild(prevLink);
+            // linksContainer.appendChild(prevLi);
 
             for (let i = Math.max(1, currentPage - 2); i <= Math.min(lastPage, currentPage + 2); i++) {
                 const pageLi = document.createElement('li');
@@ -276,12 +276,12 @@
                 linksContainer.appendChild(pageLi);
             }
 
-            const nextLi = document.createElement('li');
-            const nextLink = document.createElement('a');
-            nextLink.className = 'page-link disabled';
-            nextLink.innerHTML = '<i class="tf-icon bx bx-chevron-right"></i>';
-            nextLi.appendChild(nextLink);
-            linksContainer.appendChild(nextLi);
+            // const nextLi = document.createElement('li');
+            // const nextLink = document.createElement('a');
+            // nextLink.className = 'page-link disabled';
+            // nextLink.innerHTML = '<i class="tf-icon bx bx-chevron-right"></i>';
+            // nextLi.appendChild(nextLink);
+            // linksContainer.appendChild(nextLi);
         }
 
         document.getElementById('paginationLinks').addEventListener('click', function(event) {
@@ -293,7 +293,7 @@
                     fetchCriticalProducts(currentPage)
                         .then(inventories => {
                             updateTable(inventories);
-                            updatePagination(inventories);
+                            // updatePagination(inventories);
                         })
                         .catch(error => {
                             console.error('Error fetching critical products:', error);
@@ -327,4 +327,3 @@
 </script>
 
 @endsection
-

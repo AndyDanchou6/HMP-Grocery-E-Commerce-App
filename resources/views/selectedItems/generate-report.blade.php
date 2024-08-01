@@ -154,7 +154,7 @@
                             @if($item->status == 'delivered' || $item->status == 'pickedUp')
                             <td>{{ \Carbon\Carbon::parse($item->updated_at)->timezone('Asia/Manila')->format('F j, Y g:i A') }}</td>
                             @else
-                            <td>N/A</td>
+                            <td>Not completed yet</td>
                             @endif
                         </tr>
                         @endforeach

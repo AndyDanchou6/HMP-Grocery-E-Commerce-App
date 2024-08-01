@@ -25,8 +25,8 @@ class AuthController extends Controller
             $user = Auth::user();
 
             $totalOrders = SelectedItems::where('user_id', $user->id)->whereNotIn('status', ['forCheckout', 'denied'])->count();
-
-            return view('customer_home', compact('user', 'totalOrders'));
+            $admin = User::where('role', 'Admin')->first();
+            return view('customer_home', compact('user', 'totalOrders', 'admin'));
         } else {
             return redirect()->route('error404');
         }

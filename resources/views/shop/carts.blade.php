@@ -1,6 +1,10 @@
 @extends('shop.layouts.layout')
 
 @section('content')
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
 
 <section class="breadcrumb-section set-bg" data-setbg="{{ asset('index/img/breadcrumb.jpg') }}">
     <div class="container">
@@ -29,7 +33,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="shoping__product">Products</th>
+                                    <th class="shoping__product">Product Name</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                     <th>Total</th>
