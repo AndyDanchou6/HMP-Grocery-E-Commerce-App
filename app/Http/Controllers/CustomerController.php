@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SelectedItems;
+use App\Models\Inventory;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -156,7 +157,7 @@ class CustomerController extends Controller
         if (Auth::user()->role == 'Customer') {
             $userId = $request->user()->id;
 
-            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied'])
+            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
                 ->whereNull('payment_condition')
                 ->where('user_id', $userId)
                 ->orderByRaw("FIELD(payment_type, 'G-cash') DESC")
@@ -335,7 +336,7 @@ class CustomerController extends Controller
             ->where('order_retrieval', 'pickup')->where('user_id', $userId)
             ->distinct('referenceNo')
             ->count('referenceNo');
-        $countUnpaid = SelectedItems::whereNotIn('status', ['forCheckout', 'denied'])
+        $countUnpaid = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
             ->where('payment_condition', '=', NULL)->where('user_id', $userId)
             ->distinct('referenceNo')
             ->count('referenceNo');
@@ -436,7 +437,53 @@ class CustomerController extends Controller
         }
     }
 
+    public function cancelOrder(int $referenceNo)
+    {
+        $toCancelOrders = SelectedItems::where('referenceNo', $referenceNo)
+            ->get();
 
+        if (empty($toCancelOrders)) {
+
+            return redirect()->back()->with('error', 'No order/s found.');
+        }
+
+        if ($toCancelOrders->first()->status == 'readyForRetrieval') {
+            
+            return redirect()->back()->with('error', 'Order is ready for retrieval. Please contact the owner.');
+        }
+
+        $returnStockFail = false;
+        $cancelOrderFail = false;
+
+        foreach ($toCancelOrders as $order) {
+
+            $inventoryItem = Inventory::findOrFail($order->item_id);
+
+            $inventoryItem->quantity += $order->quantity;
+            $order->status = 'cancelled';
+
+            if (!$inventoryItem->save()) {
+
+                $returnStockFail = true;
+            }
+
+            if (!$order->save()) {
+
+                $cancelOrderFail = true;
+            }
+        }
+
+        if ($returnStockFail) {
+
+            return redirect()->back()->with('error', 'Order quantity was not return to inventory.');
+        } elseif ($cancelOrderFail) {
+
+            return redirect()->back()->with('success', 'Some order/s was not cancelled successfully.');
+        }
+
+        return redirect()->back()->with('success', 'Orders cancelled successfully.');
+        // dd($toCancelOrders);
+    }
 
     /**
      * Update the specified resource in storage.

@@ -122,9 +122,23 @@
                         </div>
                     </div>
                     @endif
+
+                    <div class="container">
+                        <div class="mb-3 col-12">
+                            <h3 class="text-danger text-wrap d-none cancel-warning" data-user-ref="{{ $user['referenceNo'] }}">This is not reversible. Are you sure you want to cancel this order?</h3>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="d-flex justify-content-end flex-wrap">
+                    @if($user['status'] == "forPackage" && Auth::user()->role == 'Customer')
+                    <form action="{{ route('customer.cancelOrder', $user['referenceNo']) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-outline-danger mx-1 mb-2 cancel-order" data-user-ref="{{ $user['referenceNo'] }}">Cancel Order</button>
+                        <button type="button" class="btn btn-outline-success mx-1 mb-2 d-none keep-order" data-user-ref="{{ $user['referenceNo'] }}">Keep Order</button>
+                    </form>
+                    @endif
+                    <button type="button" class="btn btn-outline-secondary mx-1 mb-2 close-modal" data-bs-dismiss="modal" data-user-ref="{{ $user['referenceNo'] }}">Close</button>
                 </div>
             </div>
         </div>
@@ -183,5 +197,45 @@
                 });
             }
         });
+
+        var cancelOrderBtn = document.querySelectorAll('.cancel-order');
+
+        cancelOrderBtn.forEach(function(cancelBtn) {
+
+            var btnIdentifier = cancelBtn.getAttribute('data-user-ref');
+            var closeModalBtn = document.querySelector('.close-modal[data-user-ref="' + btnIdentifier + '"]');
+            var keepOrderBtn = document.querySelector('.keep-order[data-user-ref="' + btnIdentifier + '"]');
+            var warningMessage = document.querySelector('.cancel-warning[data-user-ref="' + btnIdentifier + '"]');
+
+            var clickedCancelOrder = false;
+
+            cancelBtn.addEventListener('click', function() {
+
+                closeModalBtn.classList.add('d-none');
+                keepOrderBtn.classList.remove('d-none');
+                cancelBtn.textContent = 'Proceed';
+                warningMessage.classList.remove('d-none');
+
+                if (clickedCancelOrder) {
+
+                    cancelBtn.setAttribute('type', 'submit');
+                }
+
+                clickedCancelOrder = true;
+            })
+
+            keepOrderBtn.addEventListener('click', function() {
+                if (clickedCancelOrder) {
+
+                    cancelBtn.setAttribute('type', 'button');
+                    closeModalBtn.classList.remove('d-none');
+                    keepOrderBtn.classList.add('d-none');
+                    cancelBtn.textContent = 'Cancel Order';
+                    warningMessage.classList.add('d-none');
+                    clickedCancelOrder = false;
+
+                }
+            })
+        })
     });
 </script>

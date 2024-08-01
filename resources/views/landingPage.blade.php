@@ -6,6 +6,7 @@
     <title>e-Mart</title>
 
     <!-- Css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="{{ asset('landing_page/css/custom.css') }}" rel="stylesheet">
 
     <!-- Icons -->
@@ -22,7 +23,7 @@
 
 <body class="bg-white">
     <div class="page-container">
-        <aside id="sidebar">
+        <!-- <aside id="sidebar">
             <nav>
                 <ul>
                     <li class="casual-font"><a class="color-main" href="#welcome-section">Home</a></li>
@@ -43,8 +44,8 @@
                     @endif
                 </ul>
             </nav>
-        </aside>
-        <header id="header">
+        </aside> -->
+        <!-- <header id="header">
             <nav>
                 <ul>
                     <li class="casual-font"><a href="#welcome-section">Home</a></li>
@@ -71,17 +72,27 @@
             <div class="brand-header">
 
             </div>
-        </header>
+        </header> -->
 
         <section id="welcome-section">
-            <div class="logo-wrap">
+            <div class="logo-wrap text-center">
+                <img src="{{ asset('logo/3.png') }}" alt="Logo Image" class="img-fluid">
+                <div class="spinner-grow text-primary d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-success d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-primary d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
             </div>
             <div class="footer">
                 <p class="color-dark">&#169; e-Mart 2024. All rights reserved.</p>
             </div>
         </section>
 
-        <section id="login-page">
+        <!-- <section id="login-page">
             <div>
                 <p class="color-main casual-font text-shadow-white">Shop anytime. Anywhere.</p>
                 <form>
@@ -164,10 +175,30 @@
                     </form>
                 </div>
             </div>
-        </section>
+        </section> -->
     </div>
 
-    <script src="{{ asset('landing_page/js/custom.js') }}"></script>
+    <!-- <script src="{{ asset('landing_page/js/custom.js') }}"></script> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            setTimeout(() => {
+
+                const spinners = document.querySelectorAll('.spinner-grow');
+
+                spinners.forEach(function(spinner) {
+                    spinner.classList.remove('d-none');
+                })
+
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 3000);
+
+            }, 3000);
+
+        })
+    </script>
 </body>
 
 </html>
