@@ -478,6 +478,7 @@ class SelectedItemsController extends Controller
                     })->orWhere('referenceNo', 'like', "%{$search}%")
                         ->orWhere('payment_condition', 'like', "%{$search}%")
                         ->orWhere('order_retrieval', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
                         ->orWhere('payment_type', 'like', "%{$search}%");
                 });
             }
@@ -874,26 +875,32 @@ class SelectedItemsController extends Controller
 
     public function packageCount()
     {
-        $item1 = SelectedItems::where('status', 'forPackage')->get();
+        $item1 = SelectedItems::where('status', 'forPackage')
+            ->get();
         $item2 = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'delivery')
             ->get();
         $item3 = SelectedItems::where('status', 'readyForRetrieval')
             ->where('order_retrieval', 'pickup')
             ->get();
-        $item4 = SelectedItems::where('status', 'denied')->get();
-        $item5 = SelectedItems::where('status', '!=', 'forCheckout')
+        $item4 = SelectedItems::where('status', 'denied')
+            ->get();
+        $item5 = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
             ->where('payment_condition', '=', null)
-            ->where('payment_type', 'G-cash')->get();
+            ->where('payment_type', 'G-cash')
+            ->get();
 
-        $item6 = SelectedItems::where('status', '!=', 'forCheckout')
+        $item6 = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
             ->where('payment_condition', '=', null)
-            ->where('payment_type', 'COD')->get();
-        $item7 = SelectedItems::where('status', '!=', 'forCheckout')
+            ->where('payment_type', 'COD')
+            ->get();
+        $item7 = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
             ->where('payment_condition', '=', null)
-            ->where('payment_type', 'In-store')->get();
-        $item8 = SelectedItems::where('status', '!=', 'forCheckout')
-            ->where('payment_condition', '=', null)->get();
+            ->where('payment_type', 'In-store')
+            ->get();
+        $item8 = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
+            ->where('payment_condition', '=', null)
+            ->get();
 
         $item9 = SelectedItems::where('status', '!=', 'forCheckout')
             ->whereNotNull('payment_proof')
@@ -1003,7 +1010,7 @@ class SelectedItemsController extends Controller
         if (Auth::user()->role == 'Admin') {
             $search = $request->input('search');
 
-            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
                 ->where('payment_condition', '=', NULL)
                 ->where('payment_type', 'G-cash')
                 ->with('user')
@@ -1074,7 +1081,7 @@ class SelectedItemsController extends Controller
         if (Auth::user()->role == 'Admin') {
             $search = $request->input('search');
 
-            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
                 ->where('payment_condition', '=', NULL)
                 ->where('payment_type', 'COD')
                 ->with('user')
@@ -1145,7 +1152,7 @@ class SelectedItemsController extends Controller
         if (Auth::user()->role == 'Admin') {
             $search = $request->input('search');
 
-            $selectedItems = SelectedItems::where('status', '!=', 'forCheckout')
+            $selectedItems = SelectedItems::whereNotIn('status', ['forCheckout', 'denied', 'cancelled'])
                 ->where('payment_condition', '=', NULL)
                 ->where('payment_type', 'In-store')
                 ->with('user')

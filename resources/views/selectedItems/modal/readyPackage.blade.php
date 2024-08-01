@@ -323,6 +323,8 @@
             if (cancelDenyBtn) {
                 cancelDenyBtn.addEventListener('click', function() {
 
+                    var clearReasonForDenial = denialInputs.querySelector('textarea');
+                    clearReasonForDenial.value = '';
                     denialInputs.removeAttribute('required');
                     denialInputs.style.display = 'none';
                     finishedBtn.style.display = 'block';
