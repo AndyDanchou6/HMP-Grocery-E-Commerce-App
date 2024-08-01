@@ -95,12 +95,6 @@
                                 <p class="rounded p-2 text-light bg-success onCartBanner" style="position: absolute; top: 0; left: 0; display: none;" data-item-id="{{ $item->id }}">On Cart</p>
                                 <p class="rounded p-2 text-light bg-danger outOfStockBanner" style="width: 100%; position: absolute; top: 50%; left: 0; border-radius: 5px; text-align: center; display: none;" data-quantity="{{ $item->quantity }}" data-item-id="{{ $item->id }}">Out of Stock</p>
                                 <img src="{{ asset('storage/' . $item->product_img) }}" alt="item" style="width: 270px; height: 270px;">
-
-                                <ul class="product__item__pic__hover">
-                                    <!-- <li><a href="#"><i class="fa fa-heart" style="color: #696cff;"></i></a></li>
-                                    <li><a href="{{ route('shop.details', ['id' => $item->id]) }}"><i class="fa fa-info-circle" style="color: #696cff;"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart" style="color: #696cff;"></i></a></li> -->
-                                </ul>
                             </div>
                             <div class="product__item__text">
                                 <h6><a>{{ $item->product_name }}</a></h6>

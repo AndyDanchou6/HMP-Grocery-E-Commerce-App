@@ -57,7 +57,10 @@ class ShopController extends Controller
 
             $inventory = Inventory::with('category')
                 ->when($query, function ($queryBuilder) use ($query) {
-                    $queryBuilder->where('product_name', 'LIKE', "%$query%");
+                    $queryBuilder->where('product_name', 'LIKE', "%$query%")
+                        ->orWhereHas('category', function ($categoryQuery) use ($query) {
+                            $categoryQuery->where('category_name', 'LIKE', "%$query%");
+                        });
                 })
                 ->when($categoryFilter, function ($queryBuilder) use ($categoryFilter) {
                     $queryBuilder->where('product_name', $categoryFilter);
@@ -79,19 +82,6 @@ class ShopController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function details(string $id)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('error404');
-        } else {
-            $category = Category::all();
-            $product = Inventory::findOrFail($id);
-
-            $reviews = $product->reviews()->with('users')->paginate(5);
-
-            return view('shop.details', compact('product', 'category', 'reviews'));
-        }
-    }
 
     public function checkout()
     {

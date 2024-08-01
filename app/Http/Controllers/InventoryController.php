@@ -284,7 +284,8 @@ class InventoryController extends Controller
         dd($productByName);
     }
 
-    public function restock(Request $request, string $itemId) {
+    public function restock(Request $request, string $itemId)
+    {
 
         $restockItem = Inventory::findOrFail($itemId);
 

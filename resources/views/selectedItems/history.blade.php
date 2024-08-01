@@ -21,22 +21,30 @@
                 <form action="{{ route('selectedItems.history') }}" method="GET" class="d-flex mb-4">
                     <div class="form-group me-1">
                         <label for="monthSelect" class="visually-hidden">Choose a month:</label>
-                        <select name="month" id="monthSelect" class="form-select" onchange="this.form.submit()">
-                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>All Months</option>
-                            @foreach ($months as $month)
-                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::parse($month)->format('F Y') }}
-                            </option>
-                            @endforeach
-                        </select>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ request('month') == 'all' || !request('month') ? 'All Months' : \Carbon\Carbon::parse(request('month'))->format('F Y') }}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="max-height: 250px; overflow-y: auto;">
+                                <li><a class="dropdown-item" href="?month=all&type={{ request('type') }}">All Months</a></li>
+                                @foreach ($months as $month)
+                                <li><a class="dropdown-item" href="?month={{ $month }}&type={{ request('type') }}">
+                                        {{ \Carbon\Carbon::parse($month)->format('F Y') }}
+                                    </a></li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="form-group me-1">
-                        <select name="type" class="form-select" onchange="this.form.submit()">
-                            <option value="both" {{ request('type') == 'both' ? 'selected' : '' }}>Both</option>
-                            <option value="delivery" {{ request('type') == 'delivery' ? 'selected' : '' }}>Delivery</option>
-                            <option value="pickup" {{ request('type') == 'pickup' ? 'selected' : '' }}>Pickup</option>
-                        </select>
+                        <form action="" method="GET">
+                            <input type="hidden" name="month" value="{{ request('month') }}">
+                            <select name="type" class="form-select" onchange="this.form.submit()">
+                                <option value="both" {{ request('type') == 'both' ? 'selected' : '' }}>Both</option>
+                                <option value="delivery" {{ request('type') == 'delivery' ? 'selected' : '' }}>Delivery</option>
+                                <option value="pickup" {{ request('type') == 'pickup' ? 'selected' : '' }}>Pickup</option>
+                            </select>
+                        </form>
                     </div>
                 </form>
             </div>
