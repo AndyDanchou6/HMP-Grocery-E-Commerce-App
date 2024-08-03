@@ -18,6 +18,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Models\Category;
 use App\Models\SelectedItems;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -40,7 +41,7 @@ Auth::routes();
 
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::prefix('admin')->middleware('auth')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.home');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.home');
 });
 
 Route::prefix('superadmin')->middleware('auth')->group(function () {
@@ -48,11 +49,11 @@ Route::prefix('superadmin')->middleware('auth')->group(function () {
 });
 
 Route::prefix('customer')->middleware('auth')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'customerDashboard'])->name('customer.home');
+    Route::get('/dashboard', [AuthController::class, 'customerDashboard'])->name('customer.home');
 });
 
 Route::prefix('courier')->middleware('auth')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\AuthController::class, 'courierDashboard'])->name('courier.home');
+    Route::get('/dashboard', [AuthController::class, 'courierDashboard'])->name('courier.home');
 });
 
 Route::middleware('auth')->group(function () {
@@ -139,3 +140,7 @@ Route::prefix('customer')->middleware('auth')->group(function () {
 
 // Change password
 Route::post('changePass', [ProfileController::class, 'changePass'])->name('profile.changePass')->middleware('auth');
+
+// Analytics
+Route::get('/admin/sales/{sales}', [SelectedItemsController::class, 'sales'])->name('product.sales');
+
