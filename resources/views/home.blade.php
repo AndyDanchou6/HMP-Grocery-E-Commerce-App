@@ -86,7 +86,7 @@
             });
         </script>
 
-        <div class="col-md-12">
+        <div class="col-md-12 mb-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center mb-4">
                     <h4 style="margin: auto 0; color: red;">Critical Products</h4>
@@ -133,10 +133,40 @@
                         </tfoot>
                     </table>
                 </div>
-
             </div>
         </div>
 
+        <!-- Sales -->
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center mb-4">
+                    <h4 style="margin: auto 0; color: red;">Sales</h4>
+                    <select name="filter" id="filter-sales" class="py-2 px-5 rounded" style="outline: none; border: 1px solid grey; color: grey;">
+                        <option value="all">Filter Sales</option>
+                        <option value="thisDay">This Day</option>
+                        <option value="thisWeek">This Week</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="thisYear">This Year</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Products</th>
+                                <th>Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0" id="sales-table-body">
+                            <!-- Sales Data are populated using javascript -->
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -323,6 +353,60 @@
         });
 
         fetchCriticalProducts(currentPage);
+
+        async function fetchSales(filter) {
+            try {
+                var response = await fetch(`/admin/sales/${filter}`);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+
+                var data = await response.json();
+
+                if (data.status !== 200) {
+                    throw new Error('Error fetching sales.');
+                }
+
+                var salesData = data.data;
+                var pagination = data.pagination;
+                var loopIteration = 1;
+                var salesTable = document.querySelector('#sales-table-body');
+                salesTable.innerHTML = '';
+
+                Object.entries(salesData).forEach(([productId, soldProduct]) => {
+                    const productImageUrl = `/storage/${soldProduct.product_img}`;
+                    var dataRow = `
+                <tr>
+                    <td>${loopIteration}</td>
+                    <td>
+                        <img src="${productImageUrl}" style="width: 45px; height: 45px; margin-right: 20px;" alt="Product Image" class="rounded-circle">
+                        ${soldProduct.product_name} ${soldProduct.variant}
+                    </td>
+                    <td>${soldProduct.quantity}</td>
+                </tr>
+            `;
+
+                    salesTable.innerHTML += dataRow;
+                    loopIteration += 1;
+                });
+
+            } catch (error) {
+                console.error('Something went wrong! :', error.message);
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                fetchSales(filter, page);
+            }
+        }
+
+        fetchSales('all');
+
+        document.querySelector('#filter-sales').addEventListener('change', function() {
+
+            var salesTable = document.querySelector('#sales-table-body');
+            salesTable.innerHTML = '';
+
+            fetchSales(this.value);
+        })
     });
 </script>
 
