@@ -36,6 +36,8 @@ class LoginController extends Controller
             return route('shop.index');
         } elseif ($user->role == 'Courier') {
             return route('courier.home');
+        } elseif ($user->role == 'SuperAdmin') {
+            return route('superAdmin.home');
         }
     }
 

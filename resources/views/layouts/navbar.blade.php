@@ -6,6 +6,9 @@
   </div>
   <ul class="navbar-nav flex-row align-items-center ms-auto">
     @if(Auth::user()->role == 'Admin')
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('settings.index') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-cog bx-spin mb-1'></i> <span>Settings</span>">
+      <i class="bx bx-cog bx-sm bx-spin-hover"></i>
+    </a>
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('selectedItems.history') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-box bx-tada mb-1'></i> <span>Package History</span>">
       <i class="bx bx-box bx-sm bx-tada-hover"></i>
     </a>

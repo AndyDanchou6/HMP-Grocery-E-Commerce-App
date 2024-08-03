@@ -33,8 +33,11 @@
 
                         </div>
                         <div class="hero__search__phone__text flex-wrap w-auto">
-                            <h5>+63 963 875 3244</h5>
-                            <span>8:00 AM - 7:00 PM</span>
+                            <h5>+63 {{ $settings['phone'] }}</h5>
+                            <span>
+                                {{ \Carbon\Carbon::parse($settings['opening_time'])->format('h:i A') }} -
+                                {{ \Carbon\Carbon::parse($settings['closing_time'])->format('h:i A') }}
+                            </span>
                         </div>
                     </div>
                 </div>

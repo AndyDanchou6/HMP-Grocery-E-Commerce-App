@@ -32,11 +32,27 @@
         <div data-i18n="Analytics">Dashboard</div>
       </a>
     </li>
+    @elseif(Auth::user()->role == 'SuperAdmin')
+    <li id="dashboard" class="menu-item">
+      <a href="{{ route('superAdmin.home') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+        <div data-i18n="Analytics">Dashboard</div>
+      </a>
+    </li>
     @else
     <li id="dashboard" class="menu-item">
       <a href="{{ route('customer.home') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
         <div data-i18n="Analytics">Dashboard</div>
+      </a>
+    </li>
+    @endif
+    @if(Auth::user()->role == 'SuperAdmin')
+    <li class="menu-header small text-uppercase"><span class="menu-header-text">SuperAdmin Section</span></li>
+    <li id="user-tables" class="menu-item">
+      <a href="{{ route('users.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-user"></i>
+        <div data-i18n="Tables">Users</div>
       </a>
     </li>
     @endif

@@ -28,6 +28,8 @@ class RedirectIfAuthenticated
                     return redirect()->route('shop.index');
                 } elseif ($user->role == 'Courier') {
                     return redirect()->route('courier.home');
+                } elseif ($user->role == 'SuperAdmin') {
+                    return redirect()->route('superAdmin.home');
                 }
 
                 return redirect('/');

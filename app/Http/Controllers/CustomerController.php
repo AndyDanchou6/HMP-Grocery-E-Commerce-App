@@ -9,6 +9,7 @@ use App\Models\SelectedItems;
 use App\Models\Inventory;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\Settings;
 
 class CustomerController extends Controller
 {
@@ -199,10 +200,12 @@ class CustomerController extends Controller
                 }
                 $userByReference[$item->referenceNo]['items'][] = $item;
             }
-            $admin = User::where('role', 'Admin')->first();
+
+            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address'])
+                ->pluck('setting_value', 'setting_key');
 
             // dd($userByReference);
-            return view('customers.unpaid_orders', compact('userByReference', 'admin'));
+            return view('customers.unpaid_orders', compact('userByReference', 'settings'));
         } else {
             return redirect()->route('error');
         }
@@ -448,7 +451,7 @@ class CustomerController extends Controller
         }
 
         if ($toCancelOrders->first()->status == 'readyForRetrieval') {
-            
+
             return redirect()->back()->with('error', 'Order is ready for retrieval. Please contact the owner.');
         }
 

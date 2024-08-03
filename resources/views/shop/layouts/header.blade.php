@@ -4,18 +4,22 @@
             <div class="col-lg-6 col-md-6">
                 <div class="header__top__left">
                     <ul>
-                        <li><i class="fa fa-envelope"></i>Hello! {{ Auth::user()->name }}</li>
+                        <li><i class="fa fa-user"></i>Hello! {{ Auth::user()->name }}</li>
                         <li>Welcome to e-Mart </li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
                 <div class="header__top__right">
-                    <div class="header__top__right__social" onclick="MAINTENANCE()">
-                        <a href="#"><i class="fa fa-facebook"></i></a>
-                        <a href="#"><i class="fa fa-twitter"></i></a>
-                        <a href="#"><i class="fa fa-linkedin"></i></a>
-                        <a href="#"><i class="fa fa-pinterest-p"></i></a>
+                    <div class="header__top__right__social">
+                        @if($settings['fb_link'])
+                        <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
+                        @else
+                        <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
+                        @endif
+                        <a onclick="MAINTENANCE()"><i class="fa fa-twitter"></i></a>
+                        <a onclick="MAINTENANCE()"><i class="fa fa-linkedin"></i></a>
+                        <a onclick="MAINTENANCE()"><i class="fa fa-pinterest-p"></i></a>
                     </div>
                     @if(Auth::user()->role == 'Admin')
                     <div class="header__top__right__auth" style="margin-right: 10px;">

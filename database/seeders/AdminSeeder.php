@@ -16,6 +16,33 @@ class AdminSeeder extends Seeder
         $admin1 = 'user_avatar/avatar1.jpg';
         $admin2 = 'user_avatar/avatar2.jpg';
         $users = 'user_avatar/avatar.jpg';
+        $superadmin = 'user_avatar/superadmin.jpg';
+
+        User::create([
+            'role' => 'SuperAdmin',
+            'avatar' => $superadmin,
+            'name' => 'Sung Jin Woo',
+            'email' => 'e.mart@superadmin.me',
+            'phone' =>  639687532442,
+            'fb_link' => 'https://www.facebook.com/',
+            'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'password' => Hash::make('12345678'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        User::create([
+            'role' => 'SuperAdmin',
+            'avatar' => $superadmin,
+            'name' => 'Jue Viole Grace',
+            'email' => 'e.marty@superadmin.me',
+            'phone' =>  639778452344,
+            'fb_link' => 'https://www.facebook.com/',
+            'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'password' => Hash::make('12345678'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // Admin users
         User::create([

@@ -36,7 +36,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
-                            @if(($user->id == 1 || $user->id == 2) && $user->role == 'Admin')
+                            @if($user->role == 'SuperAdmin')
                             <span class="badge bg-label-danger me-1">Super Admin</span>
                             @elseif($user->role == 'Admin')
                             <span class="badge bg-label-success me-1">Admin</span>
