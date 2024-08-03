@@ -31,29 +31,29 @@
                 <div class="contact__widget">
                     <span class="icon_phone"></span>
                     <h4>Phone</h4>
-                    <p>+63 {{ $settings['phone'] }}</p>
+                    <p>+63 {{ $settings['phone'] ?? 'Not available'}}</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="icon_pin_alt"></span>
                     <h4>Address</h4>
-                    <p>{{ $settings['address'] }}</p>
+                    <p>{{ $settings['address'] ?? 'Not available'}}</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="icon_clock_alt"></span>
                     <h4>Open time</h4>
-                    <p>{{ $openingTime }} to {{ $closingTime }}</p>
+                    <p>{{ $openingTime ?? 'Not available' }} to {{ $closingTime ?? 'Not available'}}</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="fa fa-facebook"></span>
                     <h4>Facebook Page</h4>
-                    <a href="{{ $settings['fb_link'] }}">
-                        <p>{{ $settings['fb_page'] }}</p>
+                    <a href="{{ $settings['fb_link'] ?? 'Not available'}}">
+                        <p>{{ $settings['fb_page'] ?? 'Not available'}}</p>
                     </a>
                 </div>
             </div>
@@ -72,10 +72,10 @@
     <div class="map-inside">
         <i class="icon_pin"></i>
         <div class="inside-widget">
-            <h4>{{ $settings['fb_page'] }}</h4>
+            <h4>{{ $settings['fb_page'] ?? 'Not available'}}</h4>
             <ul>
-                <li>Phone: +63 {{ $settings['phone'] }}</li>
-                <li>Add: {{ $settings['address'] }}</li>
+                <li>Phone: +63 {{ $settings['phone'] ?? 'Not available'}}</li>
+                <li>Add: {{ $settings['address'] ?? 'Not available'}}</li>
             </ul>
         </div>
     </div>
