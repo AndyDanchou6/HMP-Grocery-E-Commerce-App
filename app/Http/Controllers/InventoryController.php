@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class InventoryController extends Controller
 {
@@ -227,7 +228,18 @@ class InventoryController extends Controller
     public function destroy(string $id)
     {
         $item = Inventory::findOrFail($id);
-        $item->delete();
+
+        if (Storage::disk('public')->exists($item->product_img)) {
+            if (!Storage::disk('public')->delete($item->product_img)) {
+
+                return redirect()->back()->with('error', 'Image not deleted!');
+            }
+        }
+
+        if (!$item->delete()) {
+
+            return redirect()->back()->with('error', 'Deletion failed!');
+        }
 
         return redirect()->back()->with('success', 'Deleted successfully.');
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use App\Models\ServiceFee;
+use Illuminate\Support\Facades\Storage;
 
 class SelectedItemsController extends Controller
 {
@@ -583,6 +584,14 @@ class SelectedItemsController extends Controller
             $deliverToPickUp = $request->input('order_retrieval') == 'pickup' && $item->order_retrieval == 'delivery';
 
             if ($request->has('delete')) {
+
+                if (Storage::disk('public')->exists($item->payment_proof)) {
+                    if (!Storage::disk('public')->delete($item->payment_proof)) {
+
+                        return redirect()->back()->with('error', 'Image not deleted!');
+                    }
+                }
+
                 $item->delete();
             } else {
                 if ($request->has('restore')) {
@@ -611,6 +620,7 @@ class SelectedItemsController extends Controller
 
                             $item->referenceNo = $newReferenceNo;
                             $item->reasonForDenial = null;
+                            $item->created_at = Carbon::now();
                             $item->status = 'forPackage';
 
                             $restoredOrders = true;
@@ -1163,5 +1173,43 @@ class SelectedItemsController extends Controller
 
 
         return view('selectedItems.generate-report', compact('fetchReport', 'month', 'orderRetrievalType'));
+    }
+
+    public function sales(string $filter)
+    {
+        $query = SelectedItems::whereNotIn('status', ['cancelled', 'denied'])
+            ->with('inventory');
+
+        if ($filter == 'thisDay') {
+            $query->whereDate('created_at', Carbon::now()->toDateString());
+        } elseif ($filter == 'thisWeek') {
+            $query->whereBetween('created_at', [
+                Carbon::now()->startOfWeek()->toDateString(),
+                Carbon::now()->endOfWeek()->toDateString()
+            ]);
+        } elseif ($filter == 'thisMonth') {
+            $query->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year);
+        } elseif ($filter == 'thisYear') {
+            $query->whereYear('created_at', Carbon::now()->year);
+        }
+
+        $salesByProduct = $query->get()->groupBy('item_id');
+
+        $salesArrayForm = [];
+        foreach ($salesByProduct as $product_id => $productDetails) {
+            $salesArrayForm[$product_id] = [
+                'product_name' => $productDetails->first()['inventory']->product_name,
+                'product_img' => $productDetails->first()['inventory']->product_img,
+                'variant' => $productDetails->first()['inventory']->variant,
+                'quantity' => $productDetails->sum('quantity'),
+            ];
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Data found',
+            'data' => $salesArrayForm
+        ]);
     }
 }
