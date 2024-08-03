@@ -146,7 +146,7 @@
                             @if($item->status == 'forPackage')
                             <td>Pending</td>
                             @elseif($item->status == 'readyForRetrieval')
-                            <td>To Receive</td>
+                            <td>Processing</td>
                             @else
                             <td>{{ ucfirst($item->status) }}</td>
                             @endif

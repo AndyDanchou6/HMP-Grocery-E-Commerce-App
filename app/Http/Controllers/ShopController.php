@@ -12,7 +12,7 @@ use App\Models\SelectedItems;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use App\Models\ServiceFee;
-
+use App\Models\Settings;
 
 class ShopController extends Controller
 {
@@ -24,7 +24,7 @@ class ShopController extends Controller
         if (empty(auth()->user()->role)) {
             return redirect()->route('error404');
         } else {
-            $user = Auth::user(); // Assuming user is authenticated
+            $user = Auth::user();
             $carts = Cart::where('user_id', $user->id)->get();
             $admin = User::where('role', 'Admin')->get();
             $inventory = Inventory::orderBy('created_at', 'desc')
@@ -33,12 +33,10 @@ class ShopController extends Controller
 
             $category = Category::all();
 
-            return view('shop.index', compact('category', 'inventory', 'admin', 'carts'));
-            // dd($inventory);
+            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+                ->pluck('setting_value', 'setting_key');
 
-            // return response()->json([
-            //     'data' => $inventory
-            // ]);
+            return view('shop.index', compact('category', 'inventory', 'admin', 'carts', 'settings'));
         }
     }
 
@@ -75,7 +73,11 @@ class ShopController extends Controller
                 ->get()
                 ->groupBy('product_name');
 
-            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter', 'category_filter'));
+
+            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+                ->pluck('setting_value', 'setting_key');
+
+            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter', 'category_filter', 'settings'));
         }
     }
 
@@ -106,15 +108,16 @@ class ShopController extends Controller
         $orderType = $selectedItems->first();
         $orderType = $orderType->order_retrieval;
 
-        $phone = User::where('role', 'Admin')->first();
-
         $subtotal = $selectedItems->sum(function ($item) {
             return $item->inventory->price * $item->quantity;
         });
 
         $total = $subtotal;
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'phone', 'serviceFee'));
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+            ->pluck('setting_value', 'setting_key');
+
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'serviceFee', 'settings'));
     }
 
     public function placeOrder(Request $request)
@@ -240,7 +243,11 @@ class ShopController extends Controller
             ->where('status', 'forCheckout')
             ->exists();
 
-        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total', 'forCheckoutStatus'));
+
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+            ->pluck('setting_value', 'setting_key');
+
+        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total', 'forCheckoutStatus', 'settings'));
     }
 
 

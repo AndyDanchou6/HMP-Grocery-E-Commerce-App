@@ -13,6 +13,8 @@ use App\Http\Controllers\SelectedItemsController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ServiceFeeController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SuperAdminController;
 use App\Models\Category;
 use App\Models\SelectedItems;
 use Illuminate\Http\Request;
@@ -39,6 +41,10 @@ Auth::routes();
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.home');
+});
+
+Route::prefix('superadmin')->middleware('auth')->group(function () {
+    Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('superAdmin.home');
 });
 
 Route::prefix('customer')->middleware('auth')->group(function () {
@@ -96,6 +102,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('schedules/create', [DeliveryScheduleController::class, 'store'])->name('schedules.store');
     Route::delete('schedules/{schedule}', [DeliveryScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::put('schedules/{schedule}', [DeliveryScheduleController::class, 'update'])->name('schedules.update');
+
+
+    //-----Settings-------~!>
+    Route::get('settings', [SettingsController::class, 'getGeneralSettings'])->name('settings.index');
+    Route::put('settings/update', [SettingsController::class, 'updateGeneralSettings'])->name('settings.update');
 });
 
 Route::get('/check', [SelectedItemsController::class, 'forCheckout']);
@@ -126,6 +137,5 @@ Route::prefix('customer')->middleware('auth')->group(function () {
     Route::get('cancelOrder/{referenceNo}', [CustomerController::class, 'cancelOrder'])->name('customer.cancelOrder');
 });
 
-
 // Change password
-Route::post('changePass', [ProfileController::class, 'changePass'])->name('profile.changePass');
+Route::post('changePass', [ProfileController::class, 'changePass'])->name('profile.changePass')->middleware('auth');

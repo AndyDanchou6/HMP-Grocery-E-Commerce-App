@@ -9,7 +9,7 @@
             @else
             <h4>Order Details</h4>
             @endif
-            <form action="{{ route('shop.placeOrder') }}" method="POST">
+            <form action="{{ route('shop.placeOrder',) }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-lg-8 col-md-6">
@@ -45,7 +45,7 @@
 
                         <div class="reminder-box d-none" id="gcash_reminder" style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ced4da; margin-bottom: 20px;">
                             <label>GCash Payment Reminder</label>
-                            <p style="margin: auto 0;">Please remit your payment to <strong style="color: #696cff; font-size: 20px;">{{ $phone->phone }}</strong> using GCash. Include your <strong style="color: #696cff; font-size: 20px;">order reference number</strong> in the message. Thank you!</p>
+                            <p style="margin: auto 0;">Please remit your payment to <strong style="color: #696cff; font-size: 20px;">+63 {{ $settings['phone'] }}</strong> using GCash. Include your <strong style="color: #696cff; font-size: 20px;">Reference No.</strong> in the message. Thank you!</p>
                         </div>
 
                     </div>
@@ -75,6 +75,7 @@
                             <div class="checkout__order__subtotal" id="checkoutDeliveryFee">Delivery Fee <span>₱0.00</span></div>
                             @endif
                             <div class="checkout__order__total">Total <span>₱{{ number_format($total, 2) }}</span></div>
+                            <div class="checkout__order__subtotal">Reference No. <span class="text-info">{{ $item->referenceNo }}</span></div>
                             <p>Choose your payment</p>
                             @if($selectedItems->first()->order_retrieval == 'delivery')
                             <div class="checkout__input__radio">

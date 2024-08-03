@@ -81,16 +81,20 @@
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social" onclick="MAINTENANCE()">
-            <a href="#"><i class="fa fa-facebook"></i></a>
-            <a href="#"><i class="fa fa-twitter"></i></a>
-            <a href="#"><i class="fa fa-linkedin"></i></a>
-            <a href="#"><i class="fa fa-pinterest-p"></i></a>
+        <div class="header__top__right__social">
+            @if($settings['fb_link'])
+            <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
+            @else
+            <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
+            @endif
+            <a onclick="MAINTENANCE()"><i class="fa fa-twitter"></i></a>
+            <a onclick="MAINTENANCE()"><i class="fa fa-linkedin"></i></a>
+            <a onclick="MAINTENANCE()"><i class="fa fa-pinterest-p"></i></a>
         </div>
         <div class="humberger__menu__contact">
             <ul>
-                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                <li>Free Shipping for all Order of $99</li>
+                <li><i class="fa fa-user"></i>Hello! {{ Auth::user()->name }}</li>
+                <li>Welcome to e-Mart </li>
             </ul>
         </div>
     </div>
@@ -119,9 +123,11 @@
                             <a href="{{ route('shop.index') }}"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
                         </div>
                         <ul>
-                            <li>Address: 60-49 Road 11378 New York</li>
-                            <li>Phone: +65 11.188.888</li>
-                            <li>Email: hello@colorlib.com</li>
+                            <li style="white-space: nowrap;">Address: {{ $settings['address'] }}</li>
+                            <li>Phone: +63 {{ $settings['phone'] }}</li>
+                            <a href="{{ $settings['fb_link'] }}">
+                                <li style="white-space: nowrap;">Facebook page: {{ $settings['fb_page'] }}</li>
+                            </a>
                         </ul>
                     </div>
                 </div>
@@ -154,11 +160,15 @@
                             <input type="text" placeholder="Enter your mail">
                             <button type="submit" class="site-btn" style="background-color: #696cff;" onclick="MAINTENANCE()">Subscribe</button>
                         </form>
-                        <div class="footer__widget__social" onclick="MAINTENANCE()">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        <div class="footer__widget__social">
+                            @if($settings['fb_link'])
+                            <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
+                            @else
+                            <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
+                            @endif
+                            <a onclick="MAINTENANCE()"><i class="fa fa-instagram"></i></a>
+                            <a onclick="MAINTENANCE()"><i class="fa fa-twitter"></i></a>
+                            <a onclick="MAINTENANCE()"><i class="fa fa-pinterest"></i></a>
                         </div>
                     </div>
                 </div>

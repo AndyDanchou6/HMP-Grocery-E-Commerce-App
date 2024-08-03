@@ -24,24 +24,21 @@ class AdminController extends Controller
         }
 
         $currentUser = Auth::user();
-        $superAdmin = $currentUser->id == 1 || $currentUser->id == 2; // If User is super admin (First two admin accounts which is seeded) 
+        $superAdmin = $currentUser->role == 'SuperAdmin';
 
-        if ($currentUser->role != "Admin") {
-
+        if (!($currentUser->role == "SuperAdmin" || $currentUser->role == 'Admin')) {
             return redirect()->route('users.index')->with('error', "You aren't eligible to edit this info");
         }
 
         $user = User::findOrFail($id);
-        $toUpdateSuperAdmin = $user->id == 1 || $user->id == 2; // If User is super admin (First two admin accounts which is seeded) 
+        $toUpdateSuperAdmin = $user->role == 'SuperAdmin';
         $ownAccount = $user->id == $currentUser->id;
 
-        if ($user->role == "Admin" && !$superAdmin) {
-
+        if ($toUpdateSuperAdmin && !$superAdmin) {
             return redirect()->route('users.index')->with('error', "You aren't eligible to edit this info");
         }
 
-        if ($toUpdateSuperAdmin && !$ownAccount) {
-
+        if (!$ownAccount && !$superAdmin) {
             return redirect()->route('users.index')->with('error', "You aren't eligible to edit this info");
         }
 
@@ -56,8 +53,9 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index')->with('success', ' Updated Successfully');
+        return redirect()->route('users.index')->with('success', 'Updated Successfully');
     }
+
 
     public function store(Request $request)
     {
@@ -93,28 +91,20 @@ class AdminController extends Controller
     public function destroy($id)
     {
         $currentUser = Auth::user();
-
         $user = User::findOrFail($id);
 
-        $superAdminUser = $currentUser->id == 2 || $currentUser->id == 1;
-        $toDeleteSuperAdmin = $user->id == 2 || $user->id == 1;
-
         if ($user->id == $currentUser->id) {
-
             return redirect()->route('users.index')->with('error', "You can't delete your own account!");
         }
 
-        if ($currentUser->role != "Admin") {
-
-            return redirect()->route('users.index')->with('error', "You aren't eligible to delete user accounts!");
-        } elseif ($toDeleteSuperAdmin) {
-
-            return redirect()->route('users.index')->with('error', "You can't delete this account!");
+        if ($currentUser->role != "SuperAdmin") {
+            if (!in_array($user->role, ['Customer', 'Courier'])) {
+                return redirect()->route('users.index')->with('error', "You aren't eligible to delete this user account!");
+            }
         }
 
-        if ($user->role == "Admin" && !$superAdminUser) {
-
-            return redirect()->route('users.index')->with('error', "You can't delete other admin accounts!");
+        if ($user->role == "SuperAdmin" && $currentUser->role != "SuperAdmin") {
+            return redirect()->route('users.index')->with('error', "You can't delete this account!");
         }
 
         $user->delete();
@@ -125,7 +115,7 @@ class AdminController extends Controller
 
     public function index(Request $request)
     {
-        if (Auth::check() && Auth::user()->role == 'Admin') {
+        if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'SuperAdmin') {
             $usersQuery = User::query();
 
             if ($request->has('search')) {
@@ -137,7 +127,7 @@ class AdminController extends Controller
                     ->orWhere('address', 'like', '%' . $search . '%');
             }
 
-            $users = $usersQuery->paginate(10);
+            $users = $usersQuery->orderByRaw("FIELD(role, 'SuperAdmin', 'Admin', 'Customer', 'Courier') ASC")->paginate(10);
             $currentUser = Auth::user();
 
             return view('users.index', compact('users', 'currentUser'));
