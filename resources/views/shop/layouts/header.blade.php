@@ -64,8 +64,8 @@
                             <!-- <li><a href="blog-details.html">Blog Details</a></li> -->
                         </ul>
                     </li>
+                    <li><a href="{{ route('shop.contacts') }}">Contact</a></li>
                     <li><a onclick="ERROR()">Blog</a></li>
-                    <li><a onclick="ERROR()">Contact</a></li>
                 </ul>
             </nav>
         </div>

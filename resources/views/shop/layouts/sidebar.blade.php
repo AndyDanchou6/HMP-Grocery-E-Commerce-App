@@ -35,8 +35,7 @@
                         <div class="hero__search__phone__text flex-wrap w-auto">
                             <h5>+63 {{ $settings['phone'] }}</h5>
                             <span>
-                                {{ \Carbon\Carbon::parse($settings['opening_time'])->format('h:i A') }} -
-                                {{ \Carbon\Carbon::parse($settings['closing_time'])->format('h:i A') }}
+                                {{ $openingTime }} - {{ $closingTime }}
                             </span>
                         </div>
                     </div>

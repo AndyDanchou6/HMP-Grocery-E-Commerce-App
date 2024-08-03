@@ -13,7 +13,7 @@
                             <div class="card-body">
                                 <h5 class="card-title text-primary">Hello {{ $user->name }}! 🎉</h5>
                                 <p class="mb-4">
-                                    Welcome to e-mart dashboard. We are thrilled to have you as part of our e-mart community and are committed to providing you with an outstanding shopping experience. If you require any assistance, please do not hesitate to contact our support team at <strong class="text-primary">+{{ $admin->phone }}</strong>.
+                                    Welcome to the e-mart dashboard! We are thrilled to have you as part of our e-mart community and are committed to providing you with an outstanding shopping experience. If you require any assistance, please do not hesitate to contact our support team at <strong class="text-primary">+63 {{ $settings['phone'] }}</strong> or reach out to the owner at <strong class="text-primary">{{ $admin->phone }}</strong>.
                                 </p>
                                 <!-- <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a> -->
                             </div>

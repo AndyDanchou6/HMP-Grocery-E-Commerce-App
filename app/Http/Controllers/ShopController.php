@@ -36,7 +36,10 @@ class ShopController extends Controller
             $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
                 ->pluck('setting_value', 'setting_key');
 
-            return view('shop.index', compact('category', 'inventory', 'admin', 'carts', 'settings'));
+            $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
+            $closingTime = $settings->has('closing_time') ? Carbon::parse($settings['closing_time'])->format('h:i A') : 'N/A';
+
+            return view('shop.index', compact('category', 'inventory', 'admin', 'carts', 'settings', 'openingTime', 'closingTime'));
         }
     }
 
@@ -77,7 +80,10 @@ class ShopController extends Controller
             $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
                 ->pluck('setting_value', 'setting_key');
 
-            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter', 'category_filter', 'settings'));
+            $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
+            $closingTime = $settings->has('closing_time') ? Carbon::parse($settings['closing_time'])->format('h:i A') : 'N/A';
+
+            return view('shop.products', compact('inventory', 'subCategory', 'category', 'query', 'categoryFilter', 'category_filter', 'settings', 'openingTime', 'closingTime'));
         }
     }
 
@@ -117,7 +123,10 @@ class ShopController extends Controller
         $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
             ->pluck('setting_value', 'setting_key');
 
-        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'serviceFee', 'settings'));
+        $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
+        $closingTime = $settings->has('closing_time') ? Carbon::parse($settings['closing_time'])->format('h:i A') : 'N/A';
+
+        return view('shop.checkout', compact('category', 'selectedItems', 'subtotal', 'total', 'user', 'orderType', 'serviceFee', 'settings', 'openingTime', 'closingTime'));
     }
 
     public function placeOrder(Request $request)
@@ -247,7 +256,10 @@ class ShopController extends Controller
         $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
             ->pluck('setting_value', 'setting_key');
 
-        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total', 'forCheckoutStatus', 'settings'));
+        $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
+        $closingTime = $settings->has('closing_time') ? Carbon::parse($settings['closing_time'])->format('h:i A') : 'N/A';
+
+        return view('shop.carts', compact('category', 'carts', 'subtotal', 'total', 'forCheckoutStatus', 'settings', 'openingTime', 'closingTime'));
     }
 
 
@@ -266,5 +278,18 @@ class ShopController extends Controller
             'cartsCount' => $cartOrders,
             'pendingOrders' => $pendingOrders
         ]);
+    }
+
+    public function contacts()
+    {
+        $category = Category::all();
+
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link', 'map_url'])
+            ->pluck('setting_value', 'setting_key');
+
+        $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
+        $closingTime = $settings->has('closing_time') ? Carbon::parse($settings['closing_time'])->format('h:i A') : 'N/A';
+
+        return view('shop.contacts', compact('category', 'settings', 'openingTime', 'closingTime'));
     }
 }

@@ -9,7 +9,7 @@ class SettingsController extends Controller
 {
     public function getGeneralSettings()
     {
-        $settings = Settings::whereIn('setting_key', ['phone', 'address', 'opening_time', 'closing_time', 'fb_page', 'fb_link'])->get();
+        $settings = Settings::whereIn('setting_key', ['phone', 'address', 'opening_time', 'closing_time', 'fb_page', 'fb_link', 'map_url'])->get();
 
         $processedSettings = [];
         foreach ($settings as $setting) {
@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'address' => $request->address,
             'fb_page' => $request->fb_page,
             'fb_link' => $request->fb_link,
+            'map_url' => $request->map_url,
             'opening_time' => date('H:i:s', strtotime($request->opening_time)),
             'closing_time' => date('H:i:s', strtotime($request->closing_time))
         ];
