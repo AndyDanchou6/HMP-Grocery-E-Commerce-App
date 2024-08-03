@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -78,7 +79,17 @@ class CategoryController extends Controller
         // 
         $category = Category::findOrFail($id);
 
-        $category->delete();
+        if (Storage::disk('public')->exists($category->category_img)) {
+            if (!Storage::disk('public')->delete($category->category_img)) {
+
+                return redirect()->back()->with('error', 'Image not deleted!');
+            }
+        }
+
+        if (!$category->delete()) {
+
+            return redirect()->route('categories.index')->with('error', 'Deletion Failed!');
+        }
 
         return redirect()->route('categories.index')->with('success', 'Deleted successfully');
     }
