@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/shop/products/cancelCheckout', [ShopController::class, 'cancelCheckout'])->name('shop.cancelCheckout');
     Route::post('/shop/products/buynow', [ShopController::class, 'buyNow'])->name('shop.buyNow');
     Route::get('/shop/check/checkOrders', [ShopController::class, 'countOrders'])->name('shop.count');
+    Route::get('/shop/contacts', [ShopController::class, 'contacts'])->name('shop.contacts');
 });
 
 Route::get('/courier/selectedItems/deliveryRequest', [SelectedItemsController::class, 'courierDashboard'])->name('selectedItems.courierDashboard');

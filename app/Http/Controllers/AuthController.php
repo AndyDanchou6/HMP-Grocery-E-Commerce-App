@@ -6,6 +6,7 @@ use App\Models\SelectedItems;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Settings;
 
 class AuthController extends Controller
 {
@@ -26,7 +27,12 @@ class AuthController extends Controller
 
             $totalOrders = SelectedItems::where('user_id', $user->id)->whereNotIn('status', ['forCheckout', 'denied'])->count();
             $admin = User::where('role', 'Admin')->first();
-            return view('customer_home', compact('user', 'totalOrders', 'admin'));
+
+
+            $settings = Settings::whereIn('setting_key', ['phone'])
+                ->pluck('setting_value', 'setting_key');
+
+            return view('customer_home', compact('user', 'totalOrders', 'admin', 'settings'));
         } else {
             return redirect()->route('error404');
         }
