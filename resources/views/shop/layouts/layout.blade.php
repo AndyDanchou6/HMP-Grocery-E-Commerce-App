@@ -82,8 +82,8 @@
         </nav>
         <div id="mobile-menu-wrap"></div>
         <div class="header__top__right__social">
-            @if($settings['fb_link'])
-            <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
+            @if(!empty($settings['fb_link']))
+            <a href="{{ $settings['fb_link'] ?? '' }}"><i class="fa fa-facebook"></i></a>
             @else
             <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
             @endif
@@ -123,10 +123,10 @@
                             <a href="{{ route('shop.index') }}"><img src="{{ asset('index/img/e.png') }}" alt=""></a>
                         </div>
                         <ul>
-                            <li style="white-space: nowrap;">Address: {{ $settings['address'] }}</li>
-                            <li>Phone: +63 {{ $settings['phone'] }}</li>
-                            <a href="{{ $settings['fb_link'] }}">
-                                <li style="white-space: nowrap;">Facebook page: {{ $settings['fb_page'] }}</li>
+                            <li style="white-space: nowrap;">Address: {{ $settings['address'] ?? '' }}</li>
+                            <li>Phone: +63 {{ $settings['phone'] ?? '' }}</li>
+                            <a href="{{ $settings['fb_link'] ?? ''}}">
+                                <li style="white-space: nowrap;">Facebook page: {{ $settings['fb_page'] ?? '' }}</li>
                             </a>
                         </ul>
                     </div>
@@ -161,7 +161,7 @@
                             <button type="submit" class="site-btn" style="background-color: #696cff;" onclick="MAINTENANCE()">Subscribe</button>
                         </form>
                         <div class="footer__widget__social">
-                            @if($settings['fb_link'])
+                            @if(!empty($settings['fb_link']))
                             <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
                             @else
                             <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>

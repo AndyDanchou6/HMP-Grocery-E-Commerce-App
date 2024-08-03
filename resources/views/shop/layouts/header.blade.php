@@ -12,8 +12,8 @@
             <div class="col-lg-6 col-md-6">
                 <div class="header__top__right">
                     <div class="header__top__right__social">
-                        @if($settings['fb_link'])
-                        <a href="{{ $settings['fb_link'] }}"><i class="fa fa-facebook"></i></a>
+                        @if(!empty($settings['fb_link']))
+                        <a href="{{ $settings['fb_link'] ?? '' }}"><i class="fa fa-facebook"></i></a>
                         @else
                         <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
                         @endif

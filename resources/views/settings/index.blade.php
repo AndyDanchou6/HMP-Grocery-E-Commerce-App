@@ -35,6 +35,11 @@
                                     <label for="address" class="form-label text-dark">Facebook Link [optional]</label>
                                     <input class="form-control text-dark" type="text" name="fb_link" id="fb_link" value="{{ $processedSettings['fb_link'] ?? '' }}" placeholder="https://www.facebook.com/yourpage" />
                                 </div>
+                                @if(empty($processedSettings['opening_time']) || empty($processedSettings['closing_time']))
+                                <div class="alert alert-warning" role="alert">
+                                    Please create the Opening Time and Closing Time settings first.
+                                </div>
+                                @endif
                                 <div class="mb-3 col-md-6">
                                     <label for="opening_time" class="form-label text-dark">Opening Time</label>
                                     <input class="form-control text-dark" type="time" id="opening_time" name="opening_time" value="{{ $processedSettings['opening_time'] ?? '' }}" />
