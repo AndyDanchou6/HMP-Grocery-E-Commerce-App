@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label for="map_url" class="form-label text-dark">Map Url [optional]</label>
-                                    <textarea id="map_url" name="map_url" class="form-control text-dark" placeholder='Enter iframe code (e.g., &lt;iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125580.6943158609!2d124.72894843013358!3d10.390033588550887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33076e92da77cfd7%3A0x2945b1c797251bc2!2sHilongos%2C%20Leyte!5e0!3m2!1sen!2sph!4v1722666485083!5m2!1sen!2sph" width="100%" height="500" frameborder="0" style="border:0;" allowfullscreen&gt;&lt;/iframe&gt;)'>{{ $processedSettings['map_url'] ?? '' }}</textarea>
+                                    <textarea id="map_url" name="map_url" class="form-control text-dark" placeholder='Enter embed src (e.g., https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125580.6943158609!2d124.72894843013358!3d10.390033588550887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33076e92da77cfd7%3A0x2945b1c797251bc2!2sHilongos%2C%20Leyte!5e0!3m2!1sen!2sph!4v1722666485083!5m2!1sen!2sph'>{{ $processedSettings['map_url'] ?? '' }}</textarea>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <i class='bx bxl-facebook-square'></i><label for="fb_link" class="form-label text-dark">Facebook Link [optional]</label>
