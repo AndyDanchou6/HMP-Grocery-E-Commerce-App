@@ -1,6 +1,19 @@
 @extends('app')
 
 @section('content')
+
+<style>
+    .inactive {
+        border: 1px solid #3B71CA;
+        color: #3B71CA;
+    }
+
+    .active {
+        background-color: #3B71CA;
+        color: white;
+    }
+</style>
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
 
@@ -162,7 +175,29 @@
                         <tbody class="table-border-bottom-0" id="sales-table-body">
                             <!-- Sales Data are populated using javascript -->
                         </tbody>
-                        
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="container my-4">
+                                        <div class="d-flex justify-content-end">
+                                            <div class="d-flex" style="max-width: 250px;">
+
+                                                <button class="btn btn-primary mx-1" id="first-page"> &laquo; </button>
+
+                                                <div class="scrollable-content flex-grow-1 d-flex align-items-center" style="overflow-x: auto; white-space: nowrap;">
+                                                    <div class="d-flex" id="sales-pagination-links">
+                                                        <!-- Javascript createPaginationLinks -->
+                                                    </div>
+                                                </div>
+
+                                                <button class="btn btn-primary mx-1" id="last-page"> &#187; </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -369,28 +404,63 @@
                 }
 
                 var salesData = data.data;
-                var pagination = data.pagination;
-                var loopIteration = 1;
-                var salesTable = document.querySelector('#sales-table-body');
-                salesTable.innerHTML = '';
+                var numberOfPage = 0;
 
-                Object.entries(salesData).forEach(([productId, soldProduct]) => {
-                    const productImageUrl = `/storage/${soldProduct.product_img}`;
-                    var dataRow = `
-                <tr>
-                    <td>${loopIteration}</td>
-                    <td>
-                        <img src="${productImageUrl}" style="width: 45px; height: 45px; margin-right: 20px;" alt="Product Image" class="rounded-circle">
-                        ${soldProduct.product_name} ${soldProduct.variant}
-                    </td>
-                    <td>${soldProduct.quantity}</td>
-                </tr>
-            `;
+                Object.entries(salesData).forEach(([pageNumbers, products]) => {
+                    numberOfPage += 1
+                })
 
-                    salesTable.innerHTML += dataRow;
-                    loopIteration += 1;
-                });
+                createPaginationLinks(numberOfPage)
+                populateTable(data.data[1], 1);
 
+                const salesPaginationLinksContainer = document.querySelector('#sales-pagination-links')
+                var paginationLinks = salesPaginationLinksContainer.querySelectorAll('div');
+
+                paginationLinks.forEach(function(link) {
+
+                    link.addEventListener('click', function() {
+
+                        var pageId = link.getAttribute('id');
+                        var rawId = pageId.substring(5).trim();
+                        var currentActive = salesPaginationLinksContainer.querySelector('div.active');
+
+                        // Show the data of page
+                        populateTable(data.data[rawId], rawId);
+
+                        // change the active button (primarily the color of the button)
+                        link.classList.add('active');
+                        currentActive.classList.remove('active');
+                        currentActive.classList.add('inactive');
+                    });
+                })
+
+                const firstPageButton = document.querySelector('#first-page');
+
+                firstPageButton.addEventListener('click', function() {
+
+                    var currentActive = salesPaginationLinksContainer.querySelector('div.active');
+                    currentActive.classList.remove('active');
+                    currentActive.classList.add('inactive');
+                    var firstPage = document.querySelector('#page_' + 1);
+                    firstPage.classList.remove('inactive');
+                    firstPage.classList.add('active');
+
+                    populateTable(data.data[1], 1);
+                })
+
+                const lastPageButton = document.querySelector('#last-page');
+
+                lastPageButton.addEventListener('click', function() {
+
+                    var currentActive = salesPaginationLinksContainer.querySelector('div.active');
+                    currentActive.classList.remove('active');
+                    currentActive.classList.add('inactive');
+                    var lastPage = document.querySelector('#page_' + numberOfPage);
+                    lastPage.classList.remove('inactive');
+                    lastPage.classList.add('active');
+
+                    populateTable(data.data[numberOfPage], numberOfPage);
+                })
             } catch (error) {
                 console.error('Something went wrong! :', error.message);
                 await new Promise(resolve => setTimeout(resolve, 3000));
@@ -398,8 +468,75 @@
             }
         }
 
+        function populateTable(paginatedSales, pageNumber) {
+
+            var loopIteration = 1;
+
+            if (pageNumber > 1) {
+                loopIteration += (10 * pageNumber) - 10;
+            }
+
+            var salesTable = document.querySelector('#sales-table-body');
+            salesTable.innerHTML = '';
+
+            Object.entries(paginatedSales).forEach(([productId, soldProduct]) => {
+                const productImageUrl = `/storage/${soldProduct.product_img}`;
+                var variant = `[${soldProduct.variant}]`;
+
+                if (soldProduct.variant == null) {
+                    variant = '[No Variant]'
+                }
+
+                var dataRow = `
+                <tr>
+                    <td>${loopIteration}</td>
+                    <td>
+                        <img src="${productImageUrl}" style="width: 45px; height: 45px; margin-right: 20px;" alt="Product Image" class="rounded-circle">
+                        ${soldProduct.product_name} ${variant}
+                    </td>
+                    <td>${soldProduct.quantity}</td>
+                </tr>
+            `;
+
+                salesTable.innerHTML += dataRow;
+                loopIteration += 1;
+            });
+        }
+
+        function createPaginationLinks(numberOfPage) {
+            const salesPaginationLinks = document.querySelector('#sales-pagination-links');
+
+            salesPaginationLinks.innerHTML = '';
+
+            var pageNumber = 1;
+            var pageNumberButtons = '';
+
+            do {
+
+                var pageNumberButtons = `
+                    <div class="rounded text-center inactive" style="margin: 0 2px;" id="page_${pageNumber}">
+                        <p class="h-100" style="margin-bottom: 0; padding: 10px;">${pageNumber}</p>
+                    </div>
+                `;
+
+                if (pageNumber == 1) {
+                    pageNumberButtons = `
+                        <div class="rounded text-center active" style="margin: 0 2px;" id="page_${pageNumber}">
+                            <p class="h-100" style="margin-bottom: 0; padding: 10px;">${pageNumber}</p>
+                        </div>
+                    `;
+                }
+
+                salesPaginationLinks.innerHTML += pageNumberButtons;
+
+                pageNumber += 1;
+            } while (pageNumber <= numberOfPage);
+
+        }
+
         fetchSales('all');
 
+        // change data according filter
         document.querySelector('#filter-sales').addEventListener('change', function() {
 
             var salesTable = document.querySelector('#sales-table-body');
@@ -407,6 +544,16 @@
 
             fetchSales(this.value);
         })
+
+        // Allow mousewheel to scroll pagination links
+        const scrollableContent = document.querySelector('.scrollable-content');
+
+        scrollableContent.addEventListener('wheel', function(event) {
+            if (event.deltaY !== 0) {
+                scrollableContent.scrollLeft += event.deltaY;
+                event.preventDefault(); // Prevent the default vertical scroll
+            }
+        });
     });
 </script>
 
