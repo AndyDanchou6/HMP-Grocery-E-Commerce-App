@@ -258,16 +258,6 @@ class InventoryController extends Controller
         return view('inventories.index', compact('inventories'));
     }
 
-    // public function criticalProducts()
-    // {
-    //     $inventories = Inventory::where('quantity', '<=', 10)
-    //         ->orderBy('created_at', 'desc')
-    //         ->paginate(1); // Adjust per your pagination needs
-    //     $categories = Category::pluck('category_name', 'id');
-
-    //     return view('inventories.index', compact('inventories', 'categories'));
-    // }
-
     public function availableStocks()
     {
 

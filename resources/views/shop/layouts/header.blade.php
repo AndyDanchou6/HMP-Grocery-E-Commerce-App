@@ -12,14 +12,13 @@
             <div class="col-lg-6 col-md-6">
                 <div class="header__top__right">
                     <div class="header__top__right__social">
-                        @if(!empty($settings['fb_link']))
-                        <a href="{{ $settings['fb_link'] ?? '' }}"><i class="fa fa-facebook"></i></a>
+                        @foreach (['fb_link' => 'fa-facebook', 'instagram_link' => 'fa-instagram', 'twitter_link' => 'fa-twitter', 'youtube_link' => 'fa-youtube'] as $key => $iconClass)
+                        @if(!empty($settings[$key]))
+                        <a href="{{ $settings[$key] }}"><i class="fa {{ $iconClass }}"></i></a>
                         @else
-                        <a onclick="MAINTENANCE()"><i class="fa fa-facebook"></i></a>
+                        <a onclick="MAINTENANCE()"><i class="fa {{ $iconClass }}"></i></a>
                         @endif
-                        <a onclick="MAINTENANCE()"><i class="fa fa-twitter"></i></a>
-                        <a onclick="MAINTENANCE()"><i class="fa fa-linkedin"></i></a>
-                        <a onclick="MAINTENANCE()"><i class="fa fa-pinterest-p"></i></a>
+                        @endforeach
                     </div>
                     @if(Auth::user()->role == 'Admin')
                     <div class="header__top__right__auth" style="margin-right: 10px;">

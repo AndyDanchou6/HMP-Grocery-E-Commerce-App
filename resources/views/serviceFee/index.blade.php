@@ -8,7 +8,7 @@
             <h4 style="margin: auto 0;">Set Service Fees</h4>
             <form action="{{ route('serviceFee.index') }}" method="GET" class="d-flex">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search Schedule..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" placeholder="Search....." value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">
                         <i class='bx bx-search-alt-2'></i>
                     </button>

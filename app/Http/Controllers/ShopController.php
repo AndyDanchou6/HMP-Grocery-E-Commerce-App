@@ -33,7 +33,7 @@ class ShopController extends Controller
 
             $category = Category::all();
 
-            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])
                 ->pluck('setting_value', 'setting_key');
 
             $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
@@ -77,7 +77,7 @@ class ShopController extends Controller
                 ->groupBy('product_name');
 
 
-            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+            $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])
                 ->pluck('setting_value', 'setting_key');
 
             $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
@@ -120,7 +120,7 @@ class ShopController extends Controller
 
         $total = $subtotal;
 
-        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])
             ->pluck('setting_value', 'setting_key');
 
         $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
@@ -253,7 +253,7 @@ class ShopController extends Controller
             ->exists();
 
 
-        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link'])
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])
             ->pluck('setting_value', 'setting_key');
 
         $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';
@@ -284,7 +284,7 @@ class ShopController extends Controller
     {
         $category = Category::all();
 
-        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'fb_link', 'map_url'])
+        $settings = Settings::whereIn('setting_key', ['opening_time', 'closing_time', 'phone', 'address', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])
             ->pluck('setting_value', 'setting_key');
 
         $openingTime = $settings->has('opening_time') ? Carbon::parse($settings['opening_time'])->format('h:i A') : 'N/A';

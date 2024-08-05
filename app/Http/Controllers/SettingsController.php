@@ -9,7 +9,7 @@ class SettingsController extends Controller
 {
     public function getGeneralSettings()
     {
-        $settings = Settings::whereIn('setting_key', ['phone', 'address', 'opening_time', 'closing_time', 'fb_page', 'fb_link', 'map_url'])->get();
+        $settings = Settings::whereIn('setting_key', ['phone', 'address', 'opening_time', 'closing_time', 'fb_page', 'map_url', 'fb_link', 'instagram_link', 'twitter_link', 'youtube_link'])->get();
 
         $processedSettings = [];
         foreach ($settings as $setting) {
@@ -26,12 +26,22 @@ class SettingsController extends Controller
 
     public function updateGeneralSettings(Request $request)
     {
+        $startTime = strtotime($request->input('opening_time'));
+        $endTime = strtotime($request->input('closing_time'));
+
+        if ($endTime <= $startTime) {
+            return redirect()->back()->with('error', 'Invalid Schedule.');
+        }
+
         $settings = [
             'phone' => $request->phone,
             'address' => $request->address,
             'fb_page' => $request->fb_page,
             'fb_link' => $request->fb_link,
             'map_url' => $request->map_url,
+            'instagram_link' => $request->instagram_link,
+            'twitter_link' => $request->twitter_link,
+            'youtube_link' => $request->youtube_link,
             'opening_time' => date('H:i:s', strtotime($request->opening_time)),
             'closing_time' => date('H:i:s', strtotime($request->closing_time))
         ];
