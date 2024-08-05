@@ -3,12 +3,12 @@
 @section('content')
 
 <style>
-    .inactive {
+    .sales-inactive {
         border: 1px solid #3B71CA;
         color: #3B71CA;
     }
 
-    .active {
+    .sales-active {
         background-color: #3B71CA;
         color: white;
     }
@@ -175,7 +175,6 @@
                         <tbody class="table-border-bottom-0" id="sales-table-body">
                             <!-- Sales Data are populated using javascript -->
                         </tbody>
-
                         <tfoot>
                             <tr>
                                 <td colspan="4">
@@ -199,7 +198,6 @@
                                 </td>
                             </tr>
                         </tfoot>
-                        
                     </table>
                 </div>
             </div>
@@ -234,13 +232,13 @@
                     updatePagination(data.inventories);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 20000);
+                    }, 10000);
                 })
                 .catch(error => {
                     console.error('Error fetching critical products:', error);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 20000);
+                    }, 10000);
                 });
         }
 
@@ -424,15 +422,15 @@
 
                         var pageId = link.getAttribute('id');
                         var rawId = pageId.substring(5).trim();
-                        var currentActive = salesPaginationLinksContainer.querySelector('div.active');
+                        var currentActive = salesPaginationLinksContainer.querySelector('div.sales-active');
 
                         // Show the data of page
                         populateTable(data.data[rawId], rawId);
 
                         // change the active button (primarily the color of the button)
-                        link.classList.add('active');
-                        currentActive.classList.remove('active');
-                        currentActive.classList.add('inactive');
+                        link.classList.add('sales-active');
+                        currentActive.classList.remove('sales-active');
+                        currentActive.classList.add('sales-inactive');
                     });
                 })
 
@@ -440,12 +438,12 @@
 
                 firstPageButton.addEventListener('click', function() {
 
-                    var currentActive = salesPaginationLinksContainer.querySelector('div.active');
-                    currentActive.classList.remove('active');
-                    currentActive.classList.add('inactive');
+                    var currentActive = salesPaginationLinksContainer.querySelector('div.sales-active');
+                    currentActive.classList.remove('sales-active');
+                    currentActive.classList.add('sales-inactive');
                     var firstPage = document.querySelector('#page_' + 1);
-                    firstPage.classList.remove('inactive');
-                    firstPage.classList.add('active');
+                    firstPage.classList.remove('sales-inactive');
+                    firstPage.classList.add('sales-active');
 
                     populateTable(data.data[1], 1);
                 })
@@ -454,12 +452,12 @@
 
                 lastPageButton.addEventListener('click', function() {
 
-                    var currentActive = salesPaginationLinksContainer.querySelector('div.active');
-                    currentActive.classList.remove('active');
-                    currentActive.classList.add('inactive');
+                    var currentActive = salesPaginationLinksContainer.querySelector('div.sales-active');
+                    currentActive.classList.remove('sales-active');
+                    currentActive.classList.add('sales-inactive');
                     var lastPage = document.querySelector('#page_' + numberOfPage);
-                    lastPage.classList.remove('inactive');
-                    lastPage.classList.add('active');
+                    lastPage.classList.remove('sales-inactive');
+                    lastPage.classList.add('sales-active');
 
                     populateTable(data.data[numberOfPage], numberOfPage);
                 })
@@ -516,14 +514,14 @@
             do {
 
                 var pageNumberButtons = `
-                    <div class="rounded text-center inactive" style="margin: 0 2px;" id="page_${pageNumber}">
+                    <div class="rounded text-center sales-inactive" style="margin: 0 2px;" id="page_${pageNumber}">
                         <p class="h-100" style="margin-bottom: 0; padding: 10px;">${pageNumber}</p>
                     </div>
                 `;
 
                 if (pageNumber == 1) {
                     pageNumberButtons = `
-                        <div class="rounded text-center active" style="margin: 0 2px;" id="page_${pageNumber}">
+                        <div class="rounded text-center sales-active" style="margin: 0 2px;" id="page_${pageNumber}">
                             <p class="h-100" style="margin-bottom: 0; padding: 10px;">${pageNumber}</p>
                         </div>
                     `;
