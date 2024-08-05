@@ -33,15 +33,15 @@
 
                         </div>
                         <div class="hero__search__phone__text flex-wrap w-auto">
-                            @if(!isset($settings['phone']))
+                            @if(!empty($settings['phone']))
                             <h5>+63 {{ $settings['phone'] }}</h5>
                             @else
                             <h5 class="text-danger">Phone not available</h5>
                             @endif
 
-                            @if(!isset($openingTime) && !isset($closingTime))
+                            @if(!empty($openingTime) && !empty($closingTime))
                             <span>
-                                {{ $openingTime }} - {{ $closingTime }}
+                                {{ $openingTime ?? 'N/A' }} - {{ $closingTime ?? 'N/A'}}
                             </span>
                             @else
                             <span class="text-danger">Opening/Closing time not set</span>
