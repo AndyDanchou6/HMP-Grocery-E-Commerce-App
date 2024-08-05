@@ -428,9 +428,11 @@
                         populateTable(data.data[rawId], rawId);
 
                         // change the active button (primarily the color of the button)
-                        link.classList.add('sales-active');
-                        currentActive.classList.remove('sales-active');
-                        currentActive.classList.add('sales-inactive');
+                        if (currentActive != link) {
+                            link.classList.add('sales-active');
+                            currentActive.classList.remove('sales-active');
+                            currentActive.classList.add('sales-inactive');
+                        }
                     });
                 })
 
