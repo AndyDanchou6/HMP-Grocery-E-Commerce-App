@@ -1197,13 +1197,24 @@ class SelectedItemsController extends Controller
         $salesByProduct = $query->get()->groupBy('item_id');
 
         $salesArrayForm = [];
+        $pageLimit = 10;
+        $pageNumber = 1;
+
         foreach ($salesByProduct as $product_id => $productDetails) {
-            $salesArrayForm[$product_id] = [
+
+            $salesArrayForm[$pageNumber][$product_id] = [
                 'product_name' => $productDetails->first()['inventory']->product_name,
                 'product_img' => $productDetails->first()['inventory']->product_img,
                 'variant' => $productDetails->first()['inventory']->variant,
                 'quantity' => $productDetails->sum('quantity'),
             ];
+
+            if ($pageLimit == 1) {
+                $pageLimit = 10;
+                $pageNumber += 1;
+            } else {
+                $pageLimit -= 1;
+            }
         }
 
         return response()->json([
