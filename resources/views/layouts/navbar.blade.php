@@ -29,8 +29,8 @@
     </li>
     @include('layouts.script.admin.adminNotification')
     @elseif(Auth::user()->role == 'Customer')
-    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bi bi-shop bx-fade-up'></i> <span>Shop</span>">
-      <i class="bi bi-shop bx-sm bx-fade-up-hover"></i>
+    <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('shop.index') }}" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bxs-store bx-tada'></i> <span>Shop</span>">
+      <i class="bx bxs-store bx-sm bx-tada-hover"></i>
     </a>
     <a class="nav-item nav-link px-0 me-xl-4 navbar-icon" href="{{ route('customers.orders') }}" id="active-state" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="<i class='bx bx-box bx-tada mb-1'></i> <span>Order History</span>">
       <i class="bx bx-box bx-sm bx-tada-hover"></i>

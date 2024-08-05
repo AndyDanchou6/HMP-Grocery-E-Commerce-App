@@ -77,13 +77,19 @@
         <section id="welcome-section">
             <div class="logo-wrap text-center">
                 <img src="{{ asset('logo/3.png') }}" alt="Logo Image" class="img-fluid">
-                <div class="spinner-grow text-primary d-none" role="status">
+                <div class="spinner-grow text-info d-none" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <div class="spinner-grow text-success d-none" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <div class="spinner-grow text-primary d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-warning d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-danger d-none" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>

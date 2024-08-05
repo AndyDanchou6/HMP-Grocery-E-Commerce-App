@@ -175,6 +175,7 @@
                         <tbody class="table-border-bottom-0" id="sales-table-body">
                             <!-- Sales Data are populated using javascript -->
                         </tbody>
+
                         <tfoot>
                             <tr>
                                 <td colspan="4">
@@ -198,6 +199,7 @@
                                 </td>
                             </tr>
                         </tfoot>
+                        
                     </table>
                 </div>
             </div>
@@ -232,13 +234,13 @@
                     updatePagination(data.inventories);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 10000);
+                    }, 20000);
                 })
                 .catch(error => {
                     console.error('Error fetching critical products:', error);
                     setTimeout(() => {
                         fetchCriticalProducts(currentPage);
-                    }, 10000);
+                    }, 20000);
                 });
         }
 

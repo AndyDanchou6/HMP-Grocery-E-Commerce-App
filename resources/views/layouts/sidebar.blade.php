@@ -103,13 +103,6 @@
         <span id="forPickupCount" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
       </a>
     </li>
-    <li id="forDeniedOrders-tables" class="menu-item">
-      <a href="{{ route('selectedItems.deniedOrders') }}" class="menu-link">
-        <i class="menu-icon tf-icons bi bi-cart-x"></i>
-        <span data-i18n="Tables">Denied Orders</span>
-        <span id="deniedOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
-      </a>
-    </li>
     <li class="menu-item" id="payment-menu">
       <a href="#" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bi bi-cash"></i>
@@ -137,6 +130,13 @@
           </a>
         </li>
       </ul>
+    </li>
+    <li id="forDeniedOrders-tables" class="menu-item">
+      <a href="{{ route('selectedItems.deniedOrders') }}" class="menu-link">
+        <i class="menu-icon tf-icons bi bi-cart-x"></i>
+        <span data-i18n="Tables">Denied Orders</span>
+        <span id="deniedOrders" class="badge badge-center rounded-pill bg-danger" style="color: white; position: absolute; top: 30%; left: 190px;"></span>
+      </a>
     </li>
     @include('layouts.script.admin.countOrders')
     @endif
