@@ -61,7 +61,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/error404', [AuthController::class, 'error404'])->name('error404');
     Route::resource('profile', ProfileController::class);
     Route::resource('admin/users', AdminController::class)->middleware('admin');
-    Route::resource('reviews', ReviewController::class);
     Route::resource('carts', CartController::class);
     Route::post('/carts/checkout', [CartController::class, 'checkout'])->name('carts.checkout');
     Route::post('/carts/update', [CartController::class, 'update'])->name('carts.updateQty');
@@ -144,4 +143,3 @@ Route::post('changePass', [ProfileController::class, 'changePass'])->name('profi
 
 // Analytics
 Route::get('/admin/sales/{sales}', [SelectedItemsController::class, 'sales'])->name('product.sales');
-

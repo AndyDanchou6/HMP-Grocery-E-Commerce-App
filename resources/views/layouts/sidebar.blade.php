@@ -142,12 +142,6 @@
     @endif
     @if(Auth::user()->role == 'Customer')
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Customer Section</span></li>
-    <li id="reviews-tables" class="menu-item">
-      <a href="{{ route('reviews.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons bi bi-chat-left"></i>
-        <div data-i18n="Tables">Reviews</div>
-      </a>
-    </li>
     <li id="forUnpaidOrders-tables" class="menu-item">
       <a href="{{ route('customers.unpaid_orders') }}" class="menu-link">
         <i class="menu-icon tf-icons bi bi-cash"></i>

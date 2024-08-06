@@ -11,7 +11,9 @@ class SuperAdminController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'SuperAdmin') {
-            return view('superAdminHome');
+            $user = User::count();
+
+            return view('superAdminHome', compact('user'));
         } else {
             return redirect()->route('error');
         }
