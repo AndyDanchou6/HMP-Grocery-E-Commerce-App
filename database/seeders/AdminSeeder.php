@@ -13,19 +13,19 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin1 = 'user_avatar/avatar1.jpg';
-        $admin2 = 'user_avatar/avatar2.jpg';
+        $admin1 = 'user_avatar/admin.jpg';
+        $admin2 = 'user_avatar/admin.jpg';
         $users = 'user_avatar/avatar.jpg';
         $superadmin = 'user_avatar/superadmin.jpg';
 
         User::create([
             'role' => 'SuperAdmin',
             'avatar' => $superadmin,
-            'name' => 'Sung Jin Woo',
-            'email' => 'e.mart@superadmin.me',
-            'phone' =>  639687532442,
-            'fb_link' => 'https://www.facebook.com/',
-            'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'name' => 'Jerry Molar Parrocha',
+            'email' => 'j.parrocha@superadmin.me',
+            'phone' =>  639638753244,
+            'fb_link' => 'https://www.facebook.com/jerryparrocha1234/',
+            'address' => 'Hilongos, Leyte',
             'password' => Hash::make('12345678'),
             'created_at' => now(),
             'updated_at' => now(),
@@ -34,11 +34,11 @@ class AdminSeeder extends Seeder
         User::create([
             'role' => 'SuperAdmin',
             'avatar' => $superadmin,
-            'name' => 'Jue Viole Grace',
-            'email' => 'e.marty@superadmin.me',
-            'phone' =>  639778452344,
-            'fb_link' => 'https://www.facebook.com/',
-            'address' => 'Rizal Street, Sogod, Southern, Leyte',
+            'name' => 'Melchard Lina',
+            'email' => 'm.lina@superadmin.me',
+            'phone' =>  639307696919,
+            'fb_link' => 'https://www.facebook.com/melchard.lina',
+            'address' => 'Hilongos, Leyte',
             'password' => Hash::make('12345678'),
             'created_at' => now(),
             'updated_at' => now(),
@@ -61,8 +61,8 @@ class AdminSeeder extends Seeder
         User::create([
             'role' => 'Admin',
             'avatar' => $admin2,
-            'name' => 'Melchard Lina',
-            'email' => 'e.mart@eridiano.admin',
+            'name' => 'E-Marty',
+            'email' => 'e.marty@admin.me',
             'phone' => 639232423,
             'fb_link' => 'https://www.facebook.com/',
             'address' => 'Kagwapo Street, Kapogian, Southern Gwapo',

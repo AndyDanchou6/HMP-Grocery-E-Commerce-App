@@ -102,12 +102,18 @@
 <body>
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
-            <h2 class="text-center mb-4">Invoice Report - {{ $month == 'all' ? 'All Months' : \Carbon\Carbon::parse($month)->format('F Y') }}</h2>
+            <h2 class="text-center mb-4">
+                {{ $month == 'all' ? 'Invoice Report - All Records' : 'Invoice Report for ' . \Carbon\Carbon::parse($month)->format('F Y') }}
+            </h2>
+
 
             <button class="print-button btn btn-outline-success mb-4" onclick="printReport()">Print</button>
             <a href="{{ route('selectedItems.history') }}"><button class="print-button btn btn-outline-danger mb-4">Back</button></a>
 
-            <h4 class="mb-3">{{ $orderRetrievalType == 'both' ? 'All Orders' : ucfirst($orderRetrievalType) . ' Orders' }}</h4>
+            <h4 class="mb-3">
+                {{ $orderRetrievalType == 'both' ? 'Complete List' : ucfirst($orderRetrievalType) . ' Order List' }}
+            </h4>
+
             <div class="table-responsive">
                 <table class="table">
                     <thead>
